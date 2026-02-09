@@ -1,0 +1,34 @@
+# ── Muraho Rwanda AI Service — Dependencies ──────────────
+
+# Core
+fastapi==0.115.*
+uvicorn[standard]==0.34.*
+pydantic==2.10.*
+pydantic-settings==2.7.*
+
+# LLM Client (OpenAI-compatible — works with Ollama and vLLM)
+openai==1.60.*
+
+# Embeddings
+sentence-transformers==3.4.*
+torch==2.5.*
+
+# Database (PostgreSQL + pgvector)
+asyncpg==0.30.*
+
+# Transcription (Faster-Whisper)
+faster-whisper==1.1.*
+
+# Translation (NLLB-200 for Kinyarwanda)
+transformers==4.48.*
+sentencepiece==0.2.*
+
+# Language Detection
+langdetect==1.0.*
+
+# Redis (caching + rate limiting)
+redis[hiredis]==5.2.*
+
+# Utilities
+python-dotenv==1.0.*
+httpx==0.28.*

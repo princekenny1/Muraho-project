@@ -1,0 +1,38 @@
+/* Payload CMS 3.0 — Admin Panel Catch-All */
+import type { Metadata } from "next";
+import config from "@payload-config";
+import { generatePageMetadata, RootPage } from "@payloadcms/next/views";
+
+import { importMap } from "../importMap.js";
+
+type Args = {
+  params: Promise<{ segments?: string[] }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+function sanitizeSearchParams(
+  p: { [key: string]: string | string[] | undefined }
+): { [key: string]: string | string[] } {
+  const out: Record<string, string | string[]> = {};
+  for (const [k, v] of Object.entries(p)) {
+    if (v !== undefined) out[k] = v;
+  }
+  return out;
+}
+
+export const generateMetadata = (args: Args): Promise<Metadata> =>
+  generatePageMetadata({
+    config,
+    params: args.params.then((p) => ({ segments: p.segments ?? [] })),
+    searchParams: args.searchParams.then(sanitizeSearchParams),
+  });
+
+const Page = (args: Args) =>
+  RootPage({
+    config: Promise.resolve(config),
+    importMap,
+    params: args.params.then((p) => ({ segments: p.segments ?? [] })),
+    searchParams: args.searchParams.then(sanitizeSearchParams),
+  });
+
+export default Page;
