@@ -119,9 +119,10 @@ services:
     command: npm run dev
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/admin"]
+      start_period: 300s
       interval: 15s
       timeout: 10s
-      retries: 20
+      retries: 40
 
   # ── One-shot seed after CMS is ready ───────────────────
   payload-seed:
