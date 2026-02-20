@@ -52,6 +52,7 @@ services:
       DATABASE_URL: postgresql://muraho:${DB_PASSWORD}@postgres:5432/muraho
       REDIS_URL: redis://redis:6379/0
       EMBEDDING_DEVICE: cpu
+      EMBEDDING_MODEL: intfloat/multilingual-e5-large
       WHISPER_DEVICE: cuda
       ENABLE_AUDIT_LOG: "true"
     ports:
