@@ -10,9 +10,9 @@ type Args = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-function sanitizeSearchParams(
-  p: { [key: string]: string | string[] | undefined }
-): { [key: string]: string | string[] } {
+function sanitizeSearchParams(p: {
+  [key: string]: string | string[] | undefined;
+}): { [key: string]: string | string[] } {
   const out: Record<string, string | string[]> = {};
   for (const [k, v] of Object.entries(p)) {
     if (v !== undefined) out[k] = v;
