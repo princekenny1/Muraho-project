@@ -2,23 +2,37 @@
 -- Extensions + spatial views + RAG search + indexes
 -- Runs once on first docker-compose up
 
-CREATE EXTENSION IF NOT EXISTS vector;
+DO $$ BEGIN
+  BEGIN
+    CREATE EXTENSION IF NOT EXISTS vector;
+  EXCEPTION
+    WHEN undefined_file THEN
+      RAISE NOTICE 'pgvector extension is unavailable in this image; vector features will be skipped';
+  END;
+END $$;
 CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Vector column added to Payload's content_embeddings table after migration
 DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='content_embeddings' AND column_name='embedding') THEN
-    BEGIN ALTER TABLE content_embeddings ADD COLUMN IF NOT EXISTS embedding vector(1024);
-    EXCEPTION WHEN undefined_table THEN RAISE NOTICE 'content_embeddings not yet created by Payload'; END;
+  IF EXISTS (SELECT 1 FROM pg_extension WHERE extname='vector') THEN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='content_embeddings' AND column_name='embedding') THEN
+      BEGIN
+        EXECUTE 'ALTER TABLE content_embeddings ADD COLUMN IF NOT EXISTS embedding vector(1024)';
+      EXCEPTION WHEN undefined_table THEN
+        RAISE NOTICE 'content_embeddings not yet created by Payload';
+      END;
+    END IF;
   END IF;
 END $$;
 
 -- pgvector HNSW index
 DO $$ BEGIN
   IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='content_embeddings' AND column_name='embedding') THEN
-    CREATE INDEX IF NOT EXISTS idx_emb_hnsw ON content_embeddings USING hnsw (embedding vector_cosine_ops) WITH (m=16, ef_construction=200);
+    IF EXISTS (SELECT 1 FROM pg_extension WHERE extname='vector') THEN
+      EXECUTE 'CREATE INDEX IF NOT EXISTS idx_emb_hnsw ON content_embeddings USING hnsw (embedding vector_cosine_ops) WITH (m=16, ef_construction=200)';
+    END IF;
     CREATE INDEX IF NOT EXISTS idx_emb_trgm ON content_embeddings USING gin (text_content gin_trgm_ops);
     CREATE INDEX IF NOT EXISTS idx_emb_content ON content_embeddings (content_id, content_type);
     CREATE INDEX IF NOT EXISTS idx_emb_status ON content_embeddings (embedding_status);
@@ -74,18 +88,26 @@ BEGIN RETURN QUERY
 END; $$ LANGUAGE plpgsql;
 
 -- RAG semantic search
-CREATE OR REPLACE FUNCTION search_embeddings(
-  query_embedding vector(1024), match_count INT DEFAULT 5, similarity_threshold FLOAT DEFAULT 0.3, filter_type TEXT DEFAULT NULL
-) RETURNS TABLE (id BIGINT, content_id TEXT, content_type TEXT, text_content TEXT, metadata JSONB, similarity FLOAT) AS $$
-BEGIN RETURN QUERY
-  SELECT ce.id, ce.content_id, ce.content_type, ce.text_content, ce.metadata,
-         1 - (ce.embedding <=> query_embedding) AS similarity
-  FROM content_embeddings ce
-  WHERE ce.embedding IS NOT NULL AND ce.embedding_status = 'completed'
-    AND (filter_type IS NULL OR ce.content_type = filter_type)
-    AND 1 - (ce.embedding <=> query_embedding) > similarity_threshold
-  ORDER BY ce.embedding <=> query_embedding LIMIT match_count;
-END; $$ LANGUAGE plpgsql;
+DO $$ BEGIN
+  IF EXISTS (SELECT 1 FROM pg_extension WHERE extname='vector') THEN
+    EXECUTE $fn$
+      CREATE OR REPLACE FUNCTION search_embeddings(
+        query_embedding vector(1024), match_count INT DEFAULT 5, similarity_threshold FLOAT DEFAULT 0.3, filter_type TEXT DEFAULT NULL
+      ) RETURNS TABLE (id BIGINT, content_id TEXT, content_type TEXT, text_content TEXT, metadata JSONB, similarity FLOAT) AS $$
+      BEGIN RETURN QUERY
+        SELECT ce.id, ce.content_id, ce.content_type, ce.text_content, ce.metadata,
+               1 - (ce.embedding <=> query_embedding) AS similarity
+        FROM content_embeddings ce
+        WHERE ce.embedding IS NOT NULL AND ce.embedding_status = 'completed'
+          AND (filter_type IS NULL OR ce.content_type = filter_type)
+          AND 1 - (ce.embedding <=> query_embedding) > similarity_threshold
+        ORDER BY ce.embedding <=> query_embedding LIMIT match_count;
+      END; $$ LANGUAGE plpgsql;
+    $fn$;
+  ELSE
+    RAISE NOTICE 'Skipping search_embeddings(): pgvector extension is unavailable';
+  END IF;
+END $$;
 
 -- Payload table indexes (idempotent, runs after Payload migration)
 DO $$ BEGIN
