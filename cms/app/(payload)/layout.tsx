@@ -1,4 +1,4 @@
-/* Payload CMS 3.0 — Admin & API Layout */
+/* Payload CMS 3.0 — Payload Route Group Layout */
 import type { ServerFunctionClient } from "payload";
 import "@payloadcms/next/css";
 import config from "@payload-config";

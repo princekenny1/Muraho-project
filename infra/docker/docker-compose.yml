@@ -23,7 +23,8 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-muraho} -d muraho_rwanda"]
+      test:
+        ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-muraho} -d muraho_rwanda"]
       interval: 5s
       retries: 10
 
@@ -111,10 +112,33 @@ services:
       # TTS
       ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
       # Server
-      NODE_ENV: production
+      NODE_ENV: development
       PORT: 3000
     volumes:
       - payload_uploads:/app/media
+    command: npm run dev
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/admin"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+
+  # ── One-shot seed after CMS is ready ───────────────────
+  payload-seed:
+    build:
+      context: ../../cms
+      dockerfile: Dockerfile
+    networks:
+      - muraho
+    depends_on:
+      payload:
+        condition: service_healthy
+    environment:
+      SEED_BASE_URL: http://payload:3000
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@muraho.rw}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-MurahoAdmin2026!}
+    command: npm run seed
+    restart: "no"
 
   # ── FastAPI AI Service ──────────────────────────────────
   ai-service:

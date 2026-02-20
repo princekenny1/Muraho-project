@@ -18,6 +18,8 @@ WORKDIR /app
 COPY --from=base /app/node_modules ./node_modules
 COPY --from=base /app/.next ./.next
 COPY --from=base /app/package.json ./
+COPY --from=base /app/tsconfig.json ./
+COPY --from=base /app/next.config.mjs ./
 COPY --from=base /app/payload.config.ts ./
 COPY --from=base /app/collections ./collections
 COPY --from=base /app/endpoints ./endpoints
@@ -25,6 +27,7 @@ COPY --from=base /app/globals ./globals
 COPY --from=base /app/hooks ./hooks
 COPY --from=base /app/access ./access
 COPY --from=base /app/app ./app
+COPY --from=base /app/seed ./seed
 
 EXPOSE 3000
 CMD ["npm", "start"]

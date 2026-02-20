@@ -8,7 +8,7 @@
     "build": "cross-env PAYLOAD_CONFIG_PATH=payload.config.ts next build",
     "start": "cross-env PAYLOAD_CONFIG_PATH=payload.config.ts next start",
     "generate:types": "payload generate:types",
-    "seed": "ts-node --esm seed/index.ts"
+    "seed": "tsx seed/index.ts"
   },
   "dependencies": {
     "payload": "^3.0.0",
@@ -29,6 +29,7 @@
     "@types/react": "^19.0.0",
     "cross-env": "^7.0.3",
     "ts-node": "^10.9.0",
+    "tsx": "^4.20.5",
     "typescript": "^5.6.0"
   },
   "engines": {

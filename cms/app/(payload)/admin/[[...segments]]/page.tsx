@@ -27,12 +27,16 @@ export const generateMetadata = (args: Args): Promise<Metadata> =>
     searchParams: args.searchParams.then(sanitizeSearchParams),
   });
 
-const Page = (args: Args) =>
-  RootPage({
+async function Page(args: Args) {
+  const params = await args.params;
+  const searchParams = await args.searchParams;
+
+  return RootPage({
     config: Promise.resolve(config),
     importMap,
-    params: args.params.then((p) => ({ segments: p.segments ?? [] })),
-    searchParams: args.searchParams.then(sanitizeSearchParams),
+    params: Promise.resolve({ segments: params.segments ?? [] }),
+    searchParams: Promise.resolve(sanitizeSearchParams(searchParams)),
   });
+}
 
 export default Page;
