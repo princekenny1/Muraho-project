@@ -4,7 +4,6 @@
 # ══════════════════════════════════════════════════════════
 
 services:
-
   # ── vLLM (Production LLM Inference) ──────────────────
   vllm:
     image: vllm/vllm-openai:latest
@@ -36,7 +35,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 120s  # vLLM needs time to load models
+      start_period: 120s # vLLM needs time to load models
 
   # ── AI Service (FastAPI) ─────────────────────────────
   ai-service:
@@ -48,7 +47,7 @@ services:
       LLM_BACKEND: vllm
       LLM_BASE_URL: http://vllm:8000/v1
       LLM_MODEL_FAST: mistralai/Mistral-7B-Instruct-v0.3
-      LLM_MODEL_HEAVY: mistralai/Mistral-7B-Instruct-v0.3  # Same model on Tier 1
+      LLM_MODEL_HEAVY: mistralai/Mistral-7B-Instruct-v0.3 # Same model on Tier 1
       DATABASE_URL: postgresql://muraho:${DB_PASSWORD}@postgres:5432/muraho
       REDIS_URL: redis://redis:6379/0
       EMBEDDING_DEVICE: cpu
@@ -70,11 +69,11 @@ services:
           devices:
             - driver: nvidia
               count: 1
-              capabilities: [gpu]  # Shared GPU for Whisper
+              capabilities: [gpu] # Shared GPU for Whisper
 
   # ── PostgreSQL + pgvector + PostGIS ──────────────────
   postgres:
-    image: postgis/postgis:16-3.4 
+    image: postgis/postgis:16-3.4
     container_name: muraho-postgres
     environment:
       POSTGRES_DB: muraho
