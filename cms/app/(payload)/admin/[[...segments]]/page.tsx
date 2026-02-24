@@ -32,7 +32,7 @@ async function Page(args: Args) {
   const searchParams = await args.searchParams;
 
   return RootPage({
-    config: Promise.resolve(config),
+    config,
     importMap,
     params: Promise.resolve({ segments: params.segments ?? [] }),
     searchParams: Promise.resolve(sanitizeSearchParams(searchParams)),

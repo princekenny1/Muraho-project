@@ -14,6 +14,7 @@ import logging
 from typing import Sequence
 
 import asyncpg
+from pgvector.asyncpg import register_vector
 from sentence_transformers import SentenceTransformer
 
 from app.core.config import settings
@@ -42,10 +43,14 @@ class EmbeddingService:
             f"device={settings.EMBEDDING_DEVICE}"
         )
 
+        async def init_connection(conn):
+            await register_vector(conn)
+
         self.db_pool = await asyncpg.create_pool(
             settings.DATABASE_URL,
             min_size=2,
             max_size=10,
+            init=init_connection,
         )
         logger.info("Database pool connected")
 
@@ -60,9 +65,11 @@ class EmbeddingService:
     async def _ensure_schema(self):
         """Create the embeddings table and indexes if they don't exist."""
         async with self.db_pool.acquire() as conn:
+            # Register pgvector extension with asyncpg
             await conn.execute("CREATE EXTENSION IF NOT EXISTS vector;")
             await conn.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
-
+            
+            # pgvector now usable in DDL
             await conn.execute(f"""
                 CREATE TABLE IF NOT EXISTS {settings.VECTOR_TABLE} (
                     id              BIGSERIAL PRIMARY KEY,

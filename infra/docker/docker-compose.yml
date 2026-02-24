@@ -11,7 +11,9 @@ x-common: &common
 services:
   # ── PostgreSQL + pgvector + PostGIS ─────────────────────
   postgres:
-    image: postgis/postgis:16-3.4
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
     <<: *common
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
@@ -112,11 +114,11 @@ services:
       # TTS
       ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
       # Server
-      NODE_ENV: development
+      NODE_ENV: production
       PORT: 3000
     volumes:
       - payload_uploads:/app/media
-    command: npm run dev
+    command: npm start
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/admin"]
       start_period: 300s
@@ -156,14 +158,19 @@ services:
         condition: service_started
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER:-muraho}:${POSTGRES_PASSWORD:-muraho_secret}@postgres:5432/muraho_rwanda
+      LLM_BASE_URL: http://ollama:11434/v1
       OLLAMA_BASE_URL: http://ollama:11434
       VLLM_BASE_URL: http://vllm:8080
       REDIS_URL: redis://redis:6379
       EMBEDDING_MODEL: intfloat/multilingual-e5-large
       LLM_MODEL: mistral-nemo
       LOG_LEVEL: info
+    volumes:
+      - hf_cache:/root/.cache/huggingface
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      start_period: 90s
+      timeout: 5s
       interval: 10s
       retries: 5
 
@@ -244,5 +251,6 @@ volumes:
   miniodata:
   payload_uploads:
   ollama_models:
+  hf_cache:
   certbot_webroot:
   certbot_certs:

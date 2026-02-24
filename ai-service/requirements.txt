@@ -15,6 +15,7 @@ torch==2.5.*
 
 # Database (PostgreSQL + pgvector)
 asyncpg==0.30.*
+pgvector==0.3.*
 
 # Transcription (Faster-Whisper)
 faster-whisper==1.1.*

@@ -37,8 +37,7 @@ COLLECTION SLUG VERIFICATION
 
 ENVIRONMENT & CONFIGURATION
 ---------------------------
-• CMS lacked .env.example; root .env.example exists but CMS-specific vars
-  (DATABASE_URI, S3_*, PAYLOAD_SECRET) needed local dev documentation.
+• Cereded local dev documentation.
 • payload.config.ts validates PAYLOAD_SECRET in production.
 • Rate limiting: 500 req / 15 min; trustProxy for nginx.
 

@@ -43,7 +43,7 @@ class Settings(BaseSettings):
 
     # ── Vector Search (pgvector) ─────────────────────────
     DATABASE_URL: str = "postgresql://muraho:muraho@localhost:5432/muraho"
-    VECTOR_TABLE: str = "content_embeddings"
+    VECTOR_TABLE: str = "ai_embeddings"
     VECTOR_SEARCH_LIMIT: int = 20                      # Retrieve top 20 candidates
     VECTOR_RERANK_LIMIT: int = 8                       # Return top 8 after re-ranking
     VECTOR_SIMILARITY_THRESHOLD: float = 0.3           # Minimum cosine similarity
