@@ -3,6 +3,7 @@ import { api } from "@/lib/api/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, Upload, X, Image, Video, Music } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface MediaUploadProps {
   value?: string;
@@ -35,6 +36,7 @@ export function MediaUpload({
   placeholder,
   disabled = false,
 }: MediaUploadProps) {
+  const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
   const [urlMode, setUrlMode] = useState(false);
   const [urlInput, setUrlInput] = useState("");
@@ -48,10 +50,22 @@ export function MediaUpload({
 
     setUploading(true);
     try {
-      const result = await api.uploadMedia(file, { folder });
+      const result = await api.uploadMedia(file);
       onChange(result.url || result.filename || null);
+      toast({
+        title: "Upload complete",
+        description: `${file.name} uploaded successfully.`,
+      });
     } catch (err) {
       console.error("Upload error:", err);
+      toast({
+        title: "Upload failed",
+        description:
+          err instanceof Error
+            ? err.message
+            : "Could not upload the selected file.",
+        variant: "destructive",
+      });
     } finally {
       setUploading(false);
       if (fileRef.current) fileRef.current.value = "";

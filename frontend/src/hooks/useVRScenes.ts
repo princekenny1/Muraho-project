@@ -52,22 +52,19 @@ export function useVRScenes(museumId?: string, includeInactive = false) {
     queryFn: async () => {
       if (!museumId) return [];
 
-      // Find the virtual tour for this museum
+      const resolvedMuseumId = await resolveMuseumId(museumId);
+
       const result = await api.find("vr-scenes", {
-        where: { museum: { equals: museumId } },
-        limit: 1,
-        depth: 2,
+        where: { museum: { equals: resolvedMuseumId } },
+        sort: "sceneOrder",
+        limit: 200,
+        depth: 1,
       });
 
-      if (result.docs.length === 0) return [];
-
-      const tour = result.docs[0] as any;
-      const panoramas = tour.panoramas || [];
-
-      return panoramas
-        .map((p: any, i: number) => mapScene(p, museumId, i))
-        .filter((s: VRScene) => includeInactive || s.is_active)
-        .sort((a: VRScene, b: VRScene) => a.scene_order - b.scene_order);
+      return (result.docs as any[])
+        .map((doc, index) => mapScene(doc, resolvedMuseumId, index))
+        .filter((scene) => includeInactive || scene.is_active)
+        .sort((a, b) => a.scene_order - b.scene_order);
     },
     enabled: !!museumId,
   });
@@ -83,26 +80,33 @@ export function useVRHotspots(sceneId?: string) {
     queryFn: async () => {
       if (!sceneId) return [];
 
-      // We need to search all virtual tours for this scene
-      // In practice the admin panel already has the museum context
-      const result = await api.find("vr-scenes", {
-        limit: 50,
-        depth: 2,
+      const result = await api.find("vr-hotspots", {
+        where: { scene: { equals: sceneId } },
+        sort: "createdAt",
+        limit: 500,
+        depth: 1,
       });
 
-      for (const tour of result.docs as any[]) {
-        const panoramas = tour.panoramas || [];
-        const scene = panoramas.find((p: any) => p.id === sceneId);
-        if (scene) {
-          const hotspots = scene.hotspots || [];
-          return hotspots.map((h: any, i: number) => mapHotspot(h, sceneId, i));
-        }
-      }
-
-      return [];
+      return (result.docs as any[]).map((doc, index) =>
+        mapHotspot(doc, sceneId, index),
+      );
     },
     enabled: !!sceneId,
   });
+}
+
+async function resolveMuseumId(museumIdOrSlug: string): Promise<string> {
+  const museumBySlug = await api.find("museums", {
+    where: { slug: { equals: museumIdOrSlug } },
+    limit: 1,
+    depth: 0,
+  });
+
+  if (museumBySlug.docs.length > 0) {
+    return (museumBySlug.docs[0] as any).id;
+  }
+
+  return museumIdOrSlug;
 }
 
 // ── Field mappers ─────────────────────────────────────
@@ -113,10 +117,10 @@ function mapScene(p: any, museumId: string, index: number): VRScene {
     museum_id: museumId,
     title: p.title || `Scene ${index + 1}`,
     description: p.description || null,
-    panorama_url: p.image?.url || p.panorama_url || "",
-    scene_order: p.order || p.scene_order || index + 1,
+    panorama_url: p.panoramaUrl || p.panorama_url || p.panoramaImage?.url || "",
+    scene_order: p.sceneOrder || p.scene_order || index + 1,
     narration_text: p.narrationText || p.narration_text || null,
-    narration_audio_url: p.narrationAudio?.url || p.narration_audio_url || null,
+    narration_audio_url: p.narrationAudioUrl || p.narration_audio_url || null,
     is_active: p.isActive ?? p.is_active ?? true,
     createdAt: p.createdAt || new Date().toISOString(),
   };
@@ -125,14 +129,15 @@ function mapScene(p: any, museumId: string, index: number): VRScene {
 function mapHotspot(h: any, sceneId: string, index: number): VRHotspot {
   return {
     id: h.id || `hotspot-${index}`,
-    scene_id: sceneId,
+    scene_id: h.scene?.id || h.scene || sceneId,
     type: h.type || "info",
     title: h.title || `Hotspot ${index + 1}`,
     description: h.description || null,
     position_x: h.positionX ?? h.position_x ?? 50,
     position_y: h.positionY ?? h.position_y ?? 50,
     content: h.content || null,
-    target_scene_id: h.targetScene || h.target_scene_id || null,
+    target_scene_id:
+      h.targetScene?.id || h.targetScene || h.target_scene_id || null,
     is_active: h.isActive ?? h.is_active ?? true,
   };
 }

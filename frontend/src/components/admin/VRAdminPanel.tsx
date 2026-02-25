@@ -17,7 +17,7 @@ import {
 import { Plus, ExternalLink } from "lucide-react";
 import { VRBulkActions } from "./VRBulkActions";
 import { Button } from "@/components/ui/button";
-import { useVRScenes, useVRHotspots, type VRScene } from "@/hooks/useVRScenes";
+import { useVRScenes, type VRScene } from "@/hooks/useVRScenes";
 import { useVRAdmin } from "@/hooks/useVRAdmin";
 import { VRSceneCard } from "./VRSceneCard";
 import { VRSceneForm } from "./VRSceneForm";
@@ -38,19 +38,28 @@ interface VRAdminPanelProps {
   museumId: string;
 }
 
+const EMPTY_SCENES: VRScene[] = [];
+
 export function VRAdminPanel({ museumId }: VRAdminPanelProps) {
   const { toast } = useToast();
-  const { data: scenes = [], isLoading } = useVRScenes(museumId, true); // Include inactive scenes for admin
-  const { createScene, updateScene, deleteScene, reorderScenes } = useVRAdmin(museumId);
+  const { data: scenes = EMPTY_SCENES, isLoading } = useVRScenes(
+    museumId,
+    true,
+  ); // Include inactive scenes for admin
+  const { createScene, updateScene, deleteScene, reorderScenes } =
+    useVRAdmin(museumId);
 
   const [localScenes, setLocalScenes] = useState<VRScene[]>([]);
   const [formOpen, setFormOpen] = useState(false);
   const [editingScene, setEditingScene] = useState<VRScene | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [managingHotspotsFor, setManagingHotspotsFor] = useState<VRScene | null>(null);
+  const [managingHotspotsFor, setManagingHotspotsFor] =
+    useState<VRScene | null>(null);
 
   // Track hotspot counts for each scene
-  const [hotspotCounts, setHotspotCounts] = useState<Record<string, number>>({});
+  const [hotspotCounts, setHotspotCounts] = useState<Record<string, number>>(
+    {},
+  );
 
   useEffect(() => {
     setLocalScenes(scenes);
@@ -73,7 +82,7 @@ export function VRAdminPanel({ museumId }: VRAdminPanelProps) {
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleDragEnd = async (event: DragEndEvent) => {
@@ -205,7 +214,9 @@ export function VRAdminPanel({ museumId }: VRAdminPanelProps) {
           />
           <Button
             variant="outline"
-            onClick={() => window.open(`/museum-guide?tab=virtual-tour`, '_blank')}
+            onClick={() =>
+              window.open(`/museum-guide?tab=virtual-tour`, "_blank")
+            }
           >
             <ExternalLink className="h-4 w-4 mr-2" />
             Preview Tour

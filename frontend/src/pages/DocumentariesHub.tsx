@@ -9,7 +9,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useDocumentaries, Documentary } from "@/hooks/useDocumentaries";
 
-type DocumentaryType = "all" | "survivor-stories" | "historical" | "cultural" | "educational";
+type DocumentaryType =
+  | "all"
+  | "survivor-stories"
+  | "historical"
+  | "cultural"
+  | "educational";
 type DurationFilter = "all" | "short" | "medium" | "long";
 
 const typeFilters: { id: DocumentaryType; label: string }[] = [
@@ -20,12 +25,13 @@ const typeFilters: { id: DocumentaryType; label: string }[] = [
   { id: "educational", label: "Educational" },
 ];
 
-const durationFilters: { id: DurationFilter; label: string; range: string }[] = [
-  { id: "all", label: "Any Length", range: "" },
-  { id: "short", label: "Under 1hr", range: "< 60 min" },
-  { id: "medium", label: "1-2 hours", range: "60-120 min" },
-  { id: "long", label: "Over 2hrs", range: "> 120 min" },
-];
+const durationFilters: { id: DurationFilter; label: string; range: string }[] =
+  [
+    { id: "all", label: "Any Length", range: "" },
+    { id: "short", label: "Under 1hr", range: "< 60 min" },
+    { id: "medium", label: "1-2 hours", range: "60-120 min" },
+    { id: "long", label: "Over 2hrs", range: "> 120 min" },
+  ];
 
 function DocumentaryCardSkeleton() {
   return (
@@ -56,16 +62,21 @@ export function DocumentariesHub() {
 
   const filterByDuration = (runtime: number, filter: DurationFilter) => {
     switch (filter) {
-      case "short": return runtime < 60;
-      case "medium": return runtime >= 60 && runtime <= 120;
-      case "long": return runtime > 120;
-      default: return true;
+      case "short":
+        return runtime < 60;
+      case "medium":
+        return runtime >= 60 && runtime <= 120;
+      case "long":
+        return runtime > 120;
+      default:
+        return true;
     }
   };
 
   const filteredDocumentaries = documentaries.filter((doc) => {
-    const matchesSearch = doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         doc.synopsis.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch =
+      doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      doc.synopsis.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = typeFilter === "all" || doc.type === typeFilter;
     const matchesDuration = filterByDuration(doc.runtime, durationFilter);
     return matchesSearch && matchesType && matchesDuration;
@@ -88,11 +99,7 @@ export function DocumentariesHub() {
       <div className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate(-1)}
-            >
+            <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div className="flex items-center gap-2">
@@ -100,12 +107,14 @@ export function DocumentariesHub() {
               <h1 className="font-semibold text-foreground">Documentaries</h1>
             </div>
           </div>
-          
+
           <Button
             variant={showFilters ? "default" : "outline"}
             size="sm"
             onClick={() => setShowFilters(!showFilters)}
-            className={cn(showFilters && "bg-amber hover:bg-amber/90 text-midnight")}
+            className={cn(
+              showFilters && "bg-amber hover:bg-amber/90 text-midnight",
+            )}
           >
             <Filter className="w-4 h-4 mr-1" />
             Filters
@@ -143,7 +152,9 @@ export function DocumentariesHub() {
           <div className="px-4 pb-4 space-y-4 border-t border-border pt-4 bg-background animate-fade-in">
             {/* Type Filter */}
             <div>
-              <p className="text-xs font-medium text-muted-foreground mb-2">Category</p>
+              <p className="text-xs font-medium text-muted-foreground mb-2">
+                Category
+              </p>
               <div className="flex flex-wrap gap-2">
                 {typeFilters.map((filter) => (
                   <button
@@ -153,7 +164,7 @@ export function DocumentariesHub() {
                       "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
                       typeFilter === filter.id
                         ? "bg-amber text-midnight"
-                        : "bg-muted text-muted-foreground hover:bg-muted/80"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80",
                     )}
                   >
                     {filter.label}
@@ -164,7 +175,9 @@ export function DocumentariesHub() {
 
             {/* Duration Filter */}
             <div>
-              <p className="text-xs font-medium text-muted-foreground mb-2">Duration</p>
+              <p className="text-xs font-medium text-muted-foreground mb-2">
+                Duration
+              </p>
               <div className="flex flex-wrap gap-2">
                 {durationFilters.map((filter) => (
                   <button
@@ -174,7 +187,7 @@ export function DocumentariesHub() {
                       "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
                       durationFilter === filter.id
                         ? "bg-amber text-midnight"
-                        : "bg-muted text-muted-foreground hover:bg-muted/80"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80",
                     )}
                   >
                     {filter.label}
@@ -201,18 +214,18 @@ export function DocumentariesHub() {
 
       {/* Content */}
       <ScrollArea className="h-screen">
-        <div className={cn(
-          "pt-32 pb-8 px-4",
-          showFilters && "pt-56"
-        )}>
+        <div className={cn("pt-32 pb-8 px-4", showFilters && "pt-56")}>
           {/* Results Count */}
-          <p className="text-sm text-muted-foreground mb-4">
+          <div className="text-sm text-muted-foreground mb-4">
             {isLoading ? (
               <Skeleton className="h-4 w-32" />
             ) : (
-              `${filteredDocumentaries.length} documentary${filteredDocumentaries.length !== 1 ? "ies" : ""} found`
+              <span>
+                {filteredDocumentaries.length} documentary
+                {filteredDocumentaries.length !== 1 ? "ies" : ""} found
+              </span>
             )}
-          </p>
+          </div>
 
           {/* Loading State */}
           {isLoading && (
@@ -227,7 +240,9 @@ export function DocumentariesHub() {
           {error && (
             <div className="text-center py-12">
               <Film className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
-              <p className="text-muted-foreground">Failed to load documentaries</p>
+              <p className="text-muted-foreground">
+                Failed to load documentaries
+              </p>
             </div>
           )}
 
@@ -239,9 +254,9 @@ export function DocumentariesHub() {
                   onClick={() => navigate(`/documentaries/${doc.slug}`)}
                   className="w-full text-left group"
                 >
-                  <div 
+                  <div
                     className="flex gap-4 p-3 rounded-2xl bg-card border border-border hover:border-amber/50 transition-all"
-                    style={{ boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.05)' }}
+                    style={{ boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.05)" }}
                   >
                     {/* Thumbnail */}
                     <div className="relative w-28 h-20 flex-shrink-0 rounded-xl overflow-hidden">

@@ -13,41 +13,45 @@ import { api } from "@/lib/api/client";
 export function useVRAdmin(museumId: string) {
   const queryClient = useQueryClient();
 
-  /**
-   * Helper: find the virtual tour document for this museum
-   */
-  const findTour = async () => {
-    const result = await api.find("vr-scenes", {
-      where: { museum: { equals: museumId } },
+  const resolveMuseumId = async () => {
+    const bySlug = await api.find("museums", {
+      where: { slug: { equals: museumId } },
       limit: 1,
       depth: 0,
     });
-    if (result.docs.length === 0) {
-      throw new Error("No virtual tour found for this museum");
+    if (bySlug.docs.length > 0) {
+      return (bySlug.docs[0] as any).id as string;
     }
-    return result.docs[0] as any;
+    return museumId;
   };
 
   // ── Scene CRUD ──────────────────────────────────────
 
   const createScene = useMutation({
     mutationFn: async (data: Record<string, any>) => {
-      const tour = await findTour();
-      const existing = tour.panoramas || [];
+      const resolvedMuseumId = await resolveMuseumId();
 
-      const newScene = {
+      const existingScenes = await api.find("vr-scenes", {
+        where: { museum: { equals: resolvedMuseumId } },
+        sort: "-sceneOrder",
+        limit: 1,
+        depth: 0,
+      });
+
+      const maxOrder =
+        existingScenes.docs.length > 0
+          ? Number((existingScenes.docs[0] as any).sceneOrder || 0)
+          : 0;
+
+      return api.create("vr-scenes", {
+        museum: resolvedMuseumId,
         title: data.title,
         description: data.description || null,
-        image: data.panorama_url, // Will need to be a media ID in production
-        order: data.scene_order || existing.length + 1,
+        panoramaUrl: data.panorama_url,
+        sceneOrder: data.scene_order || maxOrder + 1,
         narrationText: data.narration_text || null,
-        narrationAudio: data.narration_audio_url || null,
+        narrationAudioUrl: data.narration_audio_url || null,
         isActive: true,
-        hotspots: [],
-      };
-
-      return api.update("vr-scenes", tour.id, {
-        panoramas: [...existing, newScene],
       });
     },
     onSuccess: () => {
@@ -56,24 +60,24 @@ export function useVRAdmin(museumId: string) {
   });
 
   const updateScene = useMutation({
-    mutationFn: async ({ id, ...data }: { id: string } & Record<string, any>) => {
-      const tour = await findTour();
-      const panoramas = (tour.panoramas || []).map((p: any) => {
-        if (p.id === id) {
-          return {
-            ...p,
-            title: data.title ?? p.title,
-            description: data.description ?? p.description,
-            image: data.panorama_url ?? p.image,
-            narrationText: data.narration_text ?? p.narrationText,
-            narrationAudio: data.narration_audio_url ?? p.narrationAudio,
-            isActive: data.is_active ?? p.isActive,
-          };
-        }
-        return p;
-      });
+    mutationFn: async ({
+      id,
+      ...data
+    }: { id: string } & Record<string, any>) => {
+      const payload: Record<string, any> = {};
+      if (data.title !== undefined) payload.title = data.title;
+      if (data.description !== undefined)
+        payload.description = data.description;
+      if (data.panorama_url !== undefined)
+        payload.panoramaUrl = data.panorama_url;
+      if (data.scene_order !== undefined) payload.sceneOrder = data.scene_order;
+      if (data.narration_text !== undefined)
+        payload.narrationText = data.narration_text;
+      if (data.narration_audio_url !== undefined)
+        payload.narrationAudioUrl = data.narration_audio_url;
+      if (data.is_active !== undefined) payload.isActive = data.is_active;
 
-      return api.update("vr-scenes", tour.id, { panoramas });
+      return api.update("vr-scenes", id, payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vr-scenes"] });
@@ -82,11 +86,7 @@ export function useVRAdmin(museumId: string) {
 
   const deleteScene = useMutation({
     mutationFn: async (sceneId: string) => {
-      const tour = await findTour();
-      const panoramas = (tour.panoramas || []).filter(
-        (p: any) => p.id !== sceneId
-      );
-      return api.update("vr-scenes", tour.id, { panoramas });
+      return api.delete("vr-scenes", sceneId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vr-scenes"] });
@@ -95,19 +95,12 @@ export function useVRAdmin(museumId: string) {
 
   const reorderScenes = useMutation({
     mutationFn: async (updates: { id: string; scene_order: number }[]) => {
-      const tour = await findTour();
-      const panoramas = tour.panoramas || [];
-
-      // Sort panoramas according to the new order
-      const reordered = updates
-        .sort((a, b) => a.scene_order - b.scene_order)
-        .map(({ id, scene_order }) => {
-          const scene = panoramas.find((p: any) => p.id === id);
-          return scene ? { ...scene, order: scene_order } : null;
-        })
-        .filter(Boolean);
-
-      return api.update("vr-scenes", tour.id, { panoramas: reordered });
+      await Promise.all(
+        updates.map(({ id, scene_order }) =>
+          api.update("vr-scenes", id, { sceneOrder: scene_order }),
+        ),
+      );
+      return { success: true };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vr-scenes"] });
@@ -118,30 +111,17 @@ export function useVRAdmin(museumId: string) {
 
   const createHotspot = useMutation({
     mutationFn: async (data: Record<string, any>) => {
-      const tour = await findTour();
-      const panoramas = (tour.panoramas || []).map((p: any) => {
-        if (p.id === data.scene_id) {
-          return {
-            ...p,
-            hotspots: [
-              ...(p.hotspots || []),
-              {
-                type: data.type,
-                title: data.title,
-                description: data.description || null,
-                positionX: data.position_x,
-                positionY: data.position_y,
-                targetScene: data.target_scene_id || null,
-                content: data.content || null,
-                isActive: true,
-              },
-            ],
-          };
-        }
-        return p;
+      return api.create("vr-hotspots", {
+        scene: data.scene_id,
+        type: data.type,
+        title: data.title,
+        description: data.description || null,
+        positionX: data.position_x,
+        positionY: data.position_y,
+        targetScene: data.target_scene_id || null,
+        content: data.content || null,
+        isActive: true,
       });
-
-      return api.update("vr-scenes", tour.id, { panoramas });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vr-hotspots"] });
@@ -150,31 +130,24 @@ export function useVRAdmin(museumId: string) {
   });
 
   const updateHotspot = useMutation({
-    mutationFn: async ({ id, scene_id, ...data }: { id: string; scene_id: string } & Record<string, any>) => {
-      const tour = await findTour();
-      const panoramas = (tour.panoramas || []).map((p: any) => {
-        if (p.id === scene_id) {
-          const hotspots = (p.hotspots || []).map((h: any) => {
-            if (h.id === id) {
-              return {
-                ...h,
-                type: data.type ?? h.type,
-                title: data.title ?? h.title,
-                description: data.description ?? h.description,
-                positionX: data.position_x ?? h.positionX,
-                positionY: data.position_y ?? h.positionY,
-                targetScene: data.target_scene_id ?? h.targetScene,
-                content: data.content ?? h.content,
-              };
-            }
-            return h;
-          });
-          return { ...p, hotspots };
-        }
-        return p;
-      });
+    mutationFn: async ({
+      id,
+      scene_id,
+      ...data
+    }: { id: string; scene_id: string } & Record<string, any>) => {
+      const payload: Record<string, any> = {};
+      if (scene_id !== undefined) payload.scene = scene_id;
+      if (data.type !== undefined) payload.type = data.type;
+      if (data.title !== undefined) payload.title = data.title;
+      if (data.description !== undefined)
+        payload.description = data.description;
+      if (data.position_x !== undefined) payload.positionX = data.position_x;
+      if (data.position_y !== undefined) payload.positionY = data.position_y;
+      if (data.target_scene_id !== undefined)
+        payload.targetScene = data.target_scene_id;
+      if (data.content !== undefined) payload.content = data.content;
 
-      return api.update("vr-scenes", tour.id, { panoramas });
+      return api.update("vr-hotspots", id, payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vr-hotspots"] });
@@ -182,21 +155,15 @@ export function useVRAdmin(museumId: string) {
   });
 
   const deleteHotspot = useMutation({
-    mutationFn: async ({ hotspotId, sceneId }: { hotspotId: string; sceneId: string }) => {
-      const tour = await findTour();
-      const panoramas = (tour.panoramas || []).map((p: any) => {
-        if (p.id === sceneId) {
-          return {
-            ...p,
-            hotspots: (p.hotspots || []).filter(
-              (h: any) => h.id !== hotspotId
-            ),
-          };
-        }
-        return p;
-      });
-
-      return api.update("vr-scenes", tour.id, { panoramas });
+    mutationFn: async ({
+      hotspotId,
+      sceneId,
+    }: {
+      hotspotId: string;
+      sceneId: string;
+    }) => {
+      void sceneId;
+      return api.delete("vr-hotspots", hotspotId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vr-hotspots"] });

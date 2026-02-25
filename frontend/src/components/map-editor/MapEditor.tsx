@@ -1,11 +1,27 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
-import { MapContainer, TileLayer, Marker, useMapEvents, useMap, Popup } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  useMapEvents,
+  useMap,
+  Popup,
+} from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { 
-  Search, Crosshair, Layers, ZoomIn, ZoomOut, 
-  MapPin, Route, Building2, Landmark, Eye, EyeOff,
-  Plus
+import {
+  Search,
+  Crosshair,
+  Layers,
+  ZoomIn,
+  ZoomOut,
+  MapPin,
+  Route,
+  Building2,
+  Landmark,
+  Eye,
+  EyeOff,
+  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,13 +46,19 @@ import { cn } from "@/lib/utils";
 // Fix default marker icon issue
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
-  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
 // Custom marker icons
-const createCustomIcon = (color: string, type: "location" | "stop" | "museum" | "landmark" = "location") => {
+const createCustomIcon = (
+  color: string,
+  type: "location" | "stop" | "museum" | "landmark" = "location",
+) => {
   const icons = {
     location: `<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>`,
     stop: `<circle cx="12" cy="12" r="8"/>`,
@@ -64,7 +86,12 @@ const createCustomIcon = (color: string, type: "location" | "stop" | "museum" | 
 };
 
 export type MapStyle = "light" | "dark" | "satellite";
-export type PinType = "location" | "outdoor_stop" | "route_stop" | "museum" | "landmark";
+export type PinType =
+  | "location"
+  | "outdoor_stop"
+  | "route_stop"
+  | "museum"
+  | "landmark";
 
 export interface MapPin {
   id: string;
@@ -105,16 +132,19 @@ interface MapEditorProps {
   draggablePins?: boolean;
 }
 
-function MapClickHandler({ 
-  onMapClick, 
-  showAddPinMenu, 
-  onAddPin 
-}: { 
+function MapClickHandler({
+  onMapClick,
+  showAddPinMenu,
+  onAddPin,
+}: {
   onMapClick?: (lat: number, lng: number) => void;
   showAddPinMenu?: boolean;
   onAddPin?: (type: PinType, lat: number, lng: number) => void;
 }) {
-  const [clickPosition, setClickPosition] = useState<{ lat: number; lng: number } | null>(null);
+  const [clickPosition, setClickPosition] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
   const [showMenu, setShowMenu] = useState(false);
 
   useMapEvents({
@@ -192,7 +222,13 @@ function MapClickHandler({
   );
 }
 
-function MapController({ center, zoom }: { center?: [number, number]; zoom?: number }) {
+function MapController({
+  center,
+  zoom,
+}: {
+  center?: [number, number];
+  zoom?: number;
+}) {
   const map = useMap();
 
   useEffect(() => {
@@ -204,14 +240,14 @@ function MapController({ center, zoom }: { center?: [number, number]; zoom?: num
   return null;
 }
 
-function DraggableMarker({ 
-  pin, 
-  icon, 
+function DraggableMarker({
+  pin,
+  icon,
   draggable,
   selected,
   onClick,
-  onDragEnd 
-}: { 
+  onDragEnd,
+}: {
   pin: MapPin;
   icon: L.DivIcon;
   draggable?: boolean;
@@ -232,7 +268,7 @@ function DraggableMarker({
         }
       },
     }),
-    [onClick, onDragEnd]
+    [onClick, onDragEnd],
   );
 
   return (
@@ -246,7 +282,9 @@ function DraggableMarker({
       <Popup>
         <div className="text-center">
           <p className="font-medium">{pin.title}</p>
-          {pin.subtitle && <p className="text-xs text-muted-foreground">{pin.subtitle}</p>}
+          {pin.subtitle && (
+            <p className="text-xs text-muted-foreground">{pin.subtitle}</p>
+          )}
         </div>
       </Popup>
     </Marker>
@@ -256,12 +294,19 @@ function DraggableMarker({
 const tileUrls: Record<MapStyle, string> = {
   light: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   dark: "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
-  satellite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+  satellite:
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
 };
 
 export function MapEditor({
   pins = [],
-  layers = { locations: true, outdoorStops: true, routeStops: true, museums: true, landmarks: true },
+  layers = {
+    locations: true,
+    outdoorStops: true,
+    routeStops: true,
+    museums: true,
+    landmarks: true,
+  },
   onLayersChange,
   onPinClick,
   onMapClick,
@@ -289,7 +334,7 @@ export function MapEditor({
     setSearching(true);
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=1`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=1`,
       );
       const results = await response.json();
       if (results.length > 0) {
@@ -309,13 +354,16 @@ export function MapEditor({
         (position) => {
           setMapCenter([position.coords.latitude, position.coords.longitude]);
         },
-        (error) => console.error("Geolocation error:", error)
+        (error) => console.error("Geolocation error:", error),
       );
     }
   };
 
   const getIconForPin = useCallback((pin: MapPin) => {
-    const typeMap: Record<PinType, "location" | "stop" | "museum" | "landmark"> = {
+    const typeMap: Record<
+      PinType,
+      "location" | "stop" | "museum" | "landmark"
+    > = {
       location: "location",
       outdoor_stop: "stop",
       route_stop: "stop",
@@ -344,7 +392,10 @@ export function MapEditor({
   }, [pins, layers]);
 
   return (
-    <div className="relative rounded-lg overflow-hidden border" style={{ height }}>
+    <div
+      className="relative rounded-lg overflow-hidden border"
+      style={{ height }}
+    >
       {/* Top Controls */}
       <div className="absolute top-3 left-3 right-3 z-[1000] flex items-center gap-2">
         {showSearch && (
@@ -359,8 +410,8 @@ export function MapEditor({
                 className="pl-10 bg-background/95 backdrop-blur-sm shadow-sm"
               />
             </div>
-            <Button 
-              size="icon" 
+            <Button
+              size="icon"
               variant="secondary"
               onClick={handleSearch}
               disabled={searching}
@@ -368,9 +419,9 @@ export function MapEditor({
             >
               <Search className="h-4 w-4" />
             </Button>
-            <Button 
-              size="icon" 
-              variant="secondary" 
+            <Button
+              size="icon"
+              variant="secondary"
               onClick={handleCurrentLocation}
               title="Use current location"
               className="shadow-sm"
@@ -393,22 +444,30 @@ export function MapEditor({
                 <DropdownMenuLabel>Map Style</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => onMapStyleChange?.("light")}>
-                  <span className={cn(mapStyle === "light" && "font-bold")}>Light</span>
+                  <span className={cn(mapStyle === "light" && "font-bold")}>
+                    Light
+                  </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => onMapStyleChange?.("dark")}>
-                  <span className={cn(mapStyle === "dark" && "font-bold")}>Dark</span>
+                  <span className={cn(mapStyle === "dark" && "font-bold")}>
+                    Dark
+                  </span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onMapStyleChange?.("satellite")}>
-                  <span className={cn(mapStyle === "satellite" && "font-bold")}>Satellite</span>
+                <DropdownMenuItem
+                  onClick={() => onMapStyleChange?.("satellite")}
+                >
+                  <span className={cn(mapStyle === "satellite" && "font-bold")}>
+                    Satellite
+                  </span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           )}
 
           {showLayerControls && (
-            <Button 
-              size="sm" 
-              variant="secondary" 
+            <Button
+              size="sm"
+              variant="secondary"
               onClick={() => setShowLayersSheet(true)}
               className="shadow-sm"
             >
@@ -427,19 +486,19 @@ export function MapEditor({
         className="z-0"
       >
         <TileLayer
-          attribution='&copy; OpenStreetMap contributors'
+          attribution="&copy; OpenStreetMap contributors"
           url={tileUrls[mapStyle]}
         />
         <MapController center={mapCenter} />
-        <MapClickHandler 
+        <MapClickHandler
           onMapClick={onMapClick}
           showAddPinMenu={showAddPinMenu}
           onAddPin={onAddPin}
         />
-        
-        {filteredPins.map((pin) => (
+
+        {filteredPins.map((pin, index) => (
           <DraggableMarker
-            key={pin.id}
+            key={`${pin.id}-${index}`}
             pin={pin}
             icon={getIconForPin(pin)}
             draggable={draggablePins}

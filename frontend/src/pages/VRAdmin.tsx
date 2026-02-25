@@ -7,32 +7,35 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { VRAdminPanel } from "@/components/admin/VRAdminPanel";
 import { useAuth } from "@/hooks/useAuth";
+import { useMuseums } from "@/hooks/useMuseumAdmin";
 import { useToast } from "@/hooks/use-toast";
 
 export default function VRAdmin() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, loading, isAdmin, signIn, signUp } = useAuth();
-  
+  const { data: museums = [], isLoading: museumsLoading } = useMuseums();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
-  const [selectedMuseum, setSelectedMuseum] = useState("kigali-genocide-memorial");
+  const [selectedMuseum, setSelectedMuseum] = useState("");
 
-  const museums = [
-    { id: "kigali-genocide-memorial", name: "Kigali Genocide Memorial" },
-    { id: "campaign-museum", name: "Campaign Against Genocide Museum" },
-  ];
+  useEffect(() => {
+    if (!selectedMuseum && museums.length > 0) {
+      setSelectedMuseum(String(museums[0].id));
+    }
+  }, [museums, selectedMuseum]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSigningIn(true);
-    
-    const { error } = isSignUp 
+
+    const { error } = isSignUp
       ? await signUp(email, password)
       : await signIn(email, password);
-    
+
     if (error) {
       toast({
         title: isSignUp ? "Sign up failed" : "Sign in failed",
@@ -42,7 +45,8 @@ export default function VRAdmin() {
     } else if (isSignUp) {
       toast({
         title: "Account created",
-        description: "You can now sign in. Note: Admin role must be assigned to access the panel.",
+        description:
+          "You can now sign in. Note: Admin role must be assigned to access the panel.",
       });
       setIsSignUp(false);
     }
@@ -68,7 +72,7 @@ export default function VRAdmin() {
               Sign in to manage VR tour content
             </p>
           </div>
-          
+
           <form onSubmit={handleAuth} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -93,20 +97,28 @@ export default function VRAdmin() {
               />
             </div>
             <Button type="submit" className="w-full" disabled={isSigningIn}>
-              {isSigningIn ? (isSignUp ? "Creating account..." : "Signing in...") : (isSignUp ? "Create Account" : "Sign In")}
+              {isSigningIn
+                ? isSignUp
+                  ? "Creating account..."
+                  : "Signing in..."
+                : isSignUp
+                  ? "Create Account"
+                  : "Sign In"}
             </Button>
           </form>
-          
+
           <div className="text-center text-sm">
             <button
               type="button"
               onClick={() => setIsSignUp(!isSignUp)}
               className="text-primary hover:underline"
             >
-              {isSignUp ? "Already have an account? Sign in" : "Need an account? Sign up"}
+              {isSignUp
+                ? "Already have an account? Sign in"
+                : "Need an account? Sign up"}
             </button>
           </div>
-          
+
           <div className="text-center">
             <Button variant="ghost" onClick={() => navigate("/")}>
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -136,12 +148,24 @@ export default function VRAdmin() {
     );
   }
 
+  if (museumsLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-muted-foreground">Loading museums...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/admin")}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate("/admin")}
+            >
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
@@ -159,21 +183,27 @@ export default function VRAdmin() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <Tabs value={selectedMuseum} onValueChange={setSelectedMuseum}>
-          <TabsList className="mb-6">
-            {museums.map((museum) => (
-              <TabsTrigger key={museum.id} value={museum.id}>
-                {museum.name}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+        {museums.length === 0 ? (
+          <div className="text-muted-foreground">
+            No museums available for VR management.
+          </div>
+        ) : (
+          <Tabs value={selectedMuseum} onValueChange={setSelectedMuseum}>
+            <TabsList className="mb-6">
+              {museums.map((museum) => (
+                <TabsTrigger key={museum.id} value={String(museum.id)}>
+                  {museum.name}
+                </TabsTrigger>
+              ))}
+            </TabsList>
 
-          {museums.map((museum) => (
-            <TabsContent key={museum.id} value={museum.id}>
-              <VRAdminPanel museumId={museum.id} />
-            </TabsContent>
-          ))}
-        </Tabs>
+            {museums.map((museum) => (
+              <TabsContent key={museum.id} value={String(museum.id)}>
+                <VRAdminPanel museumId={String(museum.id)} />
+              </TabsContent>
+            ))}
+          </Tabs>
+        )}
       </main>
     </div>
   );

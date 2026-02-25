@@ -1,16 +1,33 @@
 import { useState, useEffect, useMemo } from "react";
 import { X, Search, Layers, Navigation, List } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CinematicMapPin, PinTheme, EmotionalTone } from "@/components/map/CinematicMapPin";
+import {
+  CinematicMapPin,
+  PinTheme,
+  EmotionalTone,
+} from "@/components/map/CinematicMapPin";
 import { RouteHeatmap, RouteSegment } from "@/components/map/RouteHeatmap";
-import { StoryPreviewSheet, StoryMode } from "@/components/map/StoryPreviewSheet";
+import {
+  StoryPreviewSheet,
+  StoryMode,
+} from "@/components/map/StoryPreviewSheet";
 import { OnRoadNotification } from "@/components/notifications/OnRoadNotification";
 import { NotificationQueue } from "@/components/notifications/NotificationQueue";
 import { NotificationBundle } from "@/components/notifications/NotificationBundle";
 import { LandscapeSpeaksMode } from "@/components/ambient/LandscapeSpeaksMode";
-import { NightModeMapOverlay, useTimeOfDay } from "@/components/ambient/TimeOfDayMode";
-import { WeatherMapOverlay, useWeather } from "@/components/ambient/WeatherTriggeredStories";
-import { useAllMapPoints, useUserLocation, type MapPoint } from "@/hooks/useMapData";
+import {
+  NightModeMapOverlay,
+  useTimeOfDay,
+} from "@/components/ambient/TimeOfDayMode";
+import {
+  WeatherMapOverlay,
+  useWeather,
+} from "@/components/ambient/WeatherTriggeredStories";
+import {
+  useAllMapPoints,
+  useUserLocation,
+  type MapPoint,
+} from "@/hooks/useMapData";
 
 interface FullMapProps {
   onClose: () => void;
@@ -47,21 +64,32 @@ const themeLabels: Record<PinTheme, { label: string; color: string }> = {
 
 // ── Map point → theme mapping ────────────────────────────
 const typeToTheme: Record<string, PinTheme> = {
-  museum: "museum", location: "travel", route_stop: "travel", outdoor_stop: "remembrance", story: "culture",
+  museum: "museum",
+  location: "travel",
+  route_stop: "travel",
+  outdoor_stop: "remembrance",
+  story: "culture",
 };
 const typeToFilter: Record<string, string> = {
-  museum: "museum", outdoor_stop: "memorial", route_stop: "landmark", location: "story",
+  museum: "museum",
+  outdoor_stop: "memorial",
+  route_stop: "landmark",
+  location: "story",
 };
 
 function mapPointToStory(p: MapPoint): MapStory {
   return {
-    id: p.id, lat: p.latitude, lng: p.longitude, title: p.title,
+    id: p.id,
+    lat: p.latitude,
+    lng: p.longitude,
+    title: p.title,
     theme: typeToTheme[p.type] || "travel",
     emotionalTone: p.type === "outdoor_stop" ? "intense" : "inspiring",
     type: typeToFilter[p.type] || p.type,
     coverImage: p.imageUrl || "",
     duration: p.distanceKm ? `${p.distanceKm.toFixed(1)} km` : "",
-    description: "", hasThenNow: false,
+    description: "",
+    hasThenNow: false,
     distance: p.distanceKm ? `${p.distanceKm.toFixed(1)} km` : undefined,
     popularity: 50,
   };
@@ -82,7 +110,7 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
 
   const livePins: MapStory[] = useMemo(
     () => mapPoints.map(mapPointToStory),
-    [mapPoints]
+    [mapPoints],
   );
 
   const [activeFilter, setActiveFilter] = useState("all");
@@ -94,17 +122,20 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
   const [showBundle, setShowBundle] = useState(false);
   const [snoozedStories, setSnoozedStories] = useState<string[]>([]);
   const [landscapeSpeaksEnabled, setLandscapeSpeaksEnabled] = useState(false);
-  const [heatmapMode, setHeatmapMode] = useState<"emotional" | "popularity" | "duration">("emotional");
+  const [heatmapMode, setHeatmapMode] = useState<
+    "emotional" | "popularity" | "duration"
+  >("emotional");
 
   const { isNightMode } = useTimeOfDay();
   const { weather } = useWeather();
 
-  const filteredPins = activeFilter === "all" 
-    ? livePins 
-    : livePins.filter(p => p.type === activeFilter);
+  const filteredPins =
+    activeFilter === "all"
+      ? livePins
+      : livePins.filter((p) => p.type === activeFilter);
 
   const handlePinClick = (id: string) => {
-    const pin = livePins.find(p => p.id === id);
+    const pin = livePins.find((p) => p.id === id);
     if (pin) {
       setSelectedPin(pin);
     }
@@ -132,7 +163,7 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
   }));
 
   // Bundle stories for nearby area
-  const bundleStories = livePins.slice(0, 4).map(pin => ({
+  const bundleStories = livePins.slice(0, 4).map((pin) => ({
     id: pin.id,
     title: pin.title,
     coverImage: pin.coverImage,
@@ -148,7 +179,10 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
     const timer = setTimeout(() => {
       if (!snoozedStories.includes("1")) {
         // Show bundle if multiple stories nearby
-        if (livePins.filter(p => p.distance && parseFloat(p.distance) < 1.5).length > 2) {
+        if (
+          livePins.filter((p) => p.distance && parseFloat(p.distance) < 1.5)
+            .length > 2
+        ) {
           setShowBundle(true);
         } else {
           setShowNotification(true);
@@ -159,33 +193,51 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
   }, [snoozedStories]);
 
   return (
-    <div className={cn(
-      "fixed inset-0 z-50 transition-colors duration-500",
-      isNightMode ? "bg-midnight" : "bg-background"
-    )}>
+    <div
+      className={cn(
+        "fixed inset-0 z-50 transition-colors duration-500",
+        isNightMode ? "bg-midnight" : "bg-background",
+      )}
+    >
       {/* Map container */}
       <div className="absolute inset-0">
         {/* Simulated map with gradient background */}
         <div className="relative w-full h-full">
           {/* Map background with topographic styling */}
-          <div className={cn(
-            "absolute inset-0 transition-colors duration-500",
-            isNightMode 
-              ? "bg-gradient-to-br from-midnight via-muted-indigo/20 to-midnight"
-              : "bg-gradient-to-br from-sky-blue/20 via-cloud-mist to-adventure-green/10"
-          )}>
+          <div
+            className={cn(
+              "absolute inset-0 transition-colors duration-500",
+              isNightMode
+                ? "bg-gradient-to-br from-midnight via-muted-indigo/20 to-midnight"
+                : "bg-gradient-to-br from-sky-blue/20 via-cloud-mist to-adventure-green/10",
+            )}
+          >
             {/* Grid pattern */}
-            <svg className="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              className="absolute inset-0 w-full h-full opacity-10"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <defs>
-                <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
-                  <path d="M 48 0 L 0 0 0 48" fill="none" stroke="currentColor" strokeWidth="0.5" className={isNightMode ? "text-white" : "text-midnight"}/>
+                <pattern
+                  id="grid"
+                  width="48"
+                  height="48"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <path
+                    d="M 48 0 L 0 0 0 48"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="0.5"
+                    className={isNightMode ? "text-white" : "text-midnight"}
+                  />
                 </pattern>
               </defs>
               <rect width="100%" height="100%" fill="url(#grid)" />
             </svg>
 
             {/* Route Heatmap */}
-            <RouteHeatmap 
+            <RouteHeatmap
               segments={[]}
               mode={heatmapMode}
               showLabels={true}
@@ -196,16 +248,18 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
 
           {/* Night mode overlay with stars */}
           <NightModeMapOverlay />
-          
+
           {/* Weather overlay */}
           <WeatherMapOverlay />
 
           {/* Map placeholder message */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className={cn(
-              "text-center",
-              isNightMode ? "text-white/30" : "text-muted-foreground/50"
-            )}>
+            <div
+              className={cn(
+                "text-center",
+                isNightMode ? "text-white/30" : "text-muted-foreground/50",
+              )}
+            >
               <Navigation className="w-12 h-12 mx-auto mb-2" />
               <p className="text-sm">Interactive Map</p>
               <p className="text-xs mt-1">Tap pins to explore stories</p>
@@ -215,7 +269,7 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
           {/* Cinematic Map pins */}
           {filteredPins.map((pin, idx) => (
             <CinematicMapPin
-              key={pin.id}
+              key={`${pin.id}-${idx}`}
               id={pin.id}
               theme={pin.theme}
               title={pin.title}
@@ -227,7 +281,7 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
               hasUnheardStory={pin.hasUnheardStory}
               onClick={handlePinClick}
               style={{
-                left: `${18 + (idx * 16)}%`,
+                left: `${18 + idx * 16}%`,
                 top: `${25 + (idx % 4) * 15}%`,
               }}
             />
@@ -242,12 +296,19 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
             onClick={onClose}
             className={cn(
               "w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-colors",
-              isNightMode ? "bg-midnight/80 backdrop-blur-sm border border-white/10" : "bg-white"
+              isNightMode
+                ? "bg-midnight/80 backdrop-blur-sm border border-white/10"
+                : "bg-white",
             )}
           >
-            <X className={cn("w-5 h-5", isNightMode ? "text-white" : "text-foreground")} />
+            <X
+              className={cn(
+                "w-5 h-5",
+                isNightMode ? "text-white" : "text-foreground",
+              )}
+            />
           </button>
-          
+
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
@@ -255,18 +316,27 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
               placeholder="Search locations..."
               className={cn(
                 "w-full h-10 pl-10 pr-4 rounded-full text-sm shadow-lg focus:outline-none focus:ring-2 focus:ring-amber",
-                isNightMode 
+                isNightMode
                   ? "bg-midnight/80 backdrop-blur-sm border border-white/10 text-white placeholder:text-white/50"
-                  : "bg-white"
+                  : "bg-white",
               )}
             />
           </div>
 
-          <button className={cn(
-            "w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-colors",
-            isNightMode ? "bg-midnight/80 backdrop-blur-sm border border-white/10" : "bg-white"
-          )}>
-            <Layers className={cn("w-5 h-5", isNightMode ? "text-white" : "text-foreground")} />
+          <button
+            className={cn(
+              "w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-colors",
+              isNightMode
+                ? "bg-midnight/80 backdrop-blur-sm border border-white/10"
+                : "bg-white",
+            )}
+          >
+            <Layers
+              className={cn(
+                "w-5 h-5",
+                isNightMode ? "text-white" : "text-foreground",
+              )}
+            />
           </button>
         </div>
 
@@ -283,7 +353,7 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
                     ? "bg-amber text-midnight"
                     : isNightMode
                       ? "bg-midnight/60 backdrop-blur-sm border border-white/10 text-white/80 hover:bg-midnight/80"
-                      : "bg-white text-muted-foreground hover:bg-white/90"
+                      : "bg-white text-muted-foreground hover:bg-white/90",
                 )}
               >
                 {filter.label}
@@ -305,7 +375,7 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
                     ? "bg-adventure-green text-white"
                     : isNightMode
                       ? "bg-midnight/40 text-white/60"
-                      : "bg-muted text-muted-foreground"
+                      : "bg-muted text-muted-foreground",
                 )}
               >
                 {mode}
@@ -330,12 +400,17 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
           onClick={() => setShowQueue(true)}
           className={cn(
             "w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-colors relative",
-            isNightMode 
+            isNightMode
               ? "bg-midnight/80 backdrop-blur-sm border border-white/10 hover:bg-midnight"
-              : "bg-white hover:bg-muted"
+              : "bg-white hover:bg-muted",
           )}
         >
-          <List className={cn("w-5 h-5", isNightMode ? "text-white" : "text-foreground")} />
+          <List
+            className={cn(
+              "w-5 h-5",
+              isNightMode ? "text-white" : "text-foreground",
+            )}
+          />
           <span className="absolute -top-1 -right-1 w-5 h-5 bg-amber text-midnight text-xs font-bold rounded-full flex items-center justify-center">
             {livePins.length}
           </span>
@@ -352,17 +427,21 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
 
       {/* Story Preview Sheet */}
       <StoryPreviewSheet
-        story={selectedPin ? {
-          id: selectedPin.id,
-          title: selectedPin.title,
-          coverImage: selectedPin.coverImage,
-          duration: selectedPin.duration,
-          theme: themeLabels[selectedPin.theme].label,
-          themeColor: themeLabels[selectedPin.theme].color,
-          description: selectedPin.description,
-          hasThenNow: selectedPin.hasThenNow,
-          distance: selectedPin.distance,
-        } : null}
+        story={
+          selectedPin
+            ? {
+                id: selectedPin.id,
+                title: selectedPin.title,
+                coverImage: selectedPin.coverImage,
+                duration: selectedPin.duration,
+                theme: themeLabels[selectedPin.theme].label,
+                themeColor: themeLabels[selectedPin.theme].color,
+                description: selectedPin.description,
+                hasThenNow: selectedPin.hasThenNow,
+                distance: selectedPin.distance,
+              }
+            : null
+        }
         isOpen={!!selectedPin}
         onClose={() => setSelectedPin(null)}
         onPlay={handlePlay}
