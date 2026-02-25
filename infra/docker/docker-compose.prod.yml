@@ -124,7 +124,7 @@ services:
   # ── App Server (Payload CMS + Next.js) ───────────────
   app:
     build:
-      context: ../../
+      context: ../../cms
       dockerfile: Dockerfile
     container_name: muraho-app
     environment:
