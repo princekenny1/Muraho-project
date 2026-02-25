@@ -121,33 +121,12 @@ services:
       - minio_data:/data
     command: server /data --console-address ":9001"
 
-  # ── App Server (Payload CMS + Next.js) ───────────────
-  app:
-    build:
-      context: ../../cms
-      dockerfile: Dockerfile
-    container_name: muraho-app
-    environment:
-      DATABASE_URI: postgresql://muraho:${DB_PASSWORD}@postgres:5432/muraho
-      PAYLOAD_SECRET: ${PAYLOAD_SECRET}
-      AI_SERVICE_URL: http://ai-service:8000
-      REDIS_URL: redis://redis:6379/1
-      MINIO_ENDPOINT: http://minio:9000
-      MINIO_ACCESS_KEY: ${MINIO_USER}
-      MINIO_SECRET_KEY: ${MINIO_PASSWORD}
-      NEXT_PUBLIC_MAPBOX_TOKEN: ${MAPBOX_TOKEN}
-    ports:
-      - "3000:3000"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      ai-service:
-        condition: service_started
-
 volumes:
   postgres_data:
   redis_data:
   minio_data:
   model_cache:
+
+networks:
+  default:
+    name: muraho-shared
