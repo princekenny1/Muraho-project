@@ -1,5 +1,13 @@
 import { useState, useCallback } from "react";
-import { Upload, FileArchive, CheckCircle2, AlertCircle, Loader2, Download, X } from "lucide-react";
+import {
+  Upload,
+  FileArchive,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
+  Download,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -59,25 +67,28 @@ export function BulkExhibitionImporter({
     }
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragActive(false);
 
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const droppedFile = e.dataTransfer.files[0];
-      if (droppedFile.name.endsWith(".zip")) {
-        setFile(droppedFile);
-        setResults(null);
-      } else {
-        toast({
-          title: "Invalid file",
-          description: "Please upload a ZIP file",
-          variant: "destructive",
-        });
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        const droppedFile = e.dataTransfer.files[0];
+        if (droppedFile.name.endsWith(".zip")) {
+          setFile(droppedFile);
+          setResults(null);
+        } else {
+          toast({
+            title: "Invalid file",
+            description: "Please upload a ZIP file",
+            variant: "destructive",
+          });
+        }
       }
-    }
-  }, [toast]);
+    },
+    [toast],
+  );
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
@@ -115,7 +126,7 @@ export function BulkExhibitionImporter({
       setProgress(30);
 
       // Call Payload custom endpoint for bulk import
-      const res = await fetch(`${api.baseURL}/api/import-exhibition`, {
+      const res = await fetch(`${api.baseURL}/import-exhibition`, {
         method: "POST",
         credentials: "include",
         body: formData,
@@ -170,7 +181,15 @@ export function BulkExhibitionImporter({
       version: "1.0",
       metadata: {
         description: "Exhibition import manifest template",
-        supported_block_types: ["text", "image", "gallery", "quote", "video", "audio", "timeline"],
+        supported_block_types: [
+          "text",
+          "image",
+          "gallery",
+          "quote",
+          "video",
+          "audio",
+          "timeline",
+        ],
       },
       rooms: [
         {
@@ -231,8 +250,16 @@ export function BulkExhibitionImporter({
                 {
                   type: "timeline",
                   events: [
-                    { year: "1990", title: "Event 1", description: "Description..." },
-                    { year: "1994", title: "Event 2", description: "Description..." },
+                    {
+                      year: "1990",
+                      title: "Event 1",
+                      description: "Description...",
+                    },
+                    {
+                      year: "1994",
+                      title: "Event 2",
+                      description: "Description...",
+                    },
                   ],
                 },
               ],
@@ -279,8 +306,8 @@ export function BulkExhibitionImporter({
         <DialogHeader>
           <DialogTitle>Bulk Exhibition Import</DialogTitle>
           <DialogDescription>
-            Upload a ZIP file containing images and a manifest.json mapping file to bulk import
-            exhibition content.
+            Upload a ZIP file containing images and a manifest.json mapping file
+            to bulk import exhibition content.
           </DialogDescription>
         </DialogHeader>
 
@@ -289,7 +316,9 @@ export function BulkExhibitionImporter({
           <div className="flex items-center justify-between rounded-lg border p-3 bg-muted/50">
             <div className="text-sm">
               <p className="font-medium">Need a template?</p>
-              <p className="text-muted-foreground">Download the manifest.json structure</p>
+              <p className="text-muted-foreground">
+                Download the manifest.json structure
+              </p>
             </div>
             <Button variant="outline" size="sm" onClick={downloadTemplate}>
               <Download className="h-4 w-4 mr-2" />
@@ -305,7 +334,9 @@ export function BulkExhibitionImporter({
                 <SelectValue placeholder="Select destination" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="new">Create new rooms from manifest</SelectItem>
+                <SelectItem value="new">
+                  Create new rooms from manifest
+                </SelectItem>
                 {rooms.map((room) => (
                   <SelectItem key={room.id} value={room.id}>
                     Add to: {room.name}
@@ -321,8 +352,8 @@ export function BulkExhibitionImporter({
               dragActive
                 ? "border-primary bg-primary/5"
                 : file
-                ? "border-primary bg-primary/5"
-                : "border-muted-foreground/25"
+                  ? "border-primary bg-primary/5"
+                  : "border-muted-foreground/25"
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
@@ -363,7 +394,9 @@ export function BulkExhibitionImporter({
                 <>
                   <Upload className="h-10 w-10 text-muted-foreground mb-2" />
                   <p className="font-medium">Drop ZIP file here</p>
-                  <p className="text-sm text-muted-foreground">or click to browse</p>
+                  <p className="text-sm text-muted-foreground">
+                    or click to browse
+                  </p>
                 </>
               )}
             </div>
@@ -384,7 +417,9 @@ export function BulkExhibitionImporter({
           {results && (
             <div
               className={`rounded-lg border p-4 ${
-                results.errors.length > 0 ? "border-destructive bg-destructive/5" : "border-primary bg-primary/5"
+                results.errors.length > 0
+                  ? "border-destructive bg-destructive/5"
+                  : "border-primary bg-primary/5"
               }`}
             >
               <div className="flex items-start gap-3">
@@ -395,7 +430,9 @@ export function BulkExhibitionImporter({
                 )}
                 <div className="flex-1 space-y-2">
                   <p className="font-medium">
-                    {results.errors.length > 0 ? "Import completed with issues" : "Import successful"}
+                    {results.errors.length > 0
+                      ? "Import completed with issues"
+                      : "Import successful"}
                   </p>
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>Rooms created: {results.rooms_created}</div>
@@ -405,7 +442,9 @@ export function BulkExhibitionImporter({
                   </div>
                   {results.errors.length > 0 && (
                     <div className="mt-2 max-h-24 overflow-y-auto">
-                      <p className="text-sm font-medium text-destructive">Errors:</p>
+                      <p className="text-sm font-medium text-destructive">
+                        Errors:
+                      </p>
                       <ul className="text-xs text-muted-foreground space-y-1 mt-1">
                         {results.errors.slice(0, 5).map((err, i) => (
                           <li key={i}>• {err}</li>
@@ -423,7 +462,11 @@ export function BulkExhibitionImporter({
 
           {/* Actions */}
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setOpen(false)} disabled={importing}>
+            <Button
+              variant="outline"
+              onClick={() => setOpen(false)}
+              disabled={importing}
+            >
               {results ? "Close" : "Cancel"}
             </Button>
             {!results && (
@@ -441,16 +484,14 @@ export function BulkExhibitionImporter({
                 )}
               </Button>
             )}
-            {results && (
-              <Button onClick={reset}>Import Another</Button>
-            )}
+            {results && <Button onClick={reset}>Import Another</Button>}
           </div>
 
           {/* Help text */}
           <div className="rounded-lg bg-muted p-3 text-xs text-muted-foreground space-y-2">
             <p className="font-medium">ZIP file structure:</p>
             <pre className="bg-background rounded p-2 overflow-x-auto">
-{`my-exhibition.zip/
+              {`my-exhibition.zip/
 ├── manifest.json
 ├── images/
 │   ├── room1-cover.jpg
@@ -462,8 +503,19 @@ export function BulkExhibitionImporter({
             <div className="pt-2 border-t border-border">
               <p className="font-medium mb-1">Supported block types:</p>
               <div className="flex flex-wrap gap-1">
-                {["text", "image", "gallery", "quote", "video", "audio", "timeline"].map((type) => (
-                  <span key={type} className="px-2 py-0.5 bg-background rounded text-xs">
+                {[
+                  "text",
+                  "image",
+                  "gallery",
+                  "quote",
+                  "video",
+                  "audio",
+                  "timeline",
+                ].map((type) => (
+                  <span
+                    key={type}
+                    className="px-2 py-0.5 bg-background rounded text-xs"
+                  >
                     {type}
                   </span>
                 ))}

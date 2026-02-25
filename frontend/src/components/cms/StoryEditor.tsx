@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
-import { SortableContext, arrayMove, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
   Save,
@@ -42,7 +47,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
-import { useContentCMS, Story, StoryBlock, generateSlug } from "@/hooks/useContentCMS";
+import {
+  useContentCMS,
+  Story,
+  StoryBlock,
+  generateSlug,
+} from "@/hooks/useContentCMS";
 import { UniversalTagPicker } from "./UniversalTagPicker";
 import { MediaUpload } from "@/components/admin/routes/MediaUpload";
 import { StoryBlockEditor } from "./StoryBlockEditor";
@@ -73,7 +83,14 @@ interface SortableBlockProps {
 }
 
 function SortableBlock({ block, onUpdate, onDelete }: SortableBlockProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: block.id,
   });
 
@@ -87,7 +104,11 @@ function SortableBlock({ block, onUpdate, onDelete }: SortableBlockProps) {
     <div ref={setNodeRef} style={style} className="group">
       <Card className="border-l-4 border-l-primary/50">
         <CardHeader className="py-3 flex flex-row items-center gap-2">
-          <button {...attributes} {...listeners} className="cursor-grab hover:bg-muted p-1 rounded">
+          <button
+            {...attributes}
+            {...listeners}
+            className="cursor-grab hover:bg-muted p-1 rounded"
+          >
             <GripVertical className="h-4 w-4 text-muted-foreground" />
           </button>
           <Badge variant="secondary" className="capitalize">
@@ -120,7 +141,9 @@ export function StoryEditor({ storyId, onClose }: StoryEditorProps) {
   const isEditing = !!storyId;
 
   const { data: existingStory } = cms.useStory(storyId || "");
-  const { data: blocks = [], isLoading: blocksLoading } = cms.useStoryBlocks(storyId || "");
+  const { data: blocks = [], isLoading: blocksLoading } = cms.useStoryBlocks(
+    storyId || "",
+  );
 
   const [localBlocks, setLocalBlocks] = useState<StoryBlock[]>([]);
   const [isSaving, setIsSaving] = useState(false);
@@ -131,7 +154,7 @@ export function StoryEditor({ storyId, onClose }: StoryEditorProps) {
       title: "",
       slug: "",
       summary: "",
-      hero_image: "",
+      hero_image: undefined,
       status: "draft",
       is_featured: false,
       has_sensitive_content: false,
@@ -145,7 +168,7 @@ export function StoryEditor({ storyId, onClose }: StoryEditorProps) {
         title: existingStory.title,
         slug: existingStory.slug,
         summary: existingStory.summary || "",
-        hero_image: existingStory.hero_image || "",
+        hero_image: existingStory.hero_image || undefined,
         status: existingStory.status,
         is_featured: existingStory.is_featured,
         has_sensitive_content: existingStory.has_sensitive_content,
@@ -172,7 +195,9 @@ export function StoryEditor({ storyId, onClose }: StoryEditorProps) {
       const storyData = {
         ...values,
         status: publish ? "published" : values.status,
-        published_at: publish ? new Date().toISOString() : existingStory?.published_at,
+        published_at: publish
+          ? new Date().toISOString()
+          : existingStory?.published_at,
       };
 
       let savedStoryId = storyId;
@@ -207,7 +232,9 @@ export function StoryEditor({ storyId, onClose }: StoryEditorProps) {
 
       toast({
         title: publish ? "Story published!" : "Story saved",
-        description: publish ? "Your story is now live." : "Draft saved successfully.",
+        description: publish
+          ? "Your story is now live."
+          : "Draft saved successfully.",
       });
 
       if (!isEditing) {
@@ -235,10 +262,14 @@ export function StoryEditor({ storyId, onClose }: StoryEditorProps) {
     }
     setIsIndexing(true);
     try {
-      await cms.indexContent.mutateAsync({ contentId: storyId, contentType: "story" });
+      await cms.indexContent.mutateAsync({
+        contentId: storyId,
+        contentType: "story",
+      });
       toast({
         title: "Indexed for AI",
-        description: "Story has been indexed and is now searchable by Ask Rwanda.",
+        description:
+          "Story has been indexed and is now searchable by Ask Rwanda.",
       });
     } catch (error: any) {
       toast({
@@ -266,7 +297,7 @@ export function StoryEditor({ storyId, onClose }: StoryEditorProps) {
 
   const handleUpdateBlock = (blockId: string, content: Record<string, any>) => {
     setLocalBlocks(
-      localBlocks.map((b) => (b.id === blockId ? { ...b, content } : b))
+      localBlocks.map((b) => (b.id === blockId ? { ...b, content } : b)),
     );
   };
 
@@ -284,10 +315,12 @@ export function StoryEditor({ storyId, onClose }: StoryEditorProps) {
     if (over && active.id !== over.id) {
       const oldIndex = localBlocks.findIndex((b) => b.id === active.id);
       const newIndex = localBlocks.findIndex((b) => b.id === over.id);
-      const reordered = arrayMove(localBlocks, oldIndex, newIndex).map((block, index) => ({
-        ...block,
-        block_order: index + 1,
-      }));
+      const reordered = arrayMove(localBlocks, oldIndex, newIndex).map(
+        (block, index) => ({
+          ...block,
+          block_order: index + 1,
+        }),
+      );
       setLocalBlocks(reordered);
     }
   };
@@ -307,12 +340,20 @@ export function StoryEditor({ storyId, onClose }: StoryEditorProps) {
         </div>
         <div className="flex gap-2">
           {isEditing && (
-            <Button variant="outline" onClick={handleIndexForAI} disabled={isIndexing}>
+            <Button
+              variant="outline"
+              onClick={handleIndexForAI}
+              disabled={isIndexing}
+            >
               <Brain className="h-4 w-4 mr-2" />
               {isIndexing ? "Indexing..." : "Index for AI"}
             </Button>
           )}
-          <Button variant="outline" onClick={() => handleSave(false)} disabled={isSaving}>
+          <Button
+            variant="outline"
+            onClick={() => handleSave(false)}
+            disabled={isSaving}
+          >
             <Save className="h-4 w-4 mr-2" />
             Save Draft
           </Button>
@@ -361,7 +402,9 @@ export function StoryEditor({ storyId, onClose }: StoryEditorProps) {
               <Label>Hero Image</Label>
               <MediaUpload
                 value={form.watch("hero_image")}
-                onChange={(url) => form.setValue("hero_image", url || "")}
+                onChange={(url) =>
+                  form.setValue("hero_image", url || undefined)
+                }
                 mediaType="image"
                 folder="stories"
               />
@@ -371,7 +414,9 @@ export function StoryEditor({ storyId, onClose }: StoryEditorProps) {
               <div className="flex items-center gap-2">
                 <Switch
                   checked={form.watch("is_featured")}
-                  onCheckedChange={(checked) => form.setValue("is_featured", checked)}
+                  onCheckedChange={(checked) =>
+                    form.setValue("is_featured", checked)
+                  }
                 />
                 <Label>Featured Story</Label>
               </div>
@@ -391,7 +436,9 @@ export function StoryEditor({ storyId, onClose }: StoryEditorProps) {
             <div className="flex items-center gap-2">
               <Switch
                 checked={hasSensitiveContent}
-                onCheckedChange={(checked) => form.setValue("has_sensitive_content", checked)}
+                onCheckedChange={(checked) =>
+                  form.setValue("has_sensitive_content", checked)
+                }
               />
               <Label>Contains sensitive material</Label>
             </div>
@@ -401,15 +448,21 @@ export function StoryEditor({ storyId, onClose }: StoryEditorProps) {
                 <Label>Sensitivity Level</Label>
                 <Select
                   value={form.watch("sensitivity_level") || ""}
-                  onValueChange={(value) => form.setValue("sensitivity_level", value)}
+                  onValueChange={(value) =>
+                    form.setValue("sensitivity_level", value)
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select severity level" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="low">Low - Mild content</SelectItem>
-                    <SelectItem value="medium">Medium - Emotional content</SelectItem>
-                    <SelectItem value="high">High - Graphic descriptions</SelectItem>
+                    <SelectItem value="medium">
+                      Medium - Emotional content
+                    </SelectItem>
+                    <SelectItem value="high">
+                      High - Graphic descriptions
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -427,7 +480,14 @@ export function StoryEditor({ storyId, onClose }: StoryEditorProps) {
               <UniversalTagPicker
                 contentId={storyId}
                 contentType="story"
-                allowedTagTypes={["theme", "location", "person", "event", "testimony", "documentary"]}
+                allowedTagTypes={[
+                  "theme",
+                  "location",
+                  "person",
+                  "event",
+                  "testimony",
+                  "documentary",
+                ]}
               />
             </CardContent>
           </Card>
@@ -464,10 +524,15 @@ export function StoryEditor({ storyId, onClose }: StoryEditorProps) {
             {localBlocks.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
                 <p>No content blocks yet.</p>
-                <p className="text-sm">Click "Add Block" to start building your story.</p>
+                <p className="text-sm">
+                  Click "Add Block" to start building your story.
+                </p>
               </div>
             ) : (
-              <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <DndContext
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
                 <SortableContext
                   items={localBlocks.map((b) => b.id)}
                   strategy={verticalListSortingStrategy}
@@ -477,7 +542,9 @@ export function StoryEditor({ storyId, onClose }: StoryEditorProps) {
                       <SortableBlock
                         key={block.id}
                         block={block}
-                        onUpdate={(content) => handleUpdateBlock(block.id, content)}
+                        onUpdate={(content) =>
+                          handleUpdateBlock(block.id, content)
+                        }
                         onDelete={() => handleDeleteBlock(block.id)}
                       />
                     ))}

@@ -9,7 +9,28 @@
  *   const story = await api.findOne("stories", { slug: "kigali-memorial" })
  */
 
-const API_BASE = import.meta.env.VITE_API_URL || "/api";
+const normalizeApiBase = (rawBase?: string): string => {
+  const trimmed = (rawBase || "").trim().replace(/\/+$/, "");
+
+  if (!trimmed) return "/api";
+  if (trimmed === "/api" || trimmed.endsWith("/api")) return trimmed;
+
+  // Allow VITE_API_URL to be either "http://host:port" or "http://host:port/api"
+  if (/^https?:\/\//i.test(trimmed)) {
+    // In local browser dev, prefer same-origin proxy to preserve cookie auth.
+    if (typeof window !== "undefined") {
+      const isLocalHost = ["localhost", "127.0.0.1"].includes(
+        window.location.hostname,
+      );
+      if (isLocalHost) return "/api";
+    }
+    return `${trimmed}/api`;
+  }
+
+  return trimmed;
+};
+
+const API_BASE = normalizeApiBase(import.meta.env.VITE_API_URL);
 
 // ── Types ─────────────────────────────────────────────
 
@@ -41,7 +62,10 @@ interface AuthResponse {
 
 // ── Where clause builder ──────────────────────────────
 
-function buildWhereParams(where: Record<string, any>, prefix = "where"): URLSearchParams {
+function buildWhereParams(
+  where: Record<string, any>,
+  prefix = "where",
+): URLSearchParams {
   const params = new URLSearchParams();
 
   function flatten(obj: Record<string, any>, path: string) {
@@ -63,7 +87,7 @@ function buildWhereParams(where: Record<string, any>, prefix = "where"): URLSear
 
 async function apiFetch<T = any>(
   path: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<T> {
   const url = path.startsWith("http") ? path : `${API_BASE}${path}`;
 
@@ -76,12 +100,29 @@ async function apiFetch<T = any>(
     ...options,
   });
 
+  const contentType = response.headers.get("content-type") || "";
+  const isJson = contentType.includes("application/json");
+
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: response.statusText }));
-    throw new ApiError(response.status, error.message || error.error || "Request failed", error);
+    const error = isJson
+      ? await response.json().catch(() => ({ message: response.statusText }))
+      : { message: await response.text().catch(() => response.statusText) };
+    throw new ApiError(
+      response.status,
+      error.message || error.error || "Request failed",
+      error,
+    );
   }
 
-  return response.json();
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+  if (isJson) {
+    return response.json();
+  }
+
+  return (await response.text()) as T;
 }
 
 // ── Error class ───────────────────────────────────────
@@ -106,7 +147,10 @@ export const api = {
   // ── Collection CRUD ───────────────────────────────
 
   /** Find documents in a collection */
-  async find<T = any>(collection: string, options: FindOptions = {}): Promise<PaginatedResponse<T>> {
+  async find<T = any>(
+    collection: string,
+    options: FindOptions = {},
+  ): Promise<PaginatedResponse<T>> {
     const params = new URLSearchParams();
     if (options.sort) params.set("sort", options.sort);
     if (options.limit) params.set("limit", String(options.limit));
@@ -123,18 +167,29 @@ export const api = {
   },
 
   /** Find a single document by field match */
-  async findOne<T = any>(collection: string, where: Record<string, any>, depth = 2): Promise<T | null> {
+  async findOne<T = any>(
+    collection: string,
+    where: Record<string, any>,
+    depth = 2,
+  ): Promise<T | null> {
     const result = await this.find<T>(collection, { where, limit: 1, depth });
     return result.docs[0] || null;
   },
 
   /** Get a document by ID */
-  async findById<T = any>(collection: string, id: string, depth = 2): Promise<T> {
+  async findById<T = any>(
+    collection: string,
+    id: string,
+    depth = 2,
+  ): Promise<T> {
     return apiFetch(`/${collection}/${id}?depth=${depth}`);
   },
 
   /** Create a document */
-  async create<T = any>(collection: string, data: Record<string, any>): Promise<T> {
+  async create<T = any>(
+    collection: string,
+    data: Record<string, any>,
+  ): Promise<T> {
     return apiFetch(`/${collection}`, {
       method: "POST",
       body: JSON.stringify(data),
@@ -142,7 +197,11 @@ export const api = {
   },
 
   /** Update a document */
-  async update<T = any>(collection: string, id: string, data: Record<string, any>): Promise<T> {
+  async update<T = any>(
+    collection: string,
+    id: string,
+    data: Record<string, any>,
+  ): Promise<T> {
     return apiFetch(`/${collection}/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data),
@@ -180,7 +239,11 @@ export const api = {
     }
   },
 
-  async register(email: string, password: string, fullName?: string): Promise<any> {
+  async register(
+    email: string,
+    password: string,
+    fullName?: string,
+  ): Promise<any> {
     return apiFetch("/users", {
       method: "POST",
       body: JSON.stringify({ email, password, fullName }),
@@ -218,7 +281,9 @@ export const api = {
 
   /** Get nearby locations (PostGIS) */
   async nearbyLocations(lat: number, lng: number, radius = 5000, limit = 20) {
-    return apiFetch(`/locations/nearby?lat=${lat}&lng=${lng}&radius=${radius}&limit=${limit}`);
+    return apiFetch(
+      `/locations/nearby?lat=${lat}&lng=${lng}&radius=${radius}&limit=${limit}`,
+    );
   },
 
   /** Get all locations as GeoJSON */
@@ -279,7 +344,10 @@ export const api = {
     return apiFetch(`/globals/${slug}`);
   },
 
-  async updateGlobal<T = any>(slug: string, data: Record<string, any>): Promise<T> {
+  async updateGlobal<T = any>(
+    slug: string,
+    data: Record<string, any>,
+  ): Promise<T> {
     return apiFetch(`/globals/${slug}`, {
       method: "POST",
       body: JSON.stringify(data),
@@ -318,7 +386,9 @@ export const api = {
     });
   },
 
-  async cancelSubscription(subscriptionId: string): Promise<{ success: boolean }> {
+  async cancelSubscription(
+    subscriptionId: string,
+  ): Promise<{ success: boolean }> {
     return apiFetch(`/payments/cancel-subscription`, {
       method: "POST",
       body: JSON.stringify({ subscriptionId }),
@@ -337,6 +407,8 @@ export const api = {
     apiFetch("/analytics/track", {
       method: "POST",
       body: JSON.stringify(data),
-    }).catch(() => {/* silently fail */});
+    }).catch(() => {
+      /* silently fail */
+    });
   },
 };

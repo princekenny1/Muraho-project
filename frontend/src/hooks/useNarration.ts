@@ -13,76 +13,80 @@ export function useNarration(options: UseNarrationOptions = {}) {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUrlRef = useRef<string | null>(null);
 
-  const generateNarration = useCallback(async (text: string, voiceId?: string) => {
-    setIsLoading(true);
-    setError(null);
+  const generateNarration = useCallback(
+    async (text: string, voiceId?: string) => {
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      // Call Next.js API route (replaces legacy query)
-      const response = await fetch(`${api.baseURL}/api/elevenlabs-tts`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ text, voiceId }),
-      });
+      try {
+        // Call Next.js API route (replaces legacy query)
+        const response = await fetch(`${api.baseURL}/tts`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ text, voiceId }),
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to generate narration");
-      }
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to generate narration");
+        }
 
-      const audioBlob = await response.blob();
-      
-      // Clean up previous audio URL
-      if (audioUrlRef.current) {
-        URL.revokeObjectURL(audioUrlRef.current);
-      }
-      
-      const audioUrl = URL.createObjectURL(audioBlob);
-      audioUrlRef.current = audioUrl;
+        const audioBlob = await response.blob();
 
-      // Create or update audio element
-      if (!audioRef.current) {
-        audioRef.current = new Audio();
-      }
-      
-      audioRef.current.src = audioUrl;
-      
-      audioRef.current.onloadedmetadata = () => {
-        setDuration(audioRef.current?.duration || 0);
-      };
+        // Clean up previous audio URL
+        if (audioUrlRef.current) {
+          URL.revokeObjectURL(audioUrlRef.current);
+        }
 
-      audioRef.current.ontimeupdate = () => {
-        const time = audioRef.current?.currentTime || 0;
-        setCurrentTime(time);
-        options.onTimeUpdate?.(time);
-      };
+        const audioUrl = URL.createObjectURL(audioBlob);
+        audioUrlRef.current = audioUrl;
 
-      audioRef.current.onended = () => {
-        setIsPlaying(false);
-        options.onPlayStateChange?.(false);
-      };
+        // Create or update audio element
+        if (!audioRef.current) {
+          audioRef.current = new Audio();
+        }
 
-      audioRef.current.onerror = () => {
-        const errMsg = "Audio playback error";
+        audioRef.current.src = audioUrl;
+
+        audioRef.current.onloadedmetadata = () => {
+          setDuration(audioRef.current?.duration || 0);
+        };
+
+        audioRef.current.ontimeupdate = () => {
+          const time = audioRef.current?.currentTime || 0;
+          setCurrentTime(time);
+          options.onTimeUpdate?.(time);
+        };
+
+        audioRef.current.onended = () => {
+          setIsPlaying(false);
+          options.onPlayStateChange?.(false);
+        };
+
+        audioRef.current.onerror = () => {
+          const errMsg = "Audio playback error";
+          setError(errMsg);
+          options.onError?.(errMsg);
+        };
+
+        return audioUrl;
+      } catch (err) {
+        const errMsg =
+          err instanceof Error ? err.message : "Failed to generate narration";
         setError(errMsg);
         options.onError?.(errMsg);
-      };
-
-      return audioUrl;
-    } catch (err) {
-      const errMsg = err instanceof Error ? err.message : "Failed to generate narration";
-      setError(errMsg);
-      options.onError?.(errMsg);
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [options]);
+        return null;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [options],
+  );
 
   const play = useCallback(async () => {
     if (audioRef.current) {
@@ -137,7 +141,17 @@ export function useNarration(options: UseNarrationOptions = {}) {
   }, []);
 
   return {
-    isLoading, isPlaying, currentTime, duration, error,
-    generateNarration, play, pause, togglePlay, seek, setVolume, cleanup,
+    isLoading,
+    isPlaying,
+    currentTime,
+    duration,
+    error,
+    generateNarration,
+    play,
+    pause,
+    togglePlay,
+    seek,
+    setVolume,
+    cleanup,
   };
 }

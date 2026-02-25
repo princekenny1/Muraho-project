@@ -19,7 +19,11 @@ function getSessionId(): string {
   let sid = window.sessionStorage?.getItem?.("mrw_sid") || "";
   if (!sid) {
     sid = `s_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
-    try { window.sessionStorage?.setItem?.("mrw_sid", sid); } catch { /* ok */ }
+    try {
+      window.sessionStorage?.setItem?.("mrw_sid", sid);
+    } catch {
+      /* ok */
+    }
   }
   return sid;
 }
@@ -71,7 +75,7 @@ export function useAnalytics() {
         },
       });
     },
-    []
+    [],
   );
 
   // Track content complete
@@ -87,7 +91,7 @@ export function useAnalytics() {
         },
       });
     },
-    []
+    [],
   );
 
   // Track search
@@ -112,7 +116,7 @@ export function useAnalytics() {
         metadata: { platform, sessionId: sessionId.current },
       });
     },
-    []
+    [],
   );
 
   // Generic custom event
@@ -127,7 +131,7 @@ export function useAnalytics() {
         },
       });
     },
-    []
+    [],
   );
 
   return {
@@ -163,10 +167,9 @@ export function useAdminAnalytics(days = 7) {
   return useQuery<AnalyticsSummary>({
     queryKey: ["admin-analytics", days],
     queryFn: async () => {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL || ""}/api/analytics/summary?days=${days}`,
-        { credentials: "include" }
-      );
+      const res = await fetch(`${api.baseURL}/analytics/summary?days=${days}`, {
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Failed to fetch analytics");
       return res.json();
     },

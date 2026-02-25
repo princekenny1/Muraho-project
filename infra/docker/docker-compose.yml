@@ -116,6 +116,8 @@ services:
       # Server
       NODE_ENV: production
       PORT: 3000
+      APP_URL: ${APP_URL:-http://localhost:5173}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
     volumes:
       - payload_uploads:/app/media
     command: npm start
@@ -203,7 +205,7 @@ services:
     depends_on:
       - payload
     environment:
-      VITE_API_URL: http://payload:3000/api
+      VITE_API_URL: /api
 
   # ── Nginx Reverse Proxy + SSL ───────────────────────────
   nginx:

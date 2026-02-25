@@ -19,9 +19,16 @@ import { Media, AudioFiles } from "./collections/Media";
 
 // ── Content CMS (10 collections) ─────────────────────────
 import {
-  People, Themes, Locations, HistoricalEvents,
-  Stories, StoryBlocks, Quotes,
-  ContentTags, ContentEmbeddings, DocumentaryClips,
+  People,
+  Themes,
+  Locations,
+  HistoricalEvents,
+  Stories,
+  StoryBlocks,
+  Quotes,
+  ContentTags,
+  ContentEmbeddings,
+  DocumentaryClips,
 } from "./collections/ContentCMS";
 
 // ── Documentaries ────────────────────────────────────────
@@ -35,7 +42,10 @@ import { MuseumExhibits } from "./collections/MuseumExhibits";
 
 // ── Museums (5 collections) ──────────────────────────────
 import {
-  Museums, MuseumOutdoorStops, MuseumRooms, MuseumPanels,
+  Museums,
+  MuseumOutdoorStops,
+  MuseumRooms,
+  MuseumPanels,
 } from "./collections/Museums";
 
 // ── VR (2 collections) ──────────────────────────────────
@@ -43,31 +53,50 @@ import { VRScenes, VRHotspots } from "./collections/VR";
 
 // ── Routes (5 collections) ──────────────────────────────
 import {
-  Routes, RouteStops, StopContentBlocks,
-  RouteVersions, RouteComments,
+  Routes,
+  RouteStops,
+  StopContentBlocks,
+  RouteVersions,
+  RouteComments,
 } from "./collections/Routes";
 
 // ── Access Control (10 collections) ──────────────────────
 import {
-  Sponsors, ContentAccess, TourAgencies,
-  AgencyAccessCodes, UserContentAccess, CodeRedemptions,
-  AgencyPricingPlans, AgencyPurchases,
-  Subscriptions, Payments,
+  Sponsors,
+  ContentAccess,
+  TourAgencies,
+  AgencyAccessCodes,
+  UserContentAccess,
+  CodeRedemptions,
+  AgencyPricingPlans,
+  AgencyPurchases,
+  Subscriptions,
+  Payments,
 } from "./collections/AccessControl";
 
 // ── User Data (4 collections) ───────────────────────────
 import {
-  UserSettings, UserSavedItems, UserProgress, UserDownloads,
+  UserSettings,
+  UserSavedItems,
+  UserProgress,
+  UserDownloads,
 } from "./collections/UserData";
 
 // ── AI (6 collections) ──────────────────────────────────
 import {
-  AIToneProfiles, AIModeConfigs, AISafetySettings,
-  AISourceRules, AIModelSettings, AIConversations,
+  AIToneProfiles,
+  AIModeConfigs,
+  AISafetySettings,
+  AISourceRules,
+  AIModelSettings,
+  AIConversations,
 } from "./collections/AI";
 
 // ── Analytics (2 collections) ───────────────────────────
-import { AnalyticsEvents, AnalyticsDailyAggregates } from "./collections/Analytics";
+import {
+  AnalyticsEvents,
+  AnalyticsDailyAggregates,
+} from "./collections/Analytics";
 
 // ── Globals ─────────────────────────────────────────────
 import { SiteSettings } from "./globals/SiteSettings";
@@ -82,12 +111,25 @@ export default buildConfig({
     const s = process.env.PAYLOAD_SECRET;
     if (!s || s.includes("CHANGE-THIS")) {
       if (process.env.NODE_ENV === "production") {
-        throw new Error("FATAL: PAYLOAD_SECRET must be set in production. Generate one: openssl rand -hex 32");
+        throw new Error(
+          "FATAL: PAYLOAD_SECRET must be set in production. Generate one: openssl rand -hex 32",
+        );
       }
-      console.warn("⚠️  WARNING: Using default PAYLOAD_SECRET — set a strong secret before deploying!");
+      console.warn(
+        "⚠️  WARNING: Using default PAYLOAD_SECRET — set a strong secret before deploying!",
+      );
       return "dev-only-insecure-secret-do-not-deploy";
     }
     return s;
+  })(),
+
+  // ── Server URL for API requests (required for admin UI authentication) ──────
+  serverURL: (() => {
+    if (process.env.NODE_ENV === "production") {
+      return process.env.PAYLOAD_PUBLIC_SERVER_URL || "https://muraho.rw";
+    }
+    // Development: use environment variable or default to localhost
+    return process.env.PAYLOAD_PUBLIC_SERVER_URL || "http://localhost:3000";
   })(),
 
   // ── Cookie security — httpOnly + Secure in production ──────
@@ -97,18 +139,31 @@ export default buildConfig({
   cors: [
     process.env.APP_URL || "https://muraho.rw",
     process.env.FRONTEND_URL || "https://muraho.rw",
+    process.env.PAYLOAD_PUBLIC_SERVER_URL,
+    "http://localhost:3000",
     ...(process.env.NODE_ENV === "development"
-      ? ["http://localhost:5173", "http://localhost:3000", "http://localhost:8080"]
+      ? [
+          "http://localhost:5173",
+          "http://localhost:3000",
+          "http://localhost:8080",
+        ]
       : []),
-  ].filter(Boolean),
+  ].filter((origin): origin is string => Boolean(origin)),
 
   // ── CSRF protection ───────────────────────────────────
   csrf: [
-    process.env.APP_URL || "https://muraho.rw",
+    process.env.APP_URL || process.env.FRONTEND_URL || "https://muraho.rw",
+    process.env.FRONTEND_URL,
+    process.env.PAYLOAD_PUBLIC_SERVER_URL,
+    "http://localhost:3000",
     ...(process.env.NODE_ENV === "development"
-      ? ["http://localhost:5173", "http://localhost:3000"]
+      ? [
+          "http://localhost:5173",
+          "http://localhost:3000",
+          "http://localhost:8080",
+        ]
       : []),
-  ].filter(Boolean),
+  ].filter((origin): origin is string => Boolean(origin)),
 
   admin: {
     user: Users.slug,

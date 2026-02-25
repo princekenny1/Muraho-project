@@ -130,7 +130,10 @@ export interface DocumentaryClip {
 // ─── Field mappers ────────────────────────────────────────────────────────────
 
 // Generic mapper: Payload camelCase → frontend snake_case
-function mapDoc<T>(doc: Record<string, any>, fieldMap: Record<string, string>): T {
+function mapDoc<T>(
+  doc: Record<string, any>,
+  fieldMap: Record<string, string>,
+): T {
   const result: Record<string, any> = { id: doc.id };
   for (const [frontendKey, payloadKey] of Object.entries(fieldMap)) {
     result[frontendKey] = doc[payloadKey] ?? null;
@@ -141,7 +144,10 @@ function mapDoc<T>(doc: Record<string, any>, fieldMap: Record<string, string>): 
 }
 
 // Reverse: frontend snake_case → Payload camelCase
-function toPayload(data: Record<string, any>, fieldMap: Record<string, string>): Record<string, any> {
+function toPayload(
+  data: Record<string, any>,
+  fieldMap: Record<string, string>,
+): Record<string, any> {
   const result: Record<string, any> = {};
   for (const [frontendKey, payloadKey] of Object.entries(fieldMap)) {
     if (data[frontendKey] !== undefined) {
@@ -152,55 +158,103 @@ function toPayload(data: Record<string, any>, fieldMap: Record<string, string>):
 }
 
 const personFields: Record<string, string> = {
-  name: "name", slug: "slug", biography: "biography", photo_url: "photoUrl",
-  birth_year: "birthYear", death_year: "deathYear", role: "role", is_public: "isPublic",
+  name: "name",
+  slug: "slug",
+  biography: "biography",
+  photo_url: "photoUrl",
+  birth_year: "birthYear",
+  death_year: "deathYear",
+  role: "role",
+  is_public: "isPublic",
 };
 
 const themeFields: Record<string, string> = {
-  name: "name", slug: "slug", description: "description", icon: "icon",
-  color: "color", is_active: "isActive",
+  name: "name",
+  slug: "slug",
+  description: "description",
+  icon: "icon",
+  color: "color",
+  is_active: "isActive",
 };
 
 const locationFields: Record<string, string> = {
-  name: "name", slug: "slug", description: "description", address: "address",
-  latitude: "latitude", longitude: "longitude", location_type: "locationType",
-  cover_image: "coverImage", is_active: "isActive",
+  name: "name",
+  slug: "slug",
+  description: "description",
+  address: "address",
+  latitude: "latitude",
+  longitude: "longitude",
+  location_type: "locationType",
+  cover_image: "coverImage",
+  is_active: "isActive",
 };
 
 const eventFields: Record<string, string> = {
-  name: "name", slug: "slug", description: "description", start_date: "startDate",
-  end_date: "endDate", year: "year", event_type: "eventType", is_sensitive: "isSensitive",
+  name: "name",
+  slug: "slug",
+  description: "description",
+  start_date: "startDate",
+  end_date: "endDate",
+  year: "year",
+  event_type: "eventType",
+  is_sensitive: "isSensitive",
 };
 
 const storyFields: Record<string, string> = {
-  title: "title", slug: "slug", summary: "summary", hero_image: "heroImage",
-  status: "status", is_featured: "isFeatured", has_sensitive_content: "hasSensitiveContent",
-  sensitivity_level: "sensitivityLevel", published_at: "publishedAt", created_by: "createdBy",
+  title: "title",
+  slug: "slug",
+  summary: "summary",
+  hero_image: "heroImage",
+  status: "status",
+  is_featured: "isFeatured",
+  has_sensitive_content: "hasSensitiveContent",
+  sensitivity_level: "sensitivityLevel",
+  published_at: "publishedAt",
+  created_by: "createdBy",
 };
 
 const blockFields: Record<string, string> = {
-  story_id: "story", block_type: "blockType", block_order: "blockOrder", content: "content",
+  story_id: "story",
+  block_type: "blockType",
+  block_order: "blockOrder",
+  content: "content",
 };
 
 const quoteFields: Record<string, string> = {
-  text: "text", attribution: "attribution", source_url: "sourceUrl",
-  person_id: "person", testimony_id: "testimony", is_featured: "isFeatured",
+  text: "text",
+  attribution: "attribution",
+  source_url: "sourceUrl",
+  person_id: "person",
+  testimony_id: "testimony",
+  is_featured: "isFeatured",
 };
 
 const tagFields: Record<string, string> = {
-  content_id: "contentId", content_type: "contentType", tag_type: "tagType", tag_id: "tagId",
+  content_id: "contentId",
+  content_type: "contentType",
+  tag_type: "tagType",
+  tag_id: "tagId",
 };
 
 const clipFields: Record<string, string> = {
-  documentary_id: "documentary", title: "title", description: "description",
-  video_url: "videoUrl", start_time: "startTime", end_time: "endTime",
-  thumbnail_url: "thumbnailUrl", is_trailer: "isTrailer", clip_order: "clipOrder",
+  documentary_id: "documentary",
+  title: "title",
+  description: "description",
+  video_url: "videoUrl",
+  start_time: "startTime",
+  end_time: "endTime",
+  thumbnail_url: "thumbnailUrl",
+  is_trailer: "isTrailer",
+  clip_order: "clipOrder",
 };
 
 // ─── Slug helper ──────────────────────────────────────────────────────────────
 
 export const generateSlug = (text: string): string => {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 };
 
 // ─── Generic CRUD factory ─────────────────────────────────────────────────────
@@ -217,7 +271,9 @@ function makeCRUD<T>(
       queryKey: [queryKey],
       queryFn: async () => {
         const res = await api.find(collection, { sort: sortField, limit: 500 });
-        return (res.docs as Record<string, any>[]).map((d) => mapDoc<T>(d, fieldMap));
+        return (res.docs as Record<string, any>[]).map((d) =>
+          mapDoc<T>(d, fieldMap),
+        );
       },
     });
 
@@ -231,7 +287,10 @@ function makeCRUD<T>(
   });
 
   const update = useMutation({
-    mutationFn: async ({ id, ...updates }: { id: string } & Record<string, any>) => {
+    mutationFn: async ({
+      id,
+      ...updates
+    }: { id: string } & Record<string, any>) => {
       const payload = toPayload(updates, fieldMap);
       const doc = await api.update(collection, id, payload);
       return mapDoc<T>(doc as Record<string, any>, fieldMap);
@@ -255,35 +314,65 @@ export function useContentCMS() {
   const queryClient = useQueryClient();
 
   // ==================== PEOPLE ====================
-  const peopleCRUD = makeCRUD<Person>("people", "people", personFields, "name", queryClient);
+  const peopleCRUD = makeCRUD<Person>(
+    "people",
+    "people",
+    personFields,
+    "name",
+    queryClient,
+  );
   const usePeople = peopleCRUD.useList;
   const createPerson = peopleCRUD.create;
   const updatePerson = peopleCRUD.update;
   const deletePerson = peopleCRUD.remove;
 
   // ==================== THEMES ====================
-  const themeCRUD = makeCRUD<Theme>("themes", "themes", themeFields, "name", queryClient);
+  const themeCRUD = makeCRUD<Theme>(
+    "themes",
+    "themes",
+    themeFields,
+    "name",
+    queryClient,
+  );
   const useThemes = themeCRUD.useList;
   const createTheme = themeCRUD.create;
   const updateTheme = themeCRUD.update;
   const deleteTheme = themeCRUD.remove;
 
   // ==================== LOCATIONS ====================
-  const locationCRUD = makeCRUD<Location>("locations", "locations", locationFields, "name", queryClient);
+  const locationCRUD = makeCRUD<Location>(
+    "locations",
+    "locations",
+    locationFields,
+    "name",
+    queryClient,
+  );
   const useLocations = locationCRUD.useList;
   const createLocation = locationCRUD.create;
   const updateLocation = locationCRUD.update;
   const deleteLocation = locationCRUD.remove;
 
   // ==================== HISTORICAL EVENTS ====================
-  const eventCRUD = makeCRUD<HistoricalEvent>("historical-events", "historical_events", eventFields, "year", queryClient);
+  const eventCRUD = makeCRUD<HistoricalEvent>(
+    "historical-events",
+    "historical_events",
+    eventFields,
+    "year",
+    queryClient,
+  );
   const useHistoricalEvents = eventCRUD.useList;
   const createHistoricalEvent = eventCRUD.create;
   const updateHistoricalEvent = eventCRUD.update;
   const deleteHistoricalEvent = eventCRUD.remove;
 
   // ==================== STORIES ====================
-  const storyCRUD = makeCRUD<Story>("stories", "stories", storyFields, "-createdAt", queryClient);
+  const storyCRUD = makeCRUD<Story>(
+    "stories",
+    "stories",
+    storyFields,
+    "-createdAt",
+    queryClient,
+  );
   const useStories = storyCRUD.useList;
   const createStory = storyCRUD.create;
   const updateStory = storyCRUD.update;
@@ -307,7 +396,7 @@ export function useContentCMS() {
       });
       // Auto-index for RAG
       try {
-        await fetch(`${api.baseURL}/api/index-content`, {
+        await fetch(`${api.baseURL}/index-content`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -334,30 +423,51 @@ export function useContentCMS() {
           sort: "blockOrder",
           limit: 200,
         });
-        return (res.docs as Record<string, any>[]).map((d) => mapDoc<StoryBlock>(d, blockFields));
+        return (res.docs as Record<string, any>[]).map((d) =>
+          mapDoc<StoryBlock>(d, blockFields),
+        );
       },
       enabled: !!storyId,
     });
 
   const createStoryBlock = useMutation({
-    mutationFn: async (data: { story_id: string; block_type: string; block_order: number; content: Record<string, any> }) => {
+    mutationFn: async (data: {
+      story_id: string;
+      block_type: string;
+      block_order: number;
+      content: Record<string, any>;
+    }) => {
       const payload = toPayload(data, blockFields);
       return api.create("story-blocks", payload);
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["story_blocks", variables.story_id] });
+      queryClient.invalidateQueries({
+        queryKey: ["story_blocks", variables.story_id],
+      });
     },
   });
 
   const updateStoryBlock = useMutation({
-    mutationFn: async ({ id, storyId, ...updates }: { id: string; storyId: string; content?: Record<string, any>; block_order?: number }) => {
+    mutationFn: async ({
+      id,
+      storyId,
+      ...updates
+    }: {
+      id: string;
+      storyId: string;
+      content?: Record<string, any>;
+      block_order?: number;
+    }) => {
       const payload: Record<string, any> = {};
       if (updates.content !== undefined) payload.content = updates.content;
-      if (updates.block_order !== undefined) payload.blockOrder = updates.block_order;
+      if (updates.block_order !== undefined)
+        payload.blockOrder = updates.block_order;
       return api.update("story-blocks", id, payload);
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["story_blocks", variables.storyId] });
+      queryClient.invalidateQueries({
+        queryKey: ["story_blocks", variables.storyId],
+      });
     },
   });
 
@@ -366,23 +476,40 @@ export function useContentCMS() {
       return api.delete("story-blocks", id);
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["story_blocks", variables.storyId] });
+      queryClient.invalidateQueries({
+        queryKey: ["story_blocks", variables.storyId],
+      });
     },
   });
 
   const reorderStoryBlocks = useMutation({
-    mutationFn: async ({ blocks }: { blocks: { id: string; block_order: number }[]; storyId: string }) => {
+    mutationFn: async ({
+      blocks,
+    }: {
+      blocks: { id: string; block_order: number }[];
+      storyId: string;
+    }) => {
       await Promise.all(
-        blocks.map((b) => api.update("story-blocks", b.id, { blockOrder: b.block_order }))
+        blocks.map((b) =>
+          api.update("story-blocks", b.id, { blockOrder: b.block_order }),
+        ),
       );
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["story_blocks", variables.storyId] });
+      queryClient.invalidateQueries({
+        queryKey: ["story_blocks", variables.storyId],
+      });
     },
   });
 
   // ==================== QUOTES ====================
-  const quoteCRUD = makeCRUD<Quote>("quotes", "quotes", quoteFields, "-createdAt", queryClient);
+  const quoteCRUD = makeCRUD<Quote>(
+    "quotes",
+    "quotes",
+    quoteFields,
+    "-createdAt",
+    queryClient,
+  );
   const useQuotes = quoteCRUD.useList;
   const createQuote = quoteCRUD.create;
   const updateQuote = quoteCRUD.update;
@@ -402,24 +529,39 @@ export function useContentCMS() {
           },
           limit: 200,
         });
-        return (res.docs as Record<string, any>[]).map((d) => mapDoc<ContentTag>(d, tagFields));
+        return (res.docs as Record<string, any>[]).map((d) =>
+          mapDoc<ContentTag>(d, tagFields),
+        );
       },
       enabled: !!contentId && !!contentType,
     });
 
   const addContentTag = useMutation({
     mutationFn: async (tag: Omit<ContentTag, "id" | "created_at">) => {
-      return api.create("content-tags", toPayload(tag as Record<string, any>, tagFields));
+      return api.create(
+        "content-tags",
+        toPayload(tag as Record<string, any>, tagFields),
+      );
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["content_tags", variables.content_id, variables.content_type],
+        queryKey: [
+          "content_tags",
+          variables.content_id,
+          variables.content_type,
+        ],
       });
     },
   });
 
   const removeContentTag = useMutation({
-    mutationFn: async ({ id }: { id: string; contentId: string; contentType: string }) => {
+    mutationFn: async ({
+      id,
+    }: {
+      id: string;
+      contentId: string;
+      contentType: string;
+    }) => {
       return api.delete("content-tags", id);
     },
     onSuccess: (_, variables) => {
@@ -439,26 +581,43 @@ export function useContentCMS() {
           sort: "clipOrder",
           limit: 200,
         });
-        return (res.docs as Record<string, any>[]).map((d) => mapDoc<DocumentaryClip>(d, clipFields));
+        return (res.docs as Record<string, any>[]).map((d) =>
+          mapDoc<DocumentaryClip>(d, clipFields),
+        );
       },
       enabled: !!documentaryId,
     });
 
   const createDocumentaryClip = useMutation({
     mutationFn: async (clip: Omit<DocumentaryClip, "id" | "created_at">) => {
-      return api.create("documentary-clips", toPayload(clip as Record<string, any>, clipFields));
+      return api.create(
+        "documentary-clips",
+        toPayload(clip as Record<string, any>, clipFields),
+      );
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["documentary_clips", variables.documentary_id] });
+      queryClient.invalidateQueries({
+        queryKey: ["documentary_clips", variables.documentary_id],
+      });
     },
   });
 
   const updateDocumentaryClip = useMutation({
-    mutationFn: async ({ id, documentaryId, ...updates }: Partial<DocumentaryClip> & { id: string; documentaryId: string }) => {
-      return api.update("documentary-clips", id, toPayload(updates as Record<string, any>, clipFields));
+    mutationFn: async ({
+      id,
+      documentaryId,
+      ...updates
+    }: Partial<DocumentaryClip> & { id: string; documentaryId: string }) => {
+      return api.update(
+        "documentary-clips",
+        id,
+        toPayload(updates as Record<string, any>, clipFields),
+      );
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["documentary_clips", variables.documentaryId] });
+      queryClient.invalidateQueries({
+        queryKey: ["documentary_clips", variables.documentaryId],
+      });
     },
   });
 
@@ -467,13 +626,15 @@ export function useContentCMS() {
       return api.delete("documentary-clips", id);
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["documentary_clips", variables.documentaryId] });
+      queryClient.invalidateQueries({
+        queryKey: ["documentary_clips", variables.documentaryId],
+      });
     },
   });
 
   // ==================== RAG INDEXING ====================
   const indexEndpoint = async (contentId: string, contentType: string) => {
-    const res = await fetch(`${api.baseURL}/api/index-content`, {
+    const res = await fetch(`${api.baseURL}/index-content`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -484,16 +645,23 @@ export function useContentCMS() {
   };
 
   const indexContent = useMutation({
-    mutationFn: async ({ contentId, contentType }: { contentId: string; contentType: string }) =>
-      indexEndpoint(contentId, contentType),
+    mutationFn: async ({
+      contentId,
+      contentType,
+    }: {
+      contentId: string;
+      contentType: string;
+    }) => indexEndpoint(contentId, contentType),
   });
 
   const indexTestimony = useMutation({
-    mutationFn: async (testimonyId: string) => indexEndpoint(testimonyId, "testimony"),
+    mutationFn: async (testimonyId: string) =>
+      indexEndpoint(testimonyId, "testimony"),
   });
 
   const indexDocumentary = useMutation({
-    mutationFn: async (documentaryId: string) => indexEndpoint(documentaryId, "documentary"),
+    mutationFn: async (documentaryId: string) =>
+      indexEndpoint(documentaryId, "documentary"),
   });
 
   const indexPanel = useMutation({
@@ -505,32 +673,70 @@ export function useContentCMS() {
   });
 
   const batchIndexContent = useMutation({
-    mutationFn: async (items: Array<{ contentId: string; contentType: string }>) => {
-      return Promise.allSettled(items.map((i) => indexEndpoint(i.contentId, i.contentType)));
+    mutationFn: async (
+      items: Array<{ contentId: string; contentType: string }>,
+    ) => {
+      return Promise.allSettled(
+        items.map((i) => indexEndpoint(i.contentId, i.contentType)),
+      );
     },
   });
 
   return {
     // People
-    usePeople, createPerson, updatePerson, deletePerson,
+    usePeople,
+    createPerson,
+    updatePerson,
+    deletePerson,
     // Themes
-    useThemes, createTheme, updateTheme, deleteTheme,
+    useThemes,
+    createTheme,
+    updateTheme,
+    deleteTheme,
     // Locations
-    useLocations, createLocation, updateLocation, deleteLocation,
+    useLocations,
+    createLocation,
+    updateLocation,
+    deleteLocation,
     // Historical Events
-    useHistoricalEvents, createHistoricalEvent, updateHistoricalEvent, deleteHistoricalEvent,
+    useHistoricalEvents,
+    createHistoricalEvent,
+    updateHistoricalEvent,
+    deleteHistoricalEvent,
     // Stories
-    useStories, useStory, createStory, updateStory, deleteStory, publishStory,
+    useStories,
+    useStory,
+    createStory,
+    updateStory,
+    deleteStory,
+    publishStory,
     // Story Blocks
-    useStoryBlocks, createStoryBlock, updateStoryBlock, deleteStoryBlock, reorderStoryBlocks,
+    useStoryBlocks,
+    createStoryBlock,
+    updateStoryBlock,
+    deleteStoryBlock,
+    reorderStoryBlocks,
     // Quotes
-    useQuotes, createQuote, updateQuote, deleteQuote,
+    useQuotes,
+    createQuote,
+    updateQuote,
+    deleteQuote,
     // Content Tags
-    useContentTags, addContentTag, removeContentTag,
+    useContentTags,
+    addContentTag,
+    removeContentTag,
     // Documentary Clips
-    useDocumentaryClips, createDocumentaryClip, updateDocumentaryClip, deleteDocumentaryClip,
+    useDocumentaryClips,
+    createDocumentaryClip,
+    updateDocumentaryClip,
+    deleteDocumentaryClip,
     // RAG Indexing
-    indexContent, indexTestimony, indexDocumentary, indexPanel, indexQuote, batchIndexContent,
+    indexContent,
+    indexTestimony,
+    indexDocumentary,
+    indexPanel,
+    indexQuote,
+    batchIndexContent,
     // Helpers
     generateSlug,
   };

@@ -12,7 +12,14 @@
  *   const { user, loading, roles, isAdmin, signIn, signUp, signOut } = useAuth()
  */
 
-import { useState, useEffect, useCallback, createContext, useContext, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  createContext,
+  useContext,
+  useRef,
+} from "react";
 import { api, ApiError } from "@/lib/api/client";
 
 // ── Types ─────────────────────────────────────────────
@@ -47,7 +54,7 @@ interface AuthContextType {
 // ── Constants ─────────────────────────────────────────
 
 const TOKEN_REFRESH_INTERVAL = 10 * 60 * 1000; // Refresh session every 10 minutes
-const SESSION_CHECK_INTERVAL = 60 * 1000;       // Check session validity every minute
+const SESSION_CHECK_INTERVAL = 60 * 1000; // Check session validity every minute
 
 // ── Context ───────────────────────────────────────────
 
@@ -65,7 +72,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const refreshUser = useCallback(async () => {
     try {
       const response = await api.me();
-      const raw = response.user || response;
+      const raw = response?.user ?? null;
+
+      if (!raw) {
+        setUser(null);
+        setRoles([]);
+        lastRefreshRef.current = Date.now();
+        return;
+      }
+
       // Normalize CMS fields to frontend User shape
       const userData: User = {
         id: raw.id,
@@ -155,7 +170,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async (email: string, password: string): Promise<{ error: any | null }> => {
       try {
         const response = await api.login(email, password);
-        const raw = response.user;
+        const raw = response?.user;
+        if (!raw) {
+          return { error: { message: "Authentication failed" } };
+        }
         const userData: User = {
           id: raw.id,
           email: raw.email,
@@ -178,7 +196,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { error: { message } };
       }
     },
-    []
+    [],
   );
 
   // ── Sign up ───────────────────────────────────────
@@ -196,7 +214,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { error: { message } };
       }
     },
-    []
+    [],
   );
 
   // ── Sign out ──────────────────────────────────────
@@ -204,11 +222,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = useCallback(async () => {
     try {
       await api.logout();
-    } catch {
-      // Ignore logout errors
+    } catch (error) {
+      // Log but don't fail - backend logout might have succeeded
+      console.error("Logout error:", error);
     }
+    // Clear all local state
     setUser(null);
     setRoles([]);
+    // Force hard refresh to clear all client-side caches and cookies
+    window.location.href = "/";
   }, []);
 
   // ── Role checks ───────────────────────────────────

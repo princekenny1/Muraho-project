@@ -1,21 +1,47 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useAIToneProfiles, useAIModeConfigs, useAISafetySettings, AIMode } from "@/hooks/useAISettings";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  useAIToneProfiles,
+  useAIModeConfigs,
+  useAISafetySettings,
+  AIMode,
+} from "@/hooks/useAISettings";
 import { api } from "@/lib/api/client";
-import { Loader2, MessageSquare, AlertTriangle, BookOpen, CheckCircle, Send } from "lucide-react";
+import {
+  Loader2,
+  MessageSquare,
+  AlertTriangle,
+  BookOpen,
+  CheckCircle,
+  Send,
+} from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 export function AIPreviewPanel() {
   const { data: toneProfiles } = useAIToneProfiles();
   const { data: modeConfigs } = useAIModeConfigs();
   const { data: safetySettings } = useAISafetySettings();
-  
-  const [question, setQuestion] = useState("What is the Kigali Genocide Memorial?");
+
+  const [question, setQuestion] = useState(
+    "What is the Kigali Genocide Memorial?",
+  );
   const [selectedMode, setSelectedMode] = useState<AIMode>("standard");
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState<{
@@ -27,16 +53,16 @@ export function AIPreviewPanel() {
 
   const handleTest = async () => {
     if (!question.trim()) return;
-    
+
     setIsLoading(true);
     setResponse(null);
-    
+
     try {
       const toneProfile = toneProfiles?.find((p) => p.mode === selectedMode);
       const modeConfig = modeConfigs?.find((c) => c.mode === selectedMode);
-      
+
       // Call the ask-rwanda API endpoint (Next.js API route → FastAPI)
-      const res = await fetch(`${api.baseURL}/api/ask-rwanda`, {
+      const res = await fetch(`${api.baseURL}/ask-rwanda`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -54,16 +80,17 @@ export function AIPreviewPanel() {
         content: data.response || "No response generated",
         tone: toneProfile?.name || selectedMode,
         sources: data.sources || ["Stories", "Panels"],
-        warnings: modeConfig?.block_sensitive_content 
-          ? ["Content filtered for safety"] 
-          : safetySettings?.enable_harm_sensitivity 
+        warnings: modeConfig?.block_sensitive_content
+          ? ["Content filtered for safety"]
+          : safetySettings?.enable_harm_sensitivity
             ? ["Harm sensitivity enabled"]
             : [],
       });
     } catch (error) {
       console.error("Preview error:", error);
       setResponse({
-        content: "Failed to generate preview. Please check your AI configuration and try again.",
+        content:
+          "Failed to generate preview. Please check your AI configuration and try again.",
         tone: selectedMode,
         sources: [],
         warnings: ["Error occurred during generation"],
@@ -103,20 +130,28 @@ export function AIPreviewPanel() {
           <div className="flex gap-4">
             <div className="flex-1 space-y-2">
               <Label>Mode</Label>
-              <Select value={selectedMode} onValueChange={(v) => setSelectedMode(v as AIMode)}>
+              <Select
+                value={selectedMode}
+                onValueChange={(v) => setSelectedMode(v as AIMode)}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="standard">Standard</SelectItem>
-                  <SelectItem value="personal_voices">Personal Voices</SelectItem>
+                  <SelectItem value="personal_voices">
+                    Personal Voices
+                  </SelectItem>
                   <SelectItem value="kid_friendly">Kid-Friendly</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="flex items-end">
-              <Button onClick={handleTest} disabled={isLoading || !question.trim()}>
+              <Button
+                onClick={handleTest}
+                disabled={isLoading || !question.trim()}
+              >
                 {isLoading ? (
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 ) : (
@@ -165,7 +200,11 @@ export function AIPreviewPanel() {
                 <div className="flex gap-1">
                   {response.sources.length > 0 ? (
                     response.sources.map((source) => (
-                      <Badge key={source} variant="secondary" className="text-xs">
+                      <Badge
+                        key={source}
+                        variant="secondary"
+                        className="text-xs"
+                      >
                         {source}
                       </Badge>
                     ))
@@ -177,7 +216,11 @@ export function AIPreviewPanel() {
             </div>
 
             <div className="flex gap-2 pt-2 border-t">
-              <Button variant="outline" size="sm" className="text-adventure-green">
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-adventure-green"
+              >
                 <CheckCircle className="w-4 h-4 mr-1" />
                 Approve Behavior
               </Button>

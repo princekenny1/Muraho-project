@@ -45,7 +45,10 @@ const categories = [
   { value: "second_generation", label: "Second Generation" },
 ];
 
-export function TestimonyEditor({ testimonyId, onClose }: TestimonyEditorProps) {
+export function TestimonyEditor({
+  testimonyId,
+  onClose,
+}: TestimonyEditorProps) {
   const { toast } = useToast();
   const { data: testimonies = [] } = useTestimonies();
   const { createTestimony, updateTestimony } = useTestimonyAdmin();
@@ -141,7 +144,7 @@ export function TestimonyEditor({ testimonyId, onClose }: TestimonyEditorProps) 
         setTranscriptionProgress((prev) => Math.min(prev + 10, 90));
       }, 500);
 
-      const response = await fetch(`${api.baseURL}/api/elevenlabs-tts`, {
+      const response = await fetch(`${api.baseURL}/tts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -156,11 +159,13 @@ export function TestimonyEditor({ testimonyId, onClose }: TestimonyEditorProps) 
 
       if (data?.transcript) {
         // Parse transcript into segments
-        const segments = data.transcript.split(". ").map((text: string, index: number) => ({
-          start: index * 10,
-          end: (index + 1) * 10,
-          text: text.trim() + (text.endsWith(".") ? "" : "."),
-        }));
+        const segments = data.transcript
+          .split(". ")
+          .map((text: string, index: number) => ({
+            start: index * 10,
+            end: (index + 1) * 10,
+            text: text.trim() + (text.endsWith(".") ? "" : "."),
+          }));
         form.setValue("transcript_segments", segments);
         toast({ title: "Transcription complete!" });
       }
@@ -192,7 +197,9 @@ export function TestimonyEditor({ testimonyId, onClose }: TestimonyEditorProps) 
 
       toast({
         title: publish ? "Testimony published!" : "Testimony saved",
-        description: publish ? "The testimony is now live." : "Draft saved successfully.",
+        description: publish
+          ? "The testimony is now live."
+          : "Draft saved successfully.",
       });
 
       onClose();
@@ -221,7 +228,11 @@ export function TestimonyEditor({ testimonyId, onClose }: TestimonyEditorProps) 
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => handleSave(false)} disabled={isSaving}>
+          <Button
+            variant="outline"
+            onClick={() => handleSave(false)}
+            disabled={isSaving}
+          >
             <Save className="h-4 w-4 mr-2" />
             Save Draft
           </Button>
@@ -279,7 +290,10 @@ export function TestimonyEditor({ testimonyId, onClose }: TestimonyEditorProps) 
               </div>
               <div className="space-y-2">
                 <Label>Slug</Label>
-                <Input {...form.register("slug")} placeholder="url-friendly-slug" />
+                <Input
+                  {...form.register("slug")}
+                  placeholder="url-friendly-slug"
+                />
               </div>
             </div>
 
@@ -303,7 +317,9 @@ export function TestimonyEditor({ testimonyId, onClose }: TestimonyEditorProps) 
                 <Label>Duration (minutes)</Label>
                 <Input
                   type="number"
-                  {...form.register("duration_minutes", { valueAsNumber: true })}
+                  {...form.register("duration_minutes", {
+                    valueAsNumber: true,
+                  })}
                   placeholder="15"
                 />
               </div>
@@ -401,9 +417,13 @@ export function TestimonyEditor({ testimonyId, onClose }: TestimonyEditorProps) 
             ) : (
               <div className="space-y-2 max-h-96 overflow-y-auto">
                 {transcriptSegments.map((segment: any, index: number) => (
-                  <div key={index} className="flex gap-3 p-2 rounded hover:bg-muted/50">
+                  <div
+                    key={index}
+                    className="flex gap-3 p-2 rounded hover:bg-muted/50"
+                  >
                     <Badge variant="outline" className="shrink-0">
-                      {Math.floor(segment.start / 60)}:{String(segment.start % 60).padStart(2, "0")}
+                      {Math.floor(segment.start / 60)}:
+                      {String(segment.start % 60).padStart(2, "0")}
                     </Badge>
                     <p className="text-sm">{segment.text}</p>
                   </div>
@@ -442,19 +462,23 @@ export function TestimonyEditor({ testimonyId, onClose }: TestimonyEditorProps) 
             <div className="flex items-center gap-2">
               <Switch
                 checked={form.watch("has_content_warning")}
-                onCheckedChange={(checked) => form.setValue("has_content_warning", checked)}
+                onCheckedChange={(checked) =>
+                  form.setValue("has_content_warning", checked)
+                }
               />
               <Label>Contains sensitive content</Label>
             </div>
             <p className="text-sm text-muted-foreground">
-              Enable this if the testimony contains graphic descriptions, emotional
-              content, or material that may require viewer discretion.
+              Enable this if the testimony contains graphic descriptions,
+              emotional content, or material that may require viewer discretion.
             </p>
 
             <div className="flex items-center gap-2">
               <Switch
                 checked={form.watch("is_featured")}
-                onCheckedChange={(checked) => form.setValue("is_featured", checked)}
+                onCheckedChange={(checked) =>
+                  form.setValue("is_featured", checked)
+                }
               />
               <Label>Featured Testimony</Label>
             </div>

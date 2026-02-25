@@ -84,7 +84,8 @@ export function useUpdateSafetySettings() {
       if (updates.enable_harm_sensitivity !== undefined)
         payload.enableHarmSensitivity = updates.enable_harm_sensitivity;
       if (updates.enable_trauma_aware_language !== undefined)
-        payload.enableTraumaAwareLanguage = updates.enable_trauma_aware_language;
+        payload.enableTraumaAwareLanguage =
+          updates.enable_trauma_aware_language;
       if (updates.hide_graphic_in_kid_mode !== undefined)
         payload.hideGraphicInKidMode = updates.hide_graphic_in_kid_mode;
       if (updates.allow_raw_testimonies !== undefined)
@@ -95,7 +96,7 @@ export function useUpdateSafetySettings() {
         payload.sensitiveThemes = updates.sensitive_themes;
 
       // Payload globals use POST to the global slug endpoint
-      const res = await fetch(`${api.baseURL}/api/globals/ai-safety-settings`, {
+      const res = await fetch(`${api.baseURL}/globals/ai-safety-settings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -166,7 +167,7 @@ function mapSourceRule(raw: PayloadSourceRule): AISourceRule {
 }
 
 function sourceRuleToPayload(
-  data: Partial<AISourceRule>
+  data: Partial<AISourceRule>,
 ): Record<string, unknown> {
   const p: Record<string, unknown> = {};
   if (data.rule_name !== undefined) p.ruleName = data.rule_name;
@@ -174,7 +175,8 @@ function sourceRuleToPayload(
   if (data.target_mode !== undefined) p.targetMode = data.target_mode;
   if (data.target_id !== undefined) p.targetId = data.target_id;
   if (data.tone_override !== undefined) p.toneOverride = data.tone_override;
-  if (data.include_stories !== undefined) p.includeStories = data.include_stories;
+  if (data.include_stories !== undefined)
+    p.includeStories = data.include_stories;
   if (data.include_panels !== undefined) p.includePanels = data.include_panels;
   if (data.include_testimonies !== undefined)
     p.includeTestimonies = data.include_testimonies;
@@ -312,7 +314,8 @@ export function useUpdateModeConfig() {
       const p: Record<string, unknown> = {};
       if (updates.max_answer_tokens !== undefined)
         p.maxAnswerTokens = updates.max_answer_tokens;
-      if (updates.temperature !== undefined) p.temperature = updates.temperature;
+      if (updates.temperature !== undefined)
+        p.temperature = updates.temperature;
       if (updates.include_stories !== undefined)
         p.includeStories = updates.include_stories;
       if (updates.include_panels !== undefined)
@@ -395,7 +398,8 @@ export function useUpdateToneProfile() {
     }) => {
       const p: Record<string, unknown> = {};
       if (updates.name !== undefined) p.name = updates.name;
-      if (updates.description !== undefined) p.description = updates.description;
+      if (updates.description !== undefined)
+        p.description = updates.description;
       if (updates.system_prompt !== undefined)
         p.systemPrompt = updates.system_prompt;
       if (updates.example_response !== undefined)
@@ -473,7 +477,7 @@ export function useUpdateModelSettings() {
       if (updates.default_max_tokens !== undefined)
         p.defaultMaxTokens = updates.default_max_tokens;
 
-      const res = await fetch(`${api.baseURL}/api/globals/ai-model-settings`, {
+      const res = await fetch(`${api.baseURL}/globals/ai-model-settings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

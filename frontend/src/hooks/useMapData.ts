@@ -78,22 +78,27 @@ export const RWANDA_BOUNDS = {
 
 // ── API helpers ──────────────────────────────────────────
 
-const BASE = import.meta.env.VITE_API_URL || "/api";
+const BASE = api.baseURL;
 
 async function postSpatial<T>(endpoint: string, body: any): Promise<T> {
   const res = await fetch(`${BASE}/spatial/${endpoint}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`Spatial API error: ${res.status}`);
   return res.json();
 }
 
-async function getSpatial<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
+async function getSpatial<T>(
+  endpoint: string,
+  params?: Record<string, string>,
+): Promise<T> {
   const url = new URL(`${BASE}/spatial/${endpoint}`, window.location.origin);
-  if (params) Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-  const res = await fetch(url.toString());
+  if (params)
+    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+  const res = await fetch(url.toString(), { credentials: "include" });
   if (!res.ok) throw new Error(`Spatial API error: ${res.status}`);
   return res.json();
 }
@@ -110,8 +115,15 @@ export function useMapLayers(opts?: {
   const { center, radiusKm, types, enabled = true } = opts || {};
 
   return useQuery<MapLayersResponse>({
-    queryKey: ["map-layers", center?.latitude, center?.longitude, radiusKm, types],
-    queryFn: () => postSpatial<MapLayersResponse>("layers", { center, radiusKm, types }),
+    queryKey: [
+      "map-layers",
+      center?.latitude,
+      center?.longitude,
+      radiusKm,
+      types,
+    ],
+    queryFn: () =>
+      postSpatial<MapLayersResponse>("layers", { center, radiusKm, types }),
     enabled,
     staleTime: 60_000, // 1 min cache — map data doesn't change often
     refetchOnWindowFocus: false,
@@ -130,7 +142,13 @@ export function useNearby(opts: {
 
   return useQuery<NearbyResponse>({
     queryKey: ["nearby", latitude, longitude, radiusKm, types],
-    queryFn: () => postSpatial<NearbyResponse>("nearby", { latitude, longitude, radiusKm, types }),
+    queryFn: () =>
+      postSpatial<NearbyResponse>("nearby", {
+        latitude,
+        longitude,
+        radiusKm,
+        types,
+      }),
     enabled: enabled && !!latitude && !!longitude,
     staleTime: 30_000,
   });
@@ -149,7 +167,8 @@ export function useBboxPoints(opts: {
 
   return useQuery<BboxResponse>({
     queryKey: ["bbox", north, south, east, west, types],
-    queryFn: () => postSpatial<BboxResponse>("bbox", { north, south, east, west, types }),
+    queryFn: () =>
+      postSpatial<BboxResponse>("bbox", { north, south, east, west, types }),
     enabled: enabled && north !== south && east !== west,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
@@ -174,9 +193,13 @@ export function useUserLocation() {
       new Promise((resolve) => {
         if (!navigator.geolocation) return resolve(null);
         navigator.geolocation.getCurrentPosition(
-          (pos) => resolve({ latitude: pos.coords.latitude, longitude: pos.coords.longitude }),
+          (pos) =>
+            resolve({
+              latitude: pos.coords.latitude,
+              longitude: pos.coords.longitude,
+            }),
           () => resolve(null),
-          { enableHighAccuracy: true, timeout: 10_000 }
+          { enableHighAccuracy: true, timeout: 10_000 },
         );
       }),
     staleTime: 60_000,
@@ -185,10 +208,11 @@ export function useUserLocation() {
 }
 
 /** All points flattened from layers — convenience for simple maps */
-export function useAllMapPoints(opts?: { types?: string[]; enabled?: boolean }) {
+export function useAllMapPoints(opts?: {
+  types?: string[];
+  enabled?: boolean;
+}) {
   const query = useMapLayers(opts);
-  const points = query.data
-    ? Object.values(query.data.layers).flat()
-    : [];
+  const points = query.data ? Object.values(query.data.layers).flat() : [];
   return { ...query, points, routeLines: query.data?.routeLines || [] };
 }
