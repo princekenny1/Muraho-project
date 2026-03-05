@@ -21,7 +21,11 @@ interface StoryBlockEditorProps {
   onChange: (content: Record<string, any>) => void;
 }
 
-export function StoryBlockEditor({ blockType, content, onChange }: StoryBlockEditorProps) {
+export function StoryBlockEditor({
+  blockType,
+  content,
+  onChange,
+}: StoryBlockEditorProps) {
   const { data: testimonies = [] } = useTestimonies();
   const cms = useContentCMS();
   const { data: stories = [] } = cms.useStories();
@@ -91,26 +95,30 @@ export function StoryBlockEditor({ blockType, content, onChange }: StoryBlockEdi
         <div className="space-y-3">
           <Label>Gallery Images</Label>
           <div className="grid grid-cols-3 gap-3">
-            {images.map((img: { url: string; caption?: string }, index: number) => (
-              <div key={index} className="relative group">
-                <img
-                  src={img.url}
-                  alt={img.caption || "Gallery image"}
-                  className="w-full h-24 object-cover rounded"
-                />
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  className="absolute top-1 right-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
-                  onClick={() => {
-                    const newImages = images.filter((_: any, i: number) => i !== index);
-                    updateField("images", newImages);
-                  }}
-                >
-                  <X className="h-3 w-3" />
-                </Button>
-              </div>
-            ))}
+            {images.map(
+              (img: { url: string; caption?: string }, index: number) => (
+                <div key={index} className="relative group">
+                  <img
+                    src={img.url}
+                    alt={img.caption || "Gallery image"}
+                    className="w-full h-24 object-cover rounded"
+                  />
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="absolute top-1 right-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
+                    onClick={() => {
+                      const newImages = images.filter(
+                        (_: any, i: number) => i !== index,
+                      );
+                      updateField("images", newImages);
+                    }}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              ),
+            )}
           </div>
           <MediaUpload
             value=""
@@ -224,53 +232,69 @@ export function StoryBlockEditor({ blockType, content, onChange }: StoryBlockEdi
       return (
         <div className="space-y-3">
           <Label>Timeline Events</Label>
-          {events.map((event: { date: string; title: string; description?: string }, index: number) => (
-            <div key={index} className="p-3 border rounded space-y-2 relative">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="absolute top-2 right-2 h-6 w-6 p-0"
-                onClick={() => {
-                  const newEvents = events.filter((_: any, i: number) => i !== index);
-                  updateField("events", newEvents);
-                }}
+          {events.map(
+            (
+              event: { date: string; title: string; description?: string },
+              index: number,
+            ) => (
+              <div
+                key={index}
+                className="p-3 border rounded space-y-2 relative"
               >
-                <X className="h-3 w-3" />
-              </Button>
-              <Input
-                value={event.date}
-                onChange={(e) => {
-                  const newEvents = [...events];
-                  newEvents[index] = { ...event, date: e.target.value };
-                  updateField("events", newEvents);
-                }}
-                placeholder="Date (e.g., April 1994)"
-              />
-              <Input
-                value={event.title}
-                onChange={(e) => {
-                  const newEvents = [...events];
-                  newEvents[index] = { ...event, title: e.target.value };
-                  updateField("events", newEvents);
-                }}
-                placeholder="Event title"
-              />
-              <Textarea
-                value={event.description || ""}
-                onChange={(e) => {
-                  const newEvents = [...events];
-                  newEvents[index] = { ...event, description: e.target.value };
-                  updateField("events", newEvents);
-                }}
-                placeholder="Description"
-                rows={2}
-              />
-            </div>
-          ))}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute top-2 right-2 h-6 w-6 p-0"
+                  onClick={() => {
+                    const newEvents = events.filter(
+                      (_: any, i: number) => i !== index,
+                    );
+                    updateField("events", newEvents);
+                  }}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+                <Input
+                  value={event.date}
+                  onChange={(e) => {
+                    const newEvents = [...events];
+                    newEvents[index] = { ...event, date: e.target.value };
+                    updateField("events", newEvents);
+                  }}
+                  placeholder="Date (e.g., April 1994)"
+                />
+                <Input
+                  value={event.title}
+                  onChange={(e) => {
+                    const newEvents = [...events];
+                    newEvents[index] = { ...event, title: e.target.value };
+                    updateField("events", newEvents);
+                  }}
+                  placeholder="Event title"
+                />
+                <Textarea
+                  value={event.description || ""}
+                  onChange={(e) => {
+                    const newEvents = [...events];
+                    newEvents[index] = {
+                      ...event,
+                      description: e.target.value,
+                    };
+                    updateField("events", newEvents);
+                  }}
+                  placeholder="Description"
+                  rows={2}
+                />
+              </div>
+            ),
+          )}
           <Button
             variant="outline"
             onClick={() => {
-              updateField("events", [...events, { date: "", title: "", description: "" }]);
+              updateField("events", [
+                ...events,
+                { date: "", title: "", description: "" },
+              ]);
             }}
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -289,7 +313,9 @@ export function StoryBlockEditor({ blockType, content, onChange }: StoryBlockEdi
                 type="number"
                 step="any"
                 value={content.latitude || ""}
-                onChange={(e) => updateField("latitude", parseFloat(e.target.value))}
+                onChange={(e) =>
+                  updateField("latitude", parseFloat(e.target.value))
+                }
                 placeholder="-1.9403"
               />
             </div>
@@ -299,7 +325,9 @@ export function StoryBlockEditor({ blockType, content, onChange }: StoryBlockEdi
                 type="number"
                 step="any"
                 value={content.longitude || ""}
-                onChange={(e) => updateField("longitude", parseFloat(e.target.value))}
+                onChange={(e) =>
+                  updateField("longitude", parseFloat(e.target.value))
+                }
                 placeholder="29.8739"
               />
             </div>

@@ -45,6 +45,31 @@ class LLMRouter:
         self.client: AsyncOpenAI | None = None
         self.model_fast = settings.LLM_MODEL_FAST
         self.model_heavy = settings.LLM_MODEL_HEAVY
+        self.available_models: list[str] = []
+
+    def _resolve_model_name(self, desired: str, fallback: str) -> str:
+        if not self.available_models:
+            return desired
+
+        if desired in self.available_models:
+            return desired
+
+        desired_lower = desired.lower()
+        for model in self.available_models:
+            model_lower = model.lower()
+            if model_lower.startswith(desired_lower) or desired_lower in model_lower:
+                return model
+
+        if fallback in self.available_models:
+            return fallback
+
+        fallback_lower = fallback.lower()
+        for model in self.available_models:
+            model_lower = model.lower()
+            if model_lower.startswith(fallback_lower) or fallback_lower in model_lower:
+                return model
+
+        return self.available_models[0]
 
     async def initialize(self):
         """Connect to the LLM backend (Ollama or vLLM)."""
@@ -61,10 +86,23 @@ class LLMRouter:
         # Verify connectivity
         try:
             models = await self.client.models.list()
-            available = [m.id for m in models.data]
-            logger.info(f"Available models: {available}")
+            self.available_models = [m.id for m in models.data]
+            logger.info(f"Available models: {self.available_models}")
+
+            self.model_fast = self._resolve_model_name(
+                self.model_fast,
+                settings.LLM_MODEL_DEFAULT,
+            )
+            self.model_heavy = self._resolve_model_name(
+                self.model_heavy,
+                self.model_fast,
+            )
+            logger.info(
+                f"Resolved models: fast={self.model_fast}, heavy={self.model_heavy}"
+            )
         except Exception as e:
             logger.warning(f"Could not list models (backend may still be loading): {e}")
+            self.model_heavy = self.model_fast
 
     async def shutdown(self):
         """Cleanup."""
@@ -116,17 +154,38 @@ class LLMRouter:
 
         start = time.monotonic()
 
-        response = await self.client.chat.completions.create(
-            model=model,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_message},
-            ],
-            temperature=temp,
-            max_tokens=max_tokens or settings.LLM_MAX_TOKENS,
-            top_p=settings.LLM_TOP_P,
-            stream=False,
-        )
+        try:
+            response = await self.client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_message},
+                ],
+                temperature=temp,
+                max_tokens=max_tokens or settings.LLM_MAX_TOKENS,
+                top_p=settings.LLM_TOP_P,
+                stream=False,
+            )
+        except Exception as e:
+            error_text = str(e).lower()
+            if model != self.model_fast and "model" in error_text and "not found" in error_text:
+                logger.warning(
+                    f"Model {model} unavailable, retrying with fast model {self.model_fast}"
+                )
+                model = self.model_fast
+                response = await self.client.chat.completions.create(
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_message},
+                    ],
+                    temperature=temp,
+                    max_tokens=max_tokens or settings.LLM_MAX_TOKENS,
+                    top_p=settings.LLM_TOP_P,
+                    stream=False,
+                )
+            else:
+                raise
 
         elapsed_ms = int((time.monotonic() - start) * 1000)
 
@@ -157,17 +216,38 @@ class LLMRouter:
             else settings.LLM_TEMPERATURE
         )
 
-        stream = await self.client.chat.completions.create(
-            model=model,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_message},
-            ],
-            temperature=temp,
-            max_tokens=max_tokens or settings.LLM_MAX_TOKENS,
-            top_p=settings.LLM_TOP_P,
-            stream=True,
-        )
+        try:
+            stream = await self.client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_message},
+                ],
+                temperature=temp,
+                max_tokens=max_tokens or settings.LLM_MAX_TOKENS,
+                top_p=settings.LLM_TOP_P,
+                stream=True,
+            )
+        except Exception as e:
+            error_text = str(e).lower()
+            if model != self.model_fast and "model" in error_text and "not found" in error_text:
+                logger.warning(
+                    f"Model {model} unavailable, retrying stream with fast model {self.model_fast}"
+                )
+                model = self.model_fast
+                stream = await self.client.chat.completions.create(
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_message},
+                    ],
+                    temperature=temp,
+                    max_tokens=max_tokens or settings.LLM_MAX_TOKENS,
+                    top_p=settings.LLM_TOP_P,
+                    stream=True,
+                )
+            else:
+                raise
 
         async for chunk in stream:
             if chunk.choices[0].delta.content:

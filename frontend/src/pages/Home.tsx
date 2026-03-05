@@ -34,8 +34,14 @@ interface HomeProps {
 }
 
 // Map type mapping for MapView component
-const typeToMode: Record<string, "remembrance" | "culture" | "travel" | "museum"> = {
-  museum: "museum", outdoor_stop: "remembrance", location: "travel", route_stop: "culture",
+const typeToMode: Record<
+  string,
+  "remembrance" | "culture" | "travel" | "museum"
+> = {
+  museum: "museum",
+  outdoor_stop: "remembrance",
+  location: "travel",
+  route_stop: "culture",
 };
 
 const featuredStory = {
@@ -44,7 +50,8 @@ const featuredStory = {
   subtitle: "A journey through the valleys and peaks that shaped a nation",
   duration: "18 min",
   mode: "travel" as const,
-  imageUrl: "https://images.unsplash.com/photo-1612690669207-fed642192c40?w=800&q=80",
+  imageUrl:
+    "https://images.unsplash.com/photo-1612690669207-fed642192c40?w=800&q=80",
   hasSensitiveContent: false,
 };
 
@@ -52,21 +59,25 @@ const nearbyStories = [
   {
     id: "1",
     title: "Kigali Genocide Memorial",
-    subtitle: "A place of remembrance and education, honoring the victims of 1994",
+    subtitle:
+      "A place of remembrance and education, honoring the victims of 1994",
     duration: "15 min",
     distance: "1.2 km",
     mode: "remembrance" as const,
-    imageUrl: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=600&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=600&q=80",
     hasSensitiveContent: true,
   },
   {
     id: "2",
     title: "Nyamirambo Walking Tour",
-    subtitle: "Discover vibrant streets, local fashion, and the heartbeat of Kigali",
+    subtitle:
+      "Discover vibrant streets, local fashion, and the heartbeat of Kigali",
     duration: "25 min",
     distance: "0.8 km",
     mode: "culture" as const,
-    imageUrl: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&q=80",
     hasSensitiveContent: false,
   },
 ];
@@ -89,20 +100,26 @@ export function Home({
 
   // Live map markers from spatial API
   const { points: mapPoints } = useAllMapPoints();
-  const liveMarkers = useMemo(() => 
-    mapPoints.slice(0, 20).map(p => ({
-      id: p.id, lat: p.latitude, lng: p.longitude,
-      mode: typeToMode[p.type] || ("travel" as const), title: p.title,
-    })),
-    [mapPoints]
+  const liveMarkers = useMemo(
+    () =>
+      mapPoints.slice(0, 20).map((p) => ({
+        id: p.id,
+        lat: p.latitude,
+        lng: p.longitude,
+        mode: typeToMode[p.type] || ("travel" as const),
+        title: p.title,
+      })),
+    [mapPoints],
   );
-  
+
   const hasAccess = hasSubscription || !!tourGroupAccess;
   const [currentStory, setCurrentStory] = useState(nearbyStories[0]);
   const [showWarning, setShowWarning] = useState(false);
-  const [pendingStory, setPendingStory] = useState<typeof nearbyStories[0] | null>(null);
+  const [pendingStory, setPendingStory] = useState<
+    (typeof nearbyStories)[0] | null
+  >(null);
 
-  const handlePlayStory = (story: typeof nearbyStories[0]) => {
+  const handlePlayStory = (story: (typeof nearbyStories)[0]) => {
     if (story.hasSensitiveContent) {
       setPendingStory(story);
       setShowWarning(true);
@@ -163,7 +180,7 @@ export function Home({
   return (
     <div className="min-h-screen bg-background pt-6 pb-[140px]">
       <AppHeader />
-      
+
       <main className="pt-14 page-content">
         {/* 1. Hero Section (cinematic, rounded bottom) */}
         <HeroSection />
@@ -192,8 +209,8 @@ export function Home({
                   Start your journey at one of these curated stops
                 </p>
                 <div className="space-y-2">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="w-full justify-between bg-background/60"
                     onClick={() => onRouteClick?.("kigali-musanze")}
                   >
@@ -211,7 +228,7 @@ export function Home({
 
         {/* Personal Dashboard - Shows for users with access */}
         {hasAccess && (
-          <PersonalDashboard 
+          <PersonalDashboard
             onItemClick={(id, type) => {
               if (type === "route") onRouteClick?.(id);
               else if (type === "story") onStoryClick?.(id);
@@ -222,14 +239,14 @@ export function Home({
 
         {/* Featured Free Content - Shows for free tier users */}
         {!hasAccess && (
-          <FeaturedFreeContent 
+          <FeaturedFreeContent
             onStoryClick={onStoryClick}
             onViewAll={() => onThemesClick?.()}
           />
         )}
 
         {/* 3. Choose Your Journey (3 cards + featured story) */}
-        <ChooseYourJourney 
+        <ChooseYourJourney
           onRouteSelect={handleJourneySelect}
           featuredStory={featuredStory}
           onFeaturedPlay={() => handlePlayStory(featuredStory as any)}
@@ -240,29 +257,29 @@ export function Home({
         <PopularRoutes onRouteClick={(id) => onRouteClick?.(id)} />
 
         {/* 5. Featured Documentary */}
-        <FeaturedDocumentary 
+        <FeaturedDocumentary
           onDocumentaryClick={(id) => onDocumentaryClick?.(id)}
           onViewAll={onDocumentariesHubClick}
         />
 
         {/* 6. Story Themes (2x3 grid with colorful themes) */}
-        <StoryThemes 
+        <StoryThemes
           onThemeClick={(id) => {
             onThemesClick?.();
-          }} 
+          }}
           onTestimonyClick={(id) => onTestimonyClick?.(id)}
         />
 
         {/* 6. Explore Nearby (map in card + local stories) */}
-        <section 
+        <section
           className="px-4 sm:px-0"
-          style={{ marginTop: '48px', marginBottom: '32px' }}
+          style={{ marginTop: "48px", marginBottom: "32px" }}
         >
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-serif text-xl font-semibold text-foreground">
               Explore Nearby
             </h2>
-            <button 
+            <button
               onClick={onMapClick}
               className="flex items-center gap-1 text-amber text-sm font-medium hover:text-sunset-gold transition-colors"
             >
@@ -270,8 +287,8 @@ export function Home({
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
-          
-          <MapView 
+
+          <MapView
             markers={liveMarkers}
             onMarkerClick={(id) => onStoryClick?.(id)}
           />
@@ -279,13 +296,14 @@ export function Home({
           {/* Nearby Stories Cards */}
           <div className="mt-6 space-y-4">
             {nearbyStories.map((story, index) => (
-              <div 
+              <div
                 key={story.id}
                 className="rounded-2xl p-3.5"
                 style={{
-                  background: index === 0 
-                    ? 'rgba(75, 85, 115, 0.08)' 
-                    : 'rgba(196, 106, 74, 0.06)',
+                  background:
+                    index === 0
+                      ? "rgba(75, 85, 115, 0.08)"
+                      : "rgba(196, 106, 74, 0.06)",
                 }}
               >
                 <StoryCard

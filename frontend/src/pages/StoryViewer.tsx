@@ -5,8 +5,15 @@ import { ThenNowSlider } from "@/components/story/ThenNowSlider";
 import { ImageLightbox } from "@/components/media/ImageLightbox";
 import { ContentWarning } from "@/components/story/ContentWarning";
 import { MultiModalStoryContainer } from "@/components/story/MultiModalStoryContainer";
-import { SoundbedPicker, SoundbedType } from "@/components/story/SoundbedPicker";
-import { BranchingNarrative, NarrativePath, JourneyMood } from "@/components/story/BranchingNarrative";
+import {
+  SoundbedPicker,
+  SoundbedType,
+} from "@/components/story/SoundbedPicker";
+import {
+  BranchingNarrative,
+  NarrativePath,
+  JourneyMood,
+} from "@/components/story/BranchingNarrative";
 import { SourceChips } from "@/components/media/SourceChips";
 import { cn } from "@/lib/utils";
 import { useTimeOfDay } from "@/components/ambient/TimeOfDayMode";
@@ -25,10 +32,13 @@ const mockStory = {
   category: "Remembrance",
   duration: "15 min",
   hasSensitiveContent: true,
-  coverImage: "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=800&q=80",
+  coverImage:
+    "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=800&q=80",
   videoUrl: "https://example.com/video.mp4",
-  thenImage: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800&q=80",
-  nowImage: "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=800&q=80",
+  thenImage:
+    "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800&q=80",
+  nowImage:
+    "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=800&q=80",
   tags: ["Memorial", "History", "1994"],
   description: `The Kigali Genocide Memorial is the final resting place for more than 250,000 victims of the 1994 Genocide against the Tutsi. It serves as a place of remembrance, learning, and a tribute to the strength of survivors.
 
@@ -40,28 +50,32 @@ The memorial was opened in 2004, on the tenth anniversary of the Rwandan genocid
     {
       id: "seg-1",
       title: "Introduction",
-      content: "The Kigali Genocide Memorial stands as Rwanda's principal site of remembrance for the 1994 genocide against the Tutsi. Located in the Gisozi district of Kigali, it serves both as a burial ground and an educational center.",
+      content:
+        "The Kigali Genocide Memorial stands as Rwanda's principal site of remembrance for the 1994 genocide against the Tutsi. Located in the Gisozi district of Kigali, it serves both as a burial ground and an educational center.",
       startTime: 0,
       endTime: 180,
     },
     {
       id: "seg-2",
       title: "The Memorial Gardens",
-      content: "The memorial gardens serve as a space for quiet reflection. As you walk through, you'll see the Wall of Names, inscribed with the names of victims whose identities have been recovered over the years.",
+      content:
+        "The memorial gardens serve as a space for quiet reflection. As you walk through, you'll see the Wall of Names, inscribed with the names of victims whose identities have been recovered over the years.",
       startTime: 180,
       endTime: 420,
     },
     {
       id: "seg-3",
       title: "The Exhibition",
-      content: "Inside the memorial, the permanent exhibition tells the story of Rwanda before, during, and after the genocide. It includes testimonies from survivors and artifacts from that period.",
+      content:
+        "Inside the memorial, the permanent exhibition tells the story of Rwanda before, during, and after the genocide. It includes testimonies from survivors and artifacts from that period.",
       startTime: 420,
       endTime: 720,
     },
     {
       id: "seg-4",
       title: "Remembrance",
-      content: "Today, the memorial serves not only as a place of mourning but as a center for education about the dangers of genocide and the importance of reconciliation.",
+      content:
+        "Today, the memorial serves not only as a place of mourning but as a center for education about the dangers of genocide and the importance of reconciliation.",
       startTime: 720,
       endTime: 900,
     },
@@ -69,7 +83,8 @@ The memorial was opened in 2004, on the tenth anniversary of the Rwandan genocid
   readContent: [
     {
       type: "paragraph",
-      content: "The Kigali Genocide Memorial stands as Rwanda's principal site of remembrance for the 1994 genocide against the Tutsi. Located in the Gisozi district of Kigali, it serves both as a burial ground and an educational center.",
+      content:
+        "The Kigali Genocide Memorial stands as Rwanda's principal site of remembrance for the 1994 genocide against the Tutsi. Located in the Gisozi district of Kigali, it serves both as a burial ground and an educational center.",
     },
     {
       type: "image",
@@ -78,18 +93,35 @@ The memorial was opened in 2004, on the tenth anniversary of the Rwandan genocid
     },
     {
       type: "quote",
-      content: "To remember the victims is to not only honor their memory but to ensure that such tragedy never happens again.",
+      content:
+        "To remember the victims is to not only honor their memory but to ensure that such tragedy never happens again.",
       author: "Survivor testimony",
     },
     {
       type: "paragraph",
-      content: "The memorial gardens serve as a space for quiet reflection. As you walk through, you'll see the Wall of Names, inscribed with the names of victims whose identities have been recovered over the years.",
+      content:
+        "The memorial gardens serve as a space for quiet reflection. As you walk through, you'll see the Wall of Names, inscribed with the names of victims whose identities have been recovered over the years.",
     },
   ],
   sources: [
-    { id: "kgm", label: "Kigali Genocide Memorial", url: "https://kgm.rw", type: "museum" as const },
-    { id: "aegis", label: "Aegis Trust", url: "https://aegistrust.org", type: "institution" as const },
-    { id: "unesco", label: "UNESCO", url: "https://unesco.org", type: "archive" as const },
+    {
+      id: "kgm",
+      label: "Kigali Genocide Memorial",
+      url: "https://kgm.rw",
+      type: "museum" as const,
+    },
+    {
+      id: "aegis",
+      label: "Aegis Trust",
+      url: "https://aegistrust.org",
+      type: "institution" as const,
+    },
+    {
+      id: "unesco",
+      label: "UNESCO",
+      url: "https://unesco.org",
+      type: "archive" as const,
+    },
   ],
 };
 
@@ -133,10 +165,13 @@ export function StoryViewer({ storyId, onBack }: StoryViewerProps) {
   });
 
   // Track time updates from the multi-modal container
-  const handleTimeUpdate = useCallback((time: number) => {
-    setCurrentTime(time);
-    saveProgress(time);
-  }, [saveProgress]);
+  const handleTimeUpdate = useCallback(
+    (time: number) => {
+      setCurrentTime(time);
+      saveProgress(time);
+    },
+    [saveProgress],
+  );
 
   // Handle story completion
   const handleComplete = useCallback(() => {
@@ -146,10 +181,10 @@ export function StoryViewer({ storyId, onBack }: StoryViewerProps) {
 
   const images = story.readContent
     .filter((item) => item.type === "image" && "src" in item)
-    .map((item, idx) => ({ 
-      id: `img-${idx}`, 
-      src: (item as any).src, 
-      caption: (item as any).caption 
+    .map((item, idx) => ({
+      id: `img-${idx}`,
+      src: (item as any).src,
+      caption: (item as any).caption,
     }));
 
   const handleContinue = () => {
@@ -166,9 +201,9 @@ export function StoryViewer({ storyId, onBack }: StoryViewerProps) {
   }
 
   return (
-    <div 
+    <div
       className="min-h-screen transition-colors duration-500"
-      style={{ 
+      style={{
         backgroundColor: isNightMode ? themeOverrides.background : undefined,
         color: isNightMode ? themeOverrides.textPrimary : undefined,
       }}
@@ -180,37 +215,53 @@ export function StoryViewer({ storyId, onBack }: StoryViewerProps) {
             onClick={onBack}
             className={cn(
               "w-10 h-10 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm transition-colors",
-              isNightMode 
+              isNightMode
                 ? "bg-midnight/80 border border-white/10 hover:bg-midnight"
-                : "bg-white/90 hover:bg-white"
+                : "bg-white/90 hover:bg-white",
             )}
           >
-            <ArrowLeft className={cn("w-5 h-5", isNightMode ? "text-white" : "text-midnight")} />
+            <ArrowLeft
+              className={cn(
+                "w-5 h-5",
+                isNightMode ? "text-white" : "text-midnight",
+              )}
+            />
           </button>
           <div className="flex gap-2">
             <button
               onClick={() => setIsSaved(!isSaved)}
               className={cn(
                 "w-10 h-10 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm transition-colors",
-                isNightMode 
+                isNightMode
                   ? "bg-midnight/80 border border-white/10 hover:bg-midnight"
-                  : "bg-white/90 hover:bg-white"
+                  : "bg-white/90 hover:bg-white",
               )}
             >
               <Heart
                 className={cn(
                   "w-5 h-5",
-                  isSaved ? "fill-terracotta text-terracotta" : isNightMode ? "text-white" : "text-midnight"
+                  isSaved
+                    ? "fill-terracotta text-terracotta"
+                    : isNightMode
+                      ? "text-white"
+                      : "text-midnight",
                 )}
               />
             </button>
-            <button className={cn(
-              "w-10 h-10 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm transition-colors",
-              isNightMode 
-                ? "bg-midnight/80 border border-white/10 hover:bg-midnight"
-                : "bg-white/90 hover:bg-white"
-            )}>
-              <Share2 className={cn("w-5 h-5", isNightMode ? "text-white" : "text-midnight")} />
+            <button
+              className={cn(
+                "w-10 h-10 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm transition-colors",
+                isNightMode
+                  ? "bg-midnight/80 border border-white/10 hover:bg-midnight"
+                  : "bg-white/90 hover:bg-white",
+              )}
+            >
+              <Share2
+                className={cn(
+                  "w-5 h-5",
+                  isNightMode ? "text-white" : "text-midnight",
+                )}
+              />
             </button>
           </div>
         </div>
@@ -225,7 +276,7 @@ export function StoryViewer({ storyId, onBack }: StoryViewerProps) {
               alt={story.title}
               className="w-full h-full object-cover"
             />
-            
+
             {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-midnight/60 via-transparent to-midnight/30" />
 
@@ -270,10 +321,12 @@ export function StoryViewer({ storyId, onBack }: StoryViewerProps) {
           </span>
 
           {/* Title */}
-          <h1 className={cn(
-            "font-serif text-2xl font-semibold leading-tight",
-            isNightMode ? "text-cloud-mist" : "text-foreground"
-          )}>
+          <h1
+            className={cn(
+              "font-serif text-2xl font-semibold leading-tight",
+              isNightMode ? "text-cloud-mist" : "text-foreground",
+            )}
+          >
             {story.title}
           </h1>
 
@@ -284,9 +337,9 @@ export function StoryViewer({ storyId, onBack }: StoryViewerProps) {
                 key={tag}
                 className={cn(
                   "px-2 py-0.5 text-xs rounded",
-                  isNightMode 
+                  isNightMode
                     ? "bg-white/10 text-white/70"
-                    : "bg-midnight/5 text-muted-foreground"
+                    : "bg-midnight/5 text-muted-foreground",
                 )}
               >
                 {tag}
@@ -295,10 +348,12 @@ export function StoryViewer({ storyId, onBack }: StoryViewerProps) {
           </div>
 
           {/* Description */}
-          <p className={cn(
-            "mt-4 leading-relaxed",
-            isNightMode ? "text-white/70" : "text-muted-foreground"
-          )}>
+          <p
+            className={cn(
+              "mt-4 leading-relaxed",
+              isNightMode ? "text-white/70" : "text-muted-foreground",
+            )}
+          >
             {story.description.split("\n\n")[0]}
           </p>
 
@@ -315,7 +370,9 @@ export function StoryViewer({ storyId, onBack }: StoryViewerProps) {
           {/* Branching Narrative (expandable) */}
           {showBranching && (
             <div className="mt-6 p-4 bg-card rounded-2xl border border-border/50 animate-fade-in">
-              <h3 className="font-medium text-foreground mb-4">Customize Your Journey</h3>
+              <h3 className="font-medium text-foreground mb-4">
+                Customize Your Journey
+              </h3>
               <BranchingNarrative
                 storyId={story.id}
                 currentPath={currentPath}
@@ -349,10 +406,12 @@ export function StoryViewer({ storyId, onBack }: StoryViewerProps) {
 
           {/* Sources */}
           <div className="mt-8">
-            <h3 className={cn(
-              "text-sm font-medium mb-3",
-              isNightMode ? "text-white" : "text-foreground"
-            )}>
+            <h3
+              className={cn(
+                "text-sm font-medium mb-3",
+                isNightMode ? "text-white" : "text-foreground",
+              )}
+            >
               Sources
             </h3>
             <SourceChips sources={story.sources} />

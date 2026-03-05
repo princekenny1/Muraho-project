@@ -183,7 +183,7 @@ class EmbeddingService:
                         chunk.get("route_id"),
                         chunk.get("tags", []),
                         chunk["text"],
-                        str(embedding),  # pgvector accepts string representation
+                        embedding,
                     )
                     success += 1
                 except Exception as e:
@@ -223,7 +223,7 @@ class EmbeddingService:
 
         # Build WHERE clause from filters
         where_clauses = []
-        params = [str(query_embedding), limit]
+        params = [query_embedding, limit]
         param_idx = 3  # $1=embedding, $2=limit
 
         if filters:

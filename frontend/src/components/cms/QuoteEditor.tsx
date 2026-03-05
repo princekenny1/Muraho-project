@@ -29,7 +29,7 @@ export function QuoteEditor({ quoteId, onClose }: QuoteEditorProps) {
   const { data: testimonies = [] } = useTestimonies();
   const { data: people = [] } = cms.usePeople();
   const { data: quotes = [] } = cms.useQuotes();
-  
+
   const isEditing = !!quoteId;
   const existingQuote = quotes?.find((q) => q.id === quoteId);
 
@@ -155,7 +155,9 @@ export function QuoteEditor({ quoteId, onClose }: QuoteEditorProps) {
             <div className="flex items-center gap-2">
               <Switch
                 checked={form.watch("is_featured")}
-                onCheckedChange={(checked) => form.setValue("is_featured", checked)}
+                onCheckedChange={(checked) =>
+                  form.setValue("is_featured", checked)
+                }
               />
               <Label>Featured Quote</Label>
             </div>
@@ -175,7 +177,10 @@ export function QuoteEditor({ quoteId, onClose }: QuoteEditorProps) {
               <Select
                 value={form.watch("person_id") || "none"}
                 onValueChange={(value) =>
-                  form.setValue("person_id", value === "none" ? undefined : value)
+                  form.setValue(
+                    "person_id",
+                    value === "none" ? undefined : value,
+                  )
                 }
               >
                 <SelectTrigger>
@@ -197,7 +202,10 @@ export function QuoteEditor({ quoteId, onClose }: QuoteEditorProps) {
               <Select
                 value={form.watch("testimony_id") || "none"}
                 onValueChange={(value) =>
-                  form.setValue("testimony_id", value === "none" ? undefined : value)
+                  form.setValue(
+                    "testimony_id",
+                    value === "none" ? undefined : value,
+                  )
                 }
               >
                 <SelectTrigger>
@@ -215,8 +223,8 @@ export function QuoteEditor({ quoteId, onClose }: QuoteEditorProps) {
             </div>
 
             <p className="text-sm text-muted-foreground">
-              Linking helps the AI provide context when this quote appears in search
-              results or recommendations.
+              Linking helps the AI provide context when this quote appears in
+              search results or recommendations.
             </p>
           </CardContent>
         </Card>

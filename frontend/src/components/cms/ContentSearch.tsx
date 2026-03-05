@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Search, BookOpen, Users, Film, Quote, ExternalLink } from "lucide-react";
+import {
+  Search,
+  BookOpen,
+  Users,
+  Film,
+  Quote,
+  ExternalLink,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -27,31 +34,34 @@ export function ContentSearch({ compact = false, onEdit }: ContentSearchProps) {
   const filteredStories = stories.filter(
     (s) =>
       s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.summary?.toLowerCase().includes(searchQuery.toLowerCase())
+      s.summary?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const filteredTestimonies = testimonies.filter(
     (t) =>
       t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.person_name.toLowerCase().includes(searchQuery.toLowerCase())
+      t.person_name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const filteredDocumentaries = documentaries.filter(
     (d) =>
       d.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      d.synopsis.toLowerCase().includes(searchQuery.toLowerCase())
+      d.synopsis.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const filteredQuotes = quotes.filter(
     (q) =>
       q.text.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      q.attribution?.toLowerCase().includes(searchQuery.toLowerCase())
+      q.attribution?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const allContent = [
     ...filteredStories.map((s) => ({ ...s, type: "story" as const })),
     ...filteredTestimonies.map((t) => ({ ...t, type: "testimony" as const })),
-    ...filteredDocumentaries.map((d) => ({ ...d, type: "documentary" as const })),
+    ...filteredDocumentaries.map((d) => ({
+      ...d,
+      type: "documentary" as const,
+    })),
     ...filteredQuotes.map((q) => ({ ...q, type: "quote" as const })),
   ];
 
@@ -91,17 +101,17 @@ export function ContentSearch({ compact = false, onEdit }: ContentSearchProps) {
       item.type === "story" || item.type === "documentary"
         ? item.title
         : item.type === "testimony"
-        ? `${item.person_name}: ${item.title}`
-        : item.text.slice(0, 60) + (item.text.length > 60 ? "..." : "");
+          ? `${item.person_name}: ${item.title}`
+          : item.text.slice(0, 60) + (item.text.length > 60 ? "..." : "");
 
     const subtitle =
       item.type === "story"
         ? item.summary?.slice(0, 80)
         : item.type === "documentary"
-        ? `${item.director || "Unknown"} • ${item.year}`
-        : item.type === "testimony"
-        ? item.category
-        : item.attribution;
+          ? `${item.director || "Unknown"} • ${item.year}`
+          : item.type === "testimony"
+            ? item.category
+            : item.attribution;
 
     return (
       <Card
@@ -111,13 +121,17 @@ export function ContentSearch({ compact = false, onEdit }: ContentSearchProps) {
       >
         <CardContent className="py-3 flex items-center justify-between">
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            <div className={`w-8 h-8 rounded-lg ${getColor(item.type)} flex items-center justify-center shrink-0`}>
+            <div
+              className={`w-8 h-8 rounded-lg ${getColor(item.type)} flex items-center justify-center shrink-0`}
+            >
               <Icon className="h-4 w-4" />
             </div>
             <div className="min-w-0 flex-1">
               <h4 className="font-medium truncate">{title}</h4>
               {subtitle && (
-                <p className="text-sm text-muted-foreground truncate">{subtitle}</p>
+                <p className="text-sm text-muted-foreground truncate">
+                  {subtitle}
+                </p>
               )}
             </div>
           </div>
@@ -145,13 +159,16 @@ export function ContentSearch({ compact = false, onEdit }: ContentSearchProps) {
   if (compact) {
     // Show limited results for compact view
     const recentContent = allContent.slice(0, 5);
-    
+
     return (
       <div className="space-y-3">
         {recentContent.length === 0 ? (
           <Card>
             <CardContent className="py-8 text-center text-muted-foreground">
-              <p>No content yet. Start by adding a story, testimony, or documentary.</p>
+              <p>
+                No content yet. Start by adding a story, testimony, or
+                documentary.
+              </p>
             </CardContent>
           </Card>
         ) : (
@@ -175,9 +192,7 @@ export function ContentSearch({ compact = false, onEdit }: ContentSearchProps) {
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
-          <TabsTrigger value="all">
-            All ({allContent.length})
-          </TabsTrigger>
+          <TabsTrigger value="all">All ({allContent.length})</TabsTrigger>
           <TabsTrigger value="stories">
             Stories ({filteredStories.length})
           </TabsTrigger>
@@ -224,7 +239,9 @@ export function ContentSearch({ compact = false, onEdit }: ContentSearchProps) {
               </CardContent>
             </Card>
           ) : (
-            filteredTestimonies.map((t) => renderItem({ ...t, type: "testimony" }))
+            filteredTestimonies.map((t) =>
+              renderItem({ ...t, type: "testimony" }),
+            )
           )}
         </TabsContent>
 
@@ -236,7 +253,9 @@ export function ContentSearch({ compact = false, onEdit }: ContentSearchProps) {
               </CardContent>
             </Card>
           ) : (
-            filteredDocumentaries.map((d) => renderItem({ ...d, type: "documentary" }))
+            filteredDocumentaries.map((d) =>
+              renderItem({ ...d, type: "documentary" }),
+            )
           )}
         </TabsContent>
 

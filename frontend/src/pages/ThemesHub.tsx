@@ -86,7 +86,9 @@ export function ThemesHub({ onBack, onThemeClick }: ThemesHubProps) {
               onClick={() => setViewMode("grid")}
               className={cn(
                 "w-9 h-9 flex items-center justify-center rounded-lg transition-colors",
-                viewMode === "grid" ? "bg-midnight/10" : "text-muted-foreground"
+                viewMode === "grid"
+                  ? "bg-midnight/10"
+                  : "text-muted-foreground",
               )}
             >
               <Grid className="w-4 h-4" />
@@ -95,7 +97,9 @@ export function ThemesHub({ onBack, onThemeClick }: ThemesHubProps) {
               onClick={() => setViewMode("list")}
               className={cn(
                 "w-9 h-9 flex items-center justify-center rounded-lg transition-colors",
-                viewMode === "list" ? "bg-midnight/10" : "text-muted-foreground"
+                viewMode === "list"
+                  ? "bg-midnight/10"
+                  : "text-muted-foreground",
               )}
             >
               <List className="w-4 h-4" />

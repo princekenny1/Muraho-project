@@ -8,10 +8,18 @@ import { ThemeDetail } from "./ThemeDetail";
 import { MemorialsHub } from "./MemorialsHub";
 import { MuseumGuide } from "./MuseumGuide";
 import { FullMap } from "./FullMap";
-import { TimeOfDayProvider, TimeOfDayIndicator, NightModeMapOverlay } from "@/components/ambient";
-import { WeatherProvider, WeatherStorySuggestion, WeatherMapOverlay } from "@/components/ambient";
+import {
+  TimeOfDayProvider,
+  TimeOfDayIndicator,
+  NightModeMapOverlay,
+} from "@/components/ambient";
+import {
+  WeatherProvider,
+  WeatherStorySuggestion,
+  WeatherMapOverlay,
+} from "@/components/ambient";
 
-type AppView = 
+type AppView =
   | { type: "home" }
   | { type: "story"; storyId?: string }
   | { type: "route"; routeId?: string }
@@ -33,7 +41,7 @@ const Index = () => {
 
   const handleTestimonyClick = (testimonySlug: string) => {
     if (testimonySlug === "all") {
-      navigate('/testimonies');
+      navigate("/testimonies");
     } else {
       navigate(`/testimonies/${testimonySlug}`);
     }
@@ -44,23 +52,18 @@ const Index = () => {
   };
 
   const handleDocumentariesHubClick = () => {
-    navigate('/documentaries');
+    navigate("/documentaries");
   };
 
   const handleAskRwandaClick = () => {
-    navigate('/ask-rwanda');
+    navigate("/ask-rwanda");
   };
 
   // Render current view with ambient providers
   const renderView = () => {
     switch (currentView.type) {
       case "story":
-        return (
-          <StoryViewer
-            storyId={currentView.storyId}
-            onBack={goHome}
-          />
-        );
+        return <StoryViewer storyId={currentView.storyId} onBack={goHome} />;
 
       case "route":
         return (
@@ -75,7 +78,9 @@ const Index = () => {
         return (
           <ThemesHub
             onBack={goHome}
-            onThemeClick={(themeId) => navigateTo({ type: "theme-detail", themeId })}
+            onThemeClick={(themeId) =>
+              navigateTo({ type: "theme-detail", themeId })
+            }
           />
         );
 
@@ -92,7 +97,9 @@ const Index = () => {
         return (
           <MemorialsHub
             onBack={goHome}
-            onMuseumClick={(museumId) => navigateTo({ type: "museum", museumId })}
+            onMuseumClick={(museumId) =>
+              navigateTo({ type: "museum", museumId })
+            }
           />
         );
 
@@ -136,15 +143,15 @@ const Index = () => {
         <div className="fixed top-4 right-4 z-50">
           <TimeOfDayIndicator showLabel={false} />
         </div>
-        
+
         {/* Weather-triggered story suggestions */}
         <div className="fixed top-16 left-4 right-4 z-40">
-          <WeatherStorySuggestion 
+          <WeatherStorySuggestion
             onAccept={(types) => console.log("Show stories of types:", types)}
             onDismiss={() => console.log("Weather suggestion dismissed")}
           />
         </div>
-        
+
         {/* Main app content */}
         {renderView()}
       </WeatherProvider>

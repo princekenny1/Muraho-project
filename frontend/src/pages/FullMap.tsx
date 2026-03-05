@@ -114,6 +114,7 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
   );
 
   const [activeFilter, setActiveFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedPin, setSelectedPin] = useState<MapStory | null>(null);
   const [nearbyPin, setNearbyPin] = useState<string | null>(null);
   const [playingStoryId, setPlayingStoryId] = useState<string | null>(null);
@@ -129,10 +130,15 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
   const { isNightMode } = useTimeOfDay();
   const { weather } = useWeather();
 
-  const filteredPins =
-    activeFilter === "all"
-      ? livePins
-      : livePins.filter((p) => p.type === activeFilter);
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+  const filteredPins = livePins.filter((pin) => {
+    const matchesFilter =
+      activeFilter === "all" ? true : pin.type === activeFilter;
+    const matchesSearch =
+      !normalizedSearchQuery ||
+      pin.title.toLowerCase().includes(normalizedSearchQuery);
+    return matchesFilter && matchesSearch;
+  });
 
   const handlePinClick = (id: string) => {
     const pin = livePins.find((p) => p.id === id);
@@ -313,6 +319,8 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search locations..."
               className={cn(
                 "w-full h-10 pl-10 pr-4 rounded-full text-sm shadow-lg focus:outline-none focus:ring-2 focus:ring-amber",
@@ -491,7 +499,9 @@ export function FullMap({ onClose, onStoryClick }: FullMapProps) {
         }}
         onPlayAll={() => {
           setShowBundle(false);
-          onStoryClick(bundleStories[0].id);
+          if (bundleStories.length > 0) {
+            onStoryClick(bundleStories[0].id);
+          }
         }}
       />
 

@@ -14,7 +14,7 @@ import { api } from "@/lib/api/client";
 // ── Type ──────────────────────────────────────────────
 
 export interface TranscriptSegment {
-  time: number;       // seconds
+  time: number; // seconds
   text: string;
   isPullQuote?: boolean;
   speaker?: string;
@@ -56,7 +56,10 @@ export interface Testimony {
 
 // ── Query Hook ────────────────────────────────────────
 
-export function useTestimonies(options?: { category?: string; featured?: boolean }) {
+export function useTestimonies(options?: {
+  category?: string;
+  featured?: boolean;
+}) {
   return useQuery<Testimony[]>({
     queryKey: ["testimonies", options],
     queryFn: async () => {
@@ -126,7 +129,10 @@ function mapTestimony(doc: any): Testimony {
   const transcriptText =
     doc.transcript ||
     (segments.length > 0
-      ? segments.filter((s) => !s.isPullQuote).map((s) => s.text).join(" ")
+      ? segments
+          .filter((s) => !s.isPullQuote)
+          .map((s) => s.text)
+          .join(" ")
       : null);
 
   return {
@@ -140,7 +146,8 @@ function mapTestimony(doc: any): Testimony {
     location: doc.location || null,
     year: doc.year || null,
     duration_minutes: doc.durationMinutes || doc.duration_minutes || null,
-    has_content_warning: doc.hasContentWarning ?? doc.has_content_warning ?? true,
+    has_content_warning:
+      doc.hasContentWarning ?? doc.has_content_warning ?? true,
     is_featured: doc.isFeatured ?? doc.featured ?? doc.is_featured ?? false,
     video_url: doc.videoUrl || doc.video_url || null,
     captions_url: doc.captionsUrl || doc.captions_url || null,

@@ -4,7 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { useDocumentaries, useDocumentaryChapters, type Documentary, type Chapter } from "@/hooks/useDocumentaries";
+import {
+  useDocumentaries,
+  useDocumentaryChapters,
+  type Documentary,
+  type Chapter,
+} from "@/hooks/useDocumentaries";
 import { useDocumentaryAdmin } from "@/hooks/useDocumentaryAdmin";
 import { DocumentaryAdminCard } from "./DocumentaryAdminCard";
 import { DocumentaryForm } from "./DocumentaryForm";
@@ -31,21 +36,32 @@ import {
 export function DocumentaryAdminPanel() {
   const { toast } = useToast();
   const { data: documentaries = [], isLoading } = useDocumentaries();
-  const { createDocumentary, updateDocumentary, deleteDocumentary, createChapter, updateChapter, deleteChapter } = useDocumentaryAdmin();
+  const {
+    createDocumentary,
+    updateDocumentary,
+    deleteDocumentary,
+    createChapter,
+    updateChapter,
+    deleteChapter,
+  } = useDocumentaryAdmin();
 
   const [formOpen, setFormOpen] = useState(false);
-  const [editingDocumentary, setEditingDocumentary] = useState<Documentary | null>(null);
+  const [editingDocumentary, setEditingDocumentary] =
+    useState<Documentary | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
 
   // Chapter management state
-  const [managingChaptersFor, setManagingChaptersFor] = useState<Documentary | null>(null);
+  const [managingChaptersFor, setManagingChaptersFor] =
+    useState<Documentary | null>(null);
   const [chapterFormOpen, setChapterFormOpen] = useState(false);
   const [editingChapter, setEditingChapter] = useState<Chapter | null>(null);
   const [deleteChapterId, setDeleteChapterId] = useState<string | null>(null);
 
-  const { data: chapters = [] } = useDocumentaryChapters(managingChaptersFor?.id);
+  const { data: chapters = [] } = useDocumentaryChapters(
+    managingChaptersFor?.id,
+  );
 
   const filteredDocumentaries = documentaries.filter((d) => {
     const matchesSearch =
@@ -94,7 +110,9 @@ export function DocumentaryAdminPanel() {
         is_featured: !documentary.is_featured,
       });
       toast({
-        title: documentary.is_featured ? "Removed from featured" : "Set as featured",
+        title: documentary.is_featured
+          ? "Removed from featured"
+          : "Set as featured",
       });
     } catch (error: any) {
       toast({
@@ -179,11 +197,17 @@ export function DocumentaryAdminPanel() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => setManagingChaptersFor(null)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setManagingChaptersFor(null)}
+            >
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h2 className="text-xl font-semibold">Chapters: {managingChaptersFor.title}</h2>
+              <h2 className="text-xl font-semibold">
+                Chapters: {managingChaptersFor.title}
+              </h2>
               <p className="text-sm text-muted-foreground">
                 Manage chapters for this documentary
               </p>
@@ -218,7 +242,11 @@ export function DocumentaryAdminPanel() {
                       </div>
                     </div>
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button variant="ghost" size="icon" onClick={() => handleEditChapter(chapter)}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleEditChapter(chapter)}
+                      >
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button
@@ -245,7 +273,10 @@ export function DocumentaryAdminPanel() {
           isLoading={createChapter.isPending || updateChapter.isPending}
         />
 
-        <AlertDialog open={!!deleteChapterId} onOpenChange={() => setDeleteChapterId(null)}>
+        <AlertDialog
+          open={!!deleteChapterId}
+          onOpenChange={() => setDeleteChapterId(null)}
+        >
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Delete Chapter?</AlertDialogTitle>
@@ -352,8 +383,8 @@ export function DocumentaryAdminPanel() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Documentary?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete this documentary and all its chapters.
-              This action cannot be undone.
+              This will permanently delete this documentary and all its
+              chapters. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

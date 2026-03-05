@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { ArrowLeft, ChevronRight, Filter, Headphones, Video, BookOpen } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronRight,
+  Filter,
+  Headphones,
+  Video,
+  BookOpen,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ThemeDetailProps {
@@ -8,16 +15,20 @@ interface ThemeDetailProps {
   onStoryClick: (storyId: string) => void;
 }
 
-const themeData: Record<string, {
-  title: string;
-  description: string;
-  gradient: string;
-  accentColor: string;
-  icon: string;
-}> = {
+const themeData: Record<
+  string,
+  {
+    title: string;
+    description: string;
+    gradient: string;
+    accentColor: string;
+    icon: string;
+  }
+> = {
   reconciliation: {
     title: "Reconciliation",
-    description: "Stories of healing, forgiveness, and unity that emerged from tragedy",
+    description:
+      "Stories of healing, forgiveness, and unity that emerged from tragedy",
     gradient: "linear-gradient(135deg, #C7C9DD 0%, #9DA1BD 100%)",
     accentColor: "#C7C9DD",
     icon: "🕊️",
@@ -66,7 +77,8 @@ const mockStories = [
     subtitle: "One woman's journey from grief to reconciliation",
     duration: "12 min",
     type: "audio",
-    imageUrl: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=400&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=400&q=80",
     isEditorsPick: true,
   },
   {
@@ -75,7 +87,8 @@ const mockStories = [
     subtitle: "Community justice and healing",
     duration: "18 min",
     type: "video",
-    imageUrl: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=400&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=400&q=80",
     isEditorsPick: false,
   },
   {
@@ -84,7 +97,8 @@ const mockStories = [
     subtitle: "How Rwanda marks its annual day of unity",
     duration: "8 min",
     type: "read",
-    imageUrl: "https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=400&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=400&q=80",
     isEditorsPick: false,
   },
   {
@@ -93,7 +107,8 @@ const mockStories = [
     subtitle: "The transformation of a former participant",
     duration: "15 min",
     type: "audio",
-    imageUrl: "https://images.unsplash.com/photo-1504567961542-e24d9439a724?w=400&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1504567961542-e24d9439a724?w=400&q=80",
     isEditorsPick: false,
   },
 ];
@@ -106,26 +121,28 @@ const typeIcons = {
 
 type FilterType = "all" | "audio" | "video" | "read";
 
-export function ThemeDetail({ themeId, onBack, onStoryClick }: ThemeDetailProps) {
+export function ThemeDetail({
+  themeId,
+  onBack,
+  onStoryClick,
+}: ThemeDetailProps) {
   const [filter, setFilter] = useState<FilterType>("all");
-  
+
   const theme = themeData[themeId] || themeData.reconciliation;
-  
-  const filteredStories = filter === "all" 
-    ? mockStories 
-    : mockStories.filter(s => s.type === filter);
-  
-  const editorsPick = mockStories.find(s => s.isEditorsPick);
+
+  const filteredStories =
+    filter === "all"
+      ? mockStories
+      : mockStories.filter((s) => s.type === filter);
+
+  const editorsPick = mockStories.find((s) => s.isEditorsPick);
 
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Banner */}
-      <div
-        className="relative h-48"
-        style={{ background: theme.gradient }}
-      >
+      <div className="relative h-48" style={{ background: theme.gradient }}>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-midnight/30" />
-        
+
         {/* Back button */}
         <button
           onClick={onBack}
@@ -142,9 +159,7 @@ export function ThemeDetail({ themeId, onBack, onStoryClick }: ThemeDetailProps)
               <h1 className="font-serif text-2xl font-semibold text-white">
                 {theme.title}
               </h1>
-              <p className="text-white/80 text-sm mt-1">
-                {theme.description}
-              </p>
+              <p className="text-white/80 text-sm mt-1">{theme.description}</p>
             </div>
           </div>
         </div>
@@ -163,7 +178,7 @@ export function ThemeDetail({ themeId, onBack, onStoryClick }: ThemeDetailProps)
                   "flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors",
                   filter === type
                     ? "bg-amber text-midnight"
-                    : "bg-midnight/5 text-muted-foreground hover:bg-midnight/10"
+                    : "bg-midnight/5 text-muted-foreground hover:bg-midnight/10",
                 )}
               >
                 {Icon && <Icon className="w-4 h-4" />}
@@ -177,7 +192,9 @@ export function ThemeDetail({ themeId, onBack, onStoryClick }: ThemeDetailProps)
         {editorsPick && filter === "all" && (
           <div className="mt-6">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-amber text-sm font-medium">✨ Editor's Pick</span>
+              <span className="text-amber text-sm font-medium">
+                ✨ Editor's Pick
+              </span>
             </div>
             <button
               onClick={() => onStoryClick(editorsPick.id)}
@@ -201,7 +218,8 @@ export function ThemeDetail({ themeId, onBack, onStoryClick }: ThemeDetailProps)
                   {typeIcons[editorsPick.type as keyof typeof typeIcons] && (
                     <span className="flex items-center gap-1">
                       {(() => {
-                        const Icon = typeIcons[editorsPick.type as keyof typeof typeIcons];
+                        const Icon =
+                          typeIcons[editorsPick.type as keyof typeof typeIcons];
                         return <Icon className="w-3.5 h-3.5" />;
                       })()}
                       {editorsPick.type}
@@ -220,7 +238,7 @@ export function ThemeDetail({ themeId, onBack, onStoryClick }: ThemeDetailProps)
           <h2 className="font-semibold text-foreground">
             {filteredStories.length} Stories
           </h2>
-          
+
           {filteredStories.map((story) => {
             const TypeIcon = typeIcons[story.type as keyof typeof typeIcons];
             return (

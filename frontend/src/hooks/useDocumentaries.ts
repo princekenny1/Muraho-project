@@ -91,7 +91,10 @@ export interface Chapter {
 
 // ── Query Hooks ───────────────────────────────────────
 
-export function useDocumentaries(options?: { type?: string; featured?: boolean }) {
+export function useDocumentaries(options?: {
+  type?: string;
+  featured?: boolean;
+}) {
   return useQuery<Documentary[]>({
     queryKey: ["documentaries", options],
     queryFn: async () => {
@@ -124,9 +127,13 @@ export function useDocumentary(slug: string) {
   return useQuery<Documentary | null>({
     queryKey: ["documentary", slug],
     queryFn: async () => {
-      const doc = await api.findOne("documentaries", {
-        slug: { equals: slug },
-      }, 2);
+      const doc = await api.findOne(
+        "documentaries",
+        {
+          slug: { equals: slug },
+        },
+        2,
+      );
       return doc ? mapDocumentary(doc) : null;
     },
     enabled: !!slug,
@@ -144,7 +151,9 @@ export function useDocumentaryChapters(documentaryId?: string) {
       if (!doc) return [];
 
       const chapters = (doc as any).chapters || [];
-      return chapters.map((ch: any, i: number) => mapChapter(ch, documentaryId, i));
+      return chapters.map((ch: any, i: number) =>
+        mapChapter(ch, documentaryId, i),
+      );
     },
     enabled: !!documentaryId,
   });
@@ -180,13 +189,15 @@ function mapDocumentary(doc: any): Documentary {
   }));
 
   // Map downloads
-  const downloads: DocDownload[] = (doc.downloads || []).map((d: any, i: number) => ({
-    id: d.id || `download-${i}`,
-    name: d.name || "",
-    type: d.type || "other",
-    size: d.size || undefined,
-    fileUrl: d.file?.url || undefined,
-  }));
+  const downloads: DocDownload[] = (doc.downloads || []).map(
+    (d: any, i: number) => ({
+      id: d.id || `download-${i}`,
+      name: d.name || "",
+      type: d.type || "other",
+      size: d.size || undefined,
+      fileUrl: d.file?.url || undefined,
+    }),
+  );
 
   return {
     id: doc.id,
@@ -215,13 +226,15 @@ function mapDocumentary(doc: any): Documentary {
 
 function mapChapter(ch: any, documentaryId: string, index: number): Chapter {
   // Map embedded transcript segments
-  const transcripts: TranscriptSegment[] = (ch.transcripts || []).map((t: any, ti: number) => ({
-    id: t.id || `transcript-${index}-${ti}`,
-    startTime: t.startTime ?? 0,
-    endTime: t.endTime ?? 0,
-    text: t.text || "",
-    speaker: t.speaker || undefined,
-  }));
+  const transcripts: TranscriptSegment[] = (ch.transcripts || []).map(
+    (t: any, ti: number) => ({
+      id: t.id || `transcript-${index}-${ti}`,
+      startTime: t.startTime ?? 0,
+      endTime: t.endTime ?? 0,
+      text: t.text || "",
+      speaker: t.speaker || undefined,
+    }),
+  );
 
   return {
     id: ch.id || `chapter-${index}`,

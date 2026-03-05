@@ -1,8 +1,28 @@
-import { useState, useEffect, createContext, useContext, ReactNode } from "react";
-import { Cloud, CloudRain, CloudFog, Sun, Snowflake, Wind, Thermometer } from "lucide-react";
+import {
+  useState,
+  useEffect,
+  createContext,
+  useContext,
+  ReactNode,
+} from "react";
+import {
+  Cloud,
+  CloudRain,
+  CloudFog,
+  Sun,
+  Snowflake,
+  Wind,
+  Thermometer,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type WeatherCondition = "clear" | "cloudy" | "rain" | "fog" | "wind" | "storm";
+export type WeatherCondition =
+  | "clear"
+  | "cloudy"
+  | "rain"
+  | "fog"
+  | "wind"
+  | "storm";
 
 interface WeatherContextType {
   weather: WeatherCondition;
@@ -26,7 +46,10 @@ export function useWeather() {
   return context;
 }
 
-const weatherStoryMapping: Record<WeatherCondition, { types: string[]; mood: WeatherContextType["weatherMood"]; message: string }> = {
+const weatherStoryMapping: Record<
+  WeatherCondition,
+  { types: string[]; mood: WeatherContextType["weatherMood"]; message: string }
+> = {
   clear: {
     types: ["travel", "culture", "adventure"],
     mood: "adventurous",
@@ -73,8 +96,13 @@ interface WeatherProviderProps {
   forceWeather?: WeatherCondition;
 }
 
-export function WeatherProvider({ children, forceWeather }: WeatherProviderProps) {
-  const [weather, setWeather] = useState<WeatherCondition>(forceWeather || "clear");
+export function WeatherProvider({
+  children,
+  forceWeather,
+}: WeatherProviderProps) {
+  const [weather, setWeather] = useState<WeatherCondition>(
+    forceWeather || "clear",
+  );
   const [temperature, setTemperature] = useState(22);
 
   useEffect(() => {
@@ -86,7 +114,8 @@ export function WeatherProvider({ children, forceWeather }: WeatherProviderProps
     // In a real app, this would fetch from a weather API
     // For demo, simulate weather changes
     const conditions: WeatherCondition[] = ["clear", "cloudy", "rain", "fog"];
-    const randomCondition = conditions[Math.floor(Math.random() * conditions.length)];
+    const randomCondition =
+      conditions[Math.floor(Math.random() * conditions.length)];
     setWeather(randomCondition);
     setTemperature(15 + Math.floor(Math.random() * 15)); // 15-30°C
   }, [forceWeather]);
@@ -101,9 +130,7 @@ export function WeatherProvider({ children, forceWeather }: WeatherProviderProps
   };
 
   return (
-    <WeatherContext.Provider value={value}>
-      {children}
-    </WeatherContext.Provider>
+    <WeatherContext.Provider value={value}>{children}</WeatherContext.Provider>
   );
 }
 
@@ -119,9 +146,10 @@ export function WeatherStorySuggestion({
   onDismiss,
   className,
 }: WeatherStorySuggestionProps) {
-  const { weather, temperature, suggestedStoryTypes, weatherMood } = useWeather();
+  const { weather, temperature, suggestedStoryTypes, weatherMood } =
+    useWeather();
   const [isVisible, setIsVisible] = useState(true);
-  
+
   const Icon = weatherIcons[weather];
   const mapping = weatherStoryMapping[weather];
 
@@ -135,15 +163,16 @@ export function WeatherStorySuggestion({
   };
 
   return (
-    <div className={cn(
-      "rounded-2xl overflow-hidden shadow-card border border-border/50",
-      className
-    )}>
+    <div
+      className={cn(
+        "rounded-2xl overflow-hidden shadow-card border border-border/50",
+        className,
+      )}
+    >
       {/* Gradient header based on mood */}
-      <div className={cn(
-        "px-4 py-3 bg-gradient-to-r",
-        moodColors[weatherMood]
-      )}>
+      <div
+        className={cn("px-4 py-3 bg-gradient-to-r", moodColors[weatherMood])}
+      >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white/80 flex items-center justify-center">
@@ -155,11 +184,12 @@ export function WeatherStorySuggestion({
               </p>
               <p className="text-xs text-muted-foreground flex items-center gap-1">
                 <Thermometer className="w-3 h-3" />
-                {temperature}°C • {weather.charAt(0).toUpperCase() + weather.slice(1)}
+                {temperature}°C •{" "}
+                {weather.charAt(0).toUpperCase() + weather.slice(1)}
               </p>
             </div>
           </div>
-          
+
           <button
             onClick={() => {
               setIsVisible(false);
@@ -187,7 +217,7 @@ export function WeatherStorySuggestion({
             </span>
           ))}
         </div>
-        
+
         <button
           onClick={() => onAccept(suggestedStoryTypes)}
           className="w-full mt-4 h-10 bg-amber text-midnight rounded-xl font-semibold text-sm hover:bg-sunset-gold transition-colors"
@@ -206,25 +236,29 @@ export function WeatherMapOverlay() {
   const overlayStyles: Record<WeatherCondition, React.CSSProperties> = {
     clear: {},
     cloudy: {
-      background: "linear-gradient(180deg, rgba(200, 200, 210, 0.1) 0%, transparent 50%)",
+      background:
+        "linear-gradient(180deg, rgba(200, 200, 210, 0.1) 0%, transparent 50%)",
     },
     rain: {
-      background: "linear-gradient(180deg, rgba(100, 120, 140, 0.15) 0%, rgba(80, 100, 120, 0.1) 100%)",
+      background:
+        "linear-gradient(180deg, rgba(100, 120, 140, 0.15) 0%, rgba(80, 100, 120, 0.1) 100%)",
     },
     fog: {
-      background: "linear-gradient(180deg, rgba(220, 220, 230, 0.3) 0%, rgba(200, 200, 210, 0.2) 100%)",
+      background:
+        "linear-gradient(180deg, rgba(220, 220, 230, 0.3) 0%, rgba(200, 200, 210, 0.2) 100%)",
       backdropFilter: "blur(1px)",
     },
     wind: {},
     storm: {
-      background: "linear-gradient(180deg, rgba(60, 70, 90, 0.2) 0%, rgba(40, 50, 70, 0.15) 100%)",
+      background:
+        "linear-gradient(180deg, rgba(60, 70, 90, 0.2) 0%, rgba(40, 50, 70, 0.15) 100%)",
     },
   };
 
   if (weather === "clear" || weather === "wind") return null;
 
   return (
-    <div 
+    <div
       className="absolute inset-0 pointer-events-none z-10 transition-all duration-1000"
       style={overlayStyles[weather]}
     >

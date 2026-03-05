@@ -28,10 +28,13 @@ import {
 export function TestimonyAdminPanel() {
   const { toast } = useToast();
   const { data: testimonies = [], isLoading } = useTestimonies();
-  const { createTestimony, updateTestimony, deleteTestimony } = useTestimonyAdmin();
+  const { createTestimony, updateTestimony, deleteTestimony } =
+    useTestimonyAdmin();
 
   const [formOpen, setFormOpen] = useState(false);
-  const [editingTestimony, setEditingTestimony] = useState<Testimony | null>(null);
+  const [editingTestimony, setEditingTestimony] = useState<Testimony | null>(
+    null,
+  );
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
@@ -40,7 +43,8 @@ export function TestimonyAdminPanel() {
     const matchesSearch =
       t.person_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       t.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = categoryFilter === "all" || t.category === categoryFilter;
+    const matchesCategory =
+      categoryFilter === "all" || t.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
 
@@ -83,7 +87,9 @@ export function TestimonyAdminPanel() {
         is_featured: !testimony.is_featured,
       });
       toast({
-        title: testimony.is_featured ? "Removed from featured" : "Added to featured",
+        title: testimony.is_featured
+          ? "Removed from featured"
+          : "Added to featured",
       });
     } catch (error: any) {
       toast({

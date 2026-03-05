@@ -1,5 +1,16 @@
 import { useState } from "react";
-import { ArrowLeft, Download, Play, Pause, MapPin, Clock, ChevronRight, Wifi, WifiOff, AlertTriangle } from "lucide-react";
+import {
+  ArrowLeft,
+  Download,
+  Play,
+  Pause,
+  MapPin,
+  Clock,
+  ChevronRight,
+  Wifi,
+  WifiOff,
+  AlertTriangle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -16,7 +27,8 @@ const mockRoute = {
   duration: "4.5 hours",
   distance: "116 km",
   stopsCount: 8,
-  coverImage: "https://images.unsplash.com/photo-1612690669207-fed642192c40?w=800&q=80",
+  coverImage:
+    "https://images.unsplash.com/photo-1612690669207-fed642192c40?w=800&q=80",
   isDownloaded: false,
   segments: [
     {
@@ -27,7 +39,8 @@ const mockRoute = {
       distance: "0 km",
       theme: "travel",
       hasSensitiveContent: false,
-      imageUrl: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=400&q=80",
+      imageUrl:
+        "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=400&q=80",
     },
     {
       id: "seg-2",
@@ -37,7 +50,8 @@ const mockRoute = {
       distance: "4.2 km",
       theme: "remembrance",
       hasSensitiveContent: true,
-      imageUrl: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=400&q=80",
+      imageUrl:
+        "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=400&q=80",
     },
     {
       id: "seg-3",
@@ -47,7 +61,8 @@ const mockRoute = {
       distance: "32 km",
       theme: "culture",
       hasSensitiveContent: false,
-      imageUrl: "https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=400&q=80",
+      imageUrl:
+        "https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=400&q=80",
     },
     {
       id: "seg-4",
@@ -57,7 +72,8 @@ const mockRoute = {
       distance: "95 km",
       theme: "travel",
       hasSensitiveContent: false,
-      imageUrl: "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=400&q=80",
+      imageUrl:
+        "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=400&q=80",
     },
     {
       id: "seg-5",
@@ -67,7 +83,8 @@ const mockRoute = {
       distance: "116 km",
       theme: "travel",
       hasSensitiveContent: false,
-      imageUrl: "https://images.unsplash.com/photo-1504567961542-e24d9439a724?w=400&q=80",
+      imageUrl:
+        "https://images.unsplash.com/photo-1504567961542-e24d9439a724?w=400&q=80",
     },
   ],
 };
@@ -132,7 +149,7 @@ export function RoutePage({ routeId, onBack, onStoryClick }: RoutePageProps) {
               "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium backdrop-blur-sm",
               isDownloaded
                 ? "bg-adventure-green/90 text-midnight"
-                : "bg-white/90 text-muted-foreground"
+                : "bg-white/90 text-muted-foreground",
             )}
           >
             {isDownloaded ? (
@@ -155,7 +172,7 @@ export function RoutePage({ routeId, onBack, onStoryClick }: RoutePageProps) {
             {route.title}
           </h1>
           <p className="text-white/80 text-sm mb-4">{route.subtitle}</p>
-          
+
           <div className="flex items-center gap-4 text-white/70 text-sm">
             <div className="flex items-center gap-1.5">
               <Clock className="w-4 h-4" />
@@ -176,11 +193,7 @@ export function RoutePage({ routeId, onBack, onStoryClick }: RoutePageProps) {
       {/* Action buttons */}
       <div className="px-4 -mt-6 relative z-10">
         <div className="flex gap-3">
-          <Button
-            size="lg"
-            className="flex-1"
-            onClick={handleStartRoute}
-          >
+          <Button size="lg" className="flex-1" onClick={handleStartRoute}>
             <Play className="w-5 h-5 mr-2" />
             Start Route
           </Button>
@@ -191,7 +204,8 @@ export function RoutePage({ routeId, onBack, onStoryClick }: RoutePageProps) {
             disabled={isDownloaded || isDownloading}
             className={cn(
               "px-4",
-              isDownloaded && "bg-adventure-green/10 border-adventure-green text-adventure-green"
+              isDownloaded &&
+                "bg-adventure-green/10 border-adventure-green text-adventure-green",
             )}
           >
             {isDownloading ? (
@@ -218,12 +232,12 @@ export function RoutePage({ routeId, onBack, onStoryClick }: RoutePageProps) {
                   "relative z-10 w-4 h-4 rounded-full transition-all",
                   activeSegment === segment.id
                     ? "w-5 h-5 bg-amber ring-4 ring-amber/30"
-                    : themeColors[segment.theme as keyof typeof themeColors]
+                    : themeColors[segment.theme as keyof typeof themeColors],
                 )}
               />
             ))}
           </div>
-          
+
           {/* Map CTA */}
           <button className="flex items-center justify-center gap-2 w-full mt-4 text-amber text-sm font-medium hover:text-sunset-gold transition-colors">
             Open Full Map
@@ -237,7 +251,7 @@ export function RoutePage({ routeId, onBack, onStoryClick }: RoutePageProps) {
         <h2 className="font-serif text-lg font-semibold text-foreground mb-4">
           Route Segments
         </h2>
-        
+
         <div className="space-y-3">
           {route.segments.map((segment, idx) => (
             <button
@@ -246,7 +260,7 @@ export function RoutePage({ routeId, onBack, onStoryClick }: RoutePageProps) {
               className={cn(
                 "w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left",
                 themeBgColors[segment.theme as keyof typeof themeBgColors],
-                activeSegment === segment.id && "ring-2 ring-amber"
+                activeSegment === segment.id && "ring-2 ring-amber",
               )}
             >
               {/* Image */}
@@ -292,7 +306,9 @@ export function RoutePage({ routeId, onBack, onStoryClick }: RoutePageProps) {
 
               {/* Index */}
               <div className="w-8 h-8 rounded-full bg-midnight/10 flex items-center justify-center flex-shrink-0">
-                <span className="text-sm font-medium text-foreground">{idx + 1}</span>
+                <span className="text-sm font-medium text-foreground">
+                  {idx + 1}
+                </span>
               </div>
             </button>
           ))}

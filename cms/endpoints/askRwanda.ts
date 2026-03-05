@@ -10,7 +10,11 @@ import type { PayloadHandler } from "payload";
 
 interface AskRwandaBody {
   messages: Array<{ role: "user" | "assistant" | "system"; content: string }>;
-  context: { type: "location" | "route" | "museum" | "story" | null; id: string; title: string } | null;
+  context: {
+    type: "location" | "route" | "museum" | "story" | null;
+    id: string;
+    title: string;
+  } | null;
   filter: string;
   mode: "standard" | "personal_voices" | "kid_friendly";
   isPreview?: boolean;
@@ -19,19 +23,37 @@ interface AskRwandaBody {
 export const askRwanda: PayloadHandler = async (req) => {
   try {
     const body = ((await req.json?.()) || (req as any).body) as AskRwandaBody;
-    const { messages, context, filter, mode = "standard", isPreview = false } = body || {};
+    const {
+      messages,
+      context,
+      filter,
+      mode = "standard",
+      isPreview = false,
+    } = body || {};
 
     if (!messages?.length) {
-      return Response.json({ error: "messages array is required" }, { status: 400 });
+      return Response.json(
+        { error: "messages array is required" },
+        { status: 400 },
+      );
     }
 
     // ── 1. Fetch AI config from Payload collections ──────
-    const [toneResult, modeResult, safetyResult, modelResult] = await Promise.all([
-      req.payload.find({ collection: "ai-tone-profiles", where: { mode: { equals: mode } }, limit: 1 }),
-      req.payload.find({ collection: "ai-mode-configs", where: { mode: { equals: mode } }, limit: 1 }),
-      req.payload.find({ collection: "ai-safety-settings", limit: 1 }),
-      req.payload.find({ collection: "ai-model-settings", limit: 1 }),
-    ]);
+    const [toneResult, modeResult, safetyResult, modelResult] =
+      await Promise.all([
+        req.payload.find({
+          collection: "ai-tone-profiles",
+          where: { mode: { equals: mode } },
+          limit: 1,
+        }),
+        req.payload.find({
+          collection: "ai-mode-configs",
+          where: { mode: { equals: mode } },
+          limit: 1,
+        }),
+        req.payload.find({ collection: "ai-safety-settings", limit: 1 }),
+        req.payload.find({ collection: "ai-model-settings", limit: 1 }),
+      ]);
 
     const toneProfile = toneResult.docs[0] || null;
     const modeConfig = modeResult.docs[0] || null;
@@ -40,24 +62,36 @@ export const askRwanda: PayloadHandler = async (req) => {
 
     // ── 2. Sensitivity check ─────────────────────────────
     const lastUserMsg = messages.filter((m) => m.role === "user").pop();
-    const sensitiveThemes: string[] = (safetySettings?.sensitiveThemes as string[]) || [
-      "genocide history", "violence", "trauma", "memorial testimonies",
-    ];
+    const sensitiveThemes: string[] =
+      (safetySettings?.sensitiveThemes as string[]) || [
+        "genocide history",
+        "violence",
+        "trauma",
+        "memorial testimonies",
+      ];
     const isSensitive = lastUserMsg
-      ? sensitiveThemes.some((t) => lastUserMsg.content.toLowerCase().includes(t.toLowerCase()))
+      ? sensitiveThemes.some((t) =>
+          lastUserMsg.content.toLowerCase().includes(t.toLowerCase()),
+        )
       : false;
 
     // Kid-friendly mode: block sensitive content
-    if (mode === "kid_friendly" && safetySettings?.hideGraphicInKidMode && isSensitive) {
+    if (
+      mode === "kid_friendly" &&
+      safetySettings?.hideGraphicInKidMode &&
+      isSensitive
+    ) {
       return Response.json({
-        response: "This topic is for older visitors. Would you like to learn about Rwanda's beautiful nature and wildlife instead? 🌿🦍",
+        response:
+          "This topic is for older visitors. Would you like to learn about Rwanda's beautiful nature and wildlife instead? 🌿🦍",
         sources: ["Visit Rwanda"],
         metadata: { isSensitive: true, mode, blocked: true },
       });
     }
 
     // ── 3. Build system prompt ───────────────────────────
-    let systemPrompt = (toneProfile?.systemPrompt as string) ||
+    let systemPrompt =
+      (toneProfile?.systemPrompt as string) ||
       `You are Ask Rwanda, a knowledgeable and respectful AI assistant for the Muraho Rwanda app.
 Your purpose is to help users understand Rwanda's history, heritage, culture, memorials, and travel experiences.
 
@@ -82,19 +116,23 @@ CRITICAL KNOWLEDGE BOUNDARY:
     // Mode-specific instructions
     if (modeConfig) {
       let modeInstr = "\n\nMODE-SPECIFIC INSTRUCTIONS:";
-      if (modeConfig.preferTestimonies) modeInstr += "\n- Prioritize personal testimonies and survivor stories";
+      if (modeConfig.preferTestimonies)
+        modeInstr += "\n- Prioritize personal testimonies and survivor stories";
       if (modeConfig.blockSensitiveContent) {
-        modeInstr += "\n- Filter out disturbing or graphic content\n- Use age-appropriate language";
+        modeInstr +=
+          "\n- Filter out disturbing or graphic content\n- Use age-appropriate language";
       }
       if (modeConfig.useSimplifiedLanguage) {
-        modeInstr += "\n- Use simple, clear language\n- Keep sentences short\n- Use friendly, encouraging tone";
+        modeInstr +=
+          "\n- Use simple, clear language\n- Keep sentences short\n- Use friendly, encouraging tone";
       }
       const sources = [];
       if (modeConfig.includeStories) sources.push("stories");
       if (modeConfig.includePanels) sources.push("museum panels");
       if (modeConfig.includeTestimonies) sources.push("testimonies");
       if (modeConfig.includeRoutes) sources.push("route narratives");
-      if (sources.length) modeInstr += `\n- You may reference: ${sources.join(", ")}`;
+      if (sources.length)
+        modeInstr += `\n- You may reference: ${sources.join(", ")}`;
       systemPrompt += modeInstr;
     }
 
@@ -114,8 +152,13 @@ CRITICAL KNOWLEDGE BOUNDARY:
 
     // ── 4. Forward to FastAPI AI service ─────────────────
     const aiServiceUrl = process.env.AI_SERVICE_URL || "http://ai-service:8000";
+    const latestQuery = (lastUserMsg?.content || "").trim();
     const aiPayload = {
-      messages: [{ role: "system" as const, content: systemPrompt }, ...messages],
+      query: latestQuery,
+      messages: [
+        { role: "system" as const, content: systemPrompt },
+        ...messages,
+      ],
       mode,
       model: (modelSettings?.modelName as string) || "mistral-nemo",
       temperature: (modeConfig?.temperature as number) ?? 0.4,
@@ -132,8 +175,13 @@ CRITICAL KNOWLEDGE BOUNDARY:
 
     if (!aiResponse.ok) {
       const errText = await aiResponse.text();
-      req.payload.logger?.error?.(`AI service error: ${aiResponse.status} — ${errText}`);
-      return Response.json({ error: "AI service unavailable" }, { status: aiResponse.status });
+      req.payload.logger?.error?.(
+        `AI service error: ${aiResponse.status} — ${errText}`,
+      );
+      return Response.json(
+        { error: "AI service unavailable" },
+        { status: aiResponse.status },
+      );
     }
 
     // ── 5. Log conversation ──────────────────────────────
@@ -146,7 +194,9 @@ CRITICAL KNOWLEDGE BOUNDARY:
       context: context ? JSON.stringify(context) : undefined,
     };
 
-    req.payload.create({ collection: "ai-conversations", data: logData as any }).catch(() => {});
+    req.payload
+      .create({ collection: "ai-conversations", data: logData as any })
+      .catch(() => {});
 
     // ── 6. Return (streaming or JSON) ────────────────────
     if (isPreview) {

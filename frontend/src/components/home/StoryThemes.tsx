@@ -16,49 +16,61 @@ const themes: ThemeTile[] = [
     id: "reconciliation",
     title: "Reconciliation",
     subtitle: "Healing journeys",
-    imageUrl: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=400&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=400&q=80",
     accentColor: "#C7C9DD",
-    gradient: "linear-gradient(135deg, rgba(199, 201, 221, 0.4) 0%, rgba(75, 85, 115, 0.6) 100%)",
+    gradient:
+      "linear-gradient(135deg, rgba(199, 201, 221, 0.4) 0%, rgba(75, 85, 115, 0.6) 100%)",
   },
   {
     id: "survival",
     title: "Survival",
     subtitle: "Stories of resilience",
-    imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
     accentColor: "#4B5573",
-    gradient: "linear-gradient(135deg, rgba(75, 85, 115, 0.5) 0%, rgba(44, 62, 80, 0.7) 100%)",
+    gradient:
+      "linear-gradient(135deg, rgba(75, 85, 115, 0.5) 0%, rgba(44, 62, 80, 0.7) 100%)",
   },
   {
     id: "rebuilding",
     title: "Rebuilding",
     subtitle: "A nation renewed",
-    imageUrl: "https://images.unsplash.com/photo-1590080876351-cc4e6ad0f9bd?w=400&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1590080876351-cc4e6ad0f9bd?w=400&q=80",
     accentColor: "#E5A73A",
-    gradient: "linear-gradient(135deg, rgba(229, 167, 58, 0.4) 0%, rgba(196, 106, 74, 0.6) 100%)",
+    gradient:
+      "linear-gradient(135deg, rgba(229, 167, 58, 0.4) 0%, rgba(196, 106, 74, 0.6) 100%)",
   },
   {
     id: "road-stories",
     title: "Road Stories",
     subtitle: "Tales from the journey",
-    imageUrl: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&q=80",
     accentColor: "#70C1A5",
-    gradient: "linear-gradient(135deg, rgba(112, 193, 165, 0.4) 0%, rgba(44, 110, 111, 0.6) 100%)",
+    gradient:
+      "linear-gradient(135deg, rgba(112, 193, 165, 0.4) 0%, rgba(44, 110, 111, 0.6) 100%)",
   },
   {
     id: "culture",
     title: "Culture",
     subtitle: "Living traditions",
-    imageUrl: "https://images.unsplash.com/photo-1504198453319-5ce911bafcde?w=400&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1504198453319-5ce911bafcde?w=400&q=80",
     accentColor: "#C46A4A",
-    gradient: "linear-gradient(135deg, rgba(196, 106, 74, 0.4) 0%, rgba(139, 69, 42, 0.6) 100%)",
+    gradient:
+      "linear-gradient(135deg, rgba(196, 106, 74, 0.4) 0%, rgba(139, 69, 42, 0.6) 100%)",
   },
   {
     id: "nature",
     title: "Nature",
     subtitle: "Land of wonder",
-    imageUrl: "https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?w=400&q=80",
+    imageUrl:
+      "https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?w=400&q=80",
     accentColor: "#2C6E6F",
-    gradient: "linear-gradient(135deg, rgba(44, 110, 111, 0.4) 0%, rgba(28, 70, 72, 0.6) 100%)",
+    gradient:
+      "linear-gradient(135deg, rgba(44, 110, 111, 0.4) 0%, rgba(28, 70, 72, 0.6) 100%)",
   },
 ];
 
@@ -67,21 +79,24 @@ interface StoryThemesProps {
   onTestimonyClick?: (testimonySlug: string) => void;
 }
 
-export function StoryThemes({ onThemeClick, onTestimonyClick }: StoryThemesProps) {
+export function StoryThemes({
+  onThemeClick,
+  onTestimonyClick,
+}: StoryThemesProps) {
   const { data: featuredTestimonies = [] } = useFeaturedTestimonies();
 
   return (
-    <section 
+    <section
       className="py-10 px-4 min-h-[580px]"
-      style={{ 
-        marginTop: '48px',
-        background: 'rgba(250, 244, 234, 0.06)',
+      style={{
+        marginTop: "48px",
+        background: "rgba(250, 244, 234, 0.06)",
       }}
     >
       <h2 className="font-serif text-xl font-semibold text-foreground mb-6 text-center">
         Story Themes
       </h2>
-      
+
       {/* 2x3 Grid */}
       <div className="grid grid-cols-2 gap-4">
         {themes.map((theme, index) => (
@@ -90,10 +105,10 @@ export function StoryThemes({ onThemeClick, onTestimonyClick }: StoryThemesProps
               onClick={() => onThemeClick(theme.id)}
               className={cn(
                 "relative w-full min-h-[175px] aspect-square overflow-hidden group",
-                "transition-all duration-300 hover:scale-[1.02]"
+                "transition-all duration-300 hover:scale-[1.02]",
               )}
-              style={{ 
-                borderRadius: '18px',
+              style={{
+                borderRadius: "18px",
                 animationDelay: `${index * 80}ms`,
                 boxShadow: `0 8px 24px rgba(0, 0, 0, 0.10), 0 0 0 1px ${theme.accentColor}30, inset 0 0 20px ${theme.accentColor}10`,
               }}
@@ -104,55 +119,56 @@ export function StoryThemes({ onThemeClick, onTestimonyClick }: StoryThemesProps
                 alt={theme.title}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
-              
+
               {/* Theme-specific gradient overlay */}
-              <div 
+              <div
                 className="absolute inset-0"
                 style={{ background: theme.gradient }}
               />
-              
+
               {/* Dark vignette at bottom */}
-              <div 
+              <div
                 className="absolute inset-0"
                 style={{
-                  background: 'linear-gradient(180deg, transparent 40%, rgba(10, 26, 47, 0.7) 100%)',
+                  background:
+                    "linear-gradient(180deg, transparent 40%, rgba(10, 26, 47, 0.7) 100%)",
                 }}
               />
-              
+
               {/* Icon overlay glow */}
-              <div 
+              <div
                 className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center"
-                style={{ 
+                style={{
                   background: `${theme.accentColor}40`,
                   boxShadow: `0 0 16px ${theme.accentColor}50`,
                 }}
               >
-                <div 
+                <div
                   className="w-2 h-2 rounded-full"
                   style={{ background: theme.accentColor }}
                 />
               </div>
-              
+
               {/* Accent border glow on hover */}
-              <div 
+              <div
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 style={{
                   boxShadow: `inset 0 0 0 2px ${theme.accentColor}60, 0 0 20px ${theme.accentColor}30`,
-                  borderRadius: '18px',
+                  borderRadius: "18px",
                 }}
               />
-              
+
               {/* Content */}
               <div className="absolute bottom-0 left-0 right-0 p-4 text-left">
-                <h3 
+                <h3
                   className="font-serif text-lg font-semibold leading-tight"
-                  style={{ color: '#FAFAFA' }}
+                  style={{ color: "#FAFAFA" }}
                 >
                   {theme.title}
                 </h3>
-                <p 
+                <p
                   className="text-xs mt-1"
-                  style={{ color: 'rgba(250, 250, 250, 0.75)' }}
+                  style={{ color: "rgba(250, 250, 250, 0.75)" }}
                 >
                   {theme.subtitle}
                 </p>
@@ -161,24 +177,27 @@ export function StoryThemes({ onThemeClick, onTestimonyClick }: StoryThemesProps
 
             {/* Testimony Card - appears under Survival tile */}
             {theme.id === "survival" && featuredTestimonies.length > 0 && (
-              <div 
+              <div
                 className="mt-3 rounded-xl overflow-hidden animate-fade-in"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(75, 85, 115, 0.12) 0%, rgba(199, 201, 221, 0.08) 100%)',
-                  border: '1px solid rgba(75, 85, 115, 0.2)',
+                  background:
+                    "linear-gradient(135deg, rgba(75, 85, 115, 0.12) 0%, rgba(199, 201, 221, 0.08) 100%)",
+                  border: "1px solid rgba(75, 85, 115, 0.2)",
                 }}
               >
                 <div className="px-3 py-2.5 flex items-center justify-between border-b border-muted-indigo/10">
                   <div className="flex items-center gap-2">
-                    <div 
+                    <div
                       className="w-6 h-6 rounded-full flex items-center justify-center"
-                      style={{ background: 'rgba(75, 85, 115, 0.3)' }}
+                      style={{ background: "rgba(75, 85, 115, 0.3)" }}
                     >
                       <Mic className="w-3 h-3 text-soft-lavender" />
                     </div>
-                    <span className="text-xs font-medium text-foreground">Survivor Testimonies</span>
+                    <span className="text-xs font-medium text-foreground">
+                      Survivor Testimonies
+                    </span>
                   </div>
-                  <button 
+                  <button
                     onClick={() => onTestimonyClick?.("all")}
                     className="text-xs text-muted-indigo hover:text-soft-lavender flex items-center gap-0.5 transition-colors"
                   >
@@ -186,7 +205,7 @@ export function StoryThemes({ onThemeClick, onTestimonyClick }: StoryThemesProps
                     <ChevronRight className="w-3 h-3" />
                   </button>
                 </div>
-                
+
                 {/* Testimony Cards */}
                 <div className="p-2 space-y-2">
                   {featuredTestimonies.slice(0, 2).map((testimony) => (

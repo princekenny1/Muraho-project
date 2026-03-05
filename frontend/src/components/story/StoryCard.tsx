@@ -45,7 +45,7 @@ export function StoryCard({
   const modeStyle = modeConfig[mode];
 
   return (
-    <article 
+    <article
       className="story-card cursor-pointer group animate-on-scroll"
       onClick={onClick}
     >
@@ -58,7 +58,7 @@ export function StoryCard({
         />
         {/* Enhanced gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-midnight/70 via-midnight/20 to-transparent" />
-        
+
         {/* Bookmark Button */}
         {id && (
           <div className="absolute top-3 right-3">
@@ -70,7 +70,7 @@ export function StoryCard({
             />
           </div>
         )}
-        
+
         {/* Play Button - Enhanced with hover animation */}
         <button
           onClick={(e) => {
@@ -83,10 +83,12 @@ export function StoryCard({
         </button>
 
         {/* Mode Badge - Enhanced */}
-        <span className={cn(
-          "absolute top-3 left-3 px-3 py-1.5 rounded-full text-xs font-medium backdrop-blur-sm border border-white/10",
-          modeStyle.className
-        )}>
+        <span
+          className={cn(
+            "absolute top-3 left-3 px-3 py-1.5 rounded-full text-xs font-medium backdrop-blur-sm border border-white/10",
+            modeStyle.className,
+          )}
+        >
           {modeStyle.label}
         </span>
       </div>
@@ -98,7 +100,7 @@ export function StoryCard({
         <p className="text-sm text-muted-foreground mt-1.5 line-clamp-2 leading-relaxed">
           {subtitle}
         </p>
-        
+
         <div className="flex items-center gap-4 mt-4 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <Clock className="w-4 h-4" />

@@ -1,5 +1,16 @@
 import { useState } from "react";
-import { Check, ChevronsUpDown, Plus, X, Tag, MapPin, Users, Calendar, Building, Map } from "lucide-react";
+import {
+  Check,
+  ChevronsUpDown,
+  Plus,
+  X,
+  Tag,
+  MapPin,
+  Users,
+  Calendar,
+  Building,
+  Map,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -31,7 +42,15 @@ import { useContentCMS, generateSlug } from "@/hooks/useContentCMS";
 import { useTestimonies } from "@/hooks/useTestimonies";
 import { useDocumentaries } from "@/hooks/useDocumentaries";
 
-type TagType = "theme" | "location" | "person" | "event" | "museum" | "route" | "testimony" | "documentary";
+type TagType =
+  | "theme"
+  | "location"
+  | "person"
+  | "event"
+  | "museum"
+  | "route"
+  | "testimony"
+  | "documentary";
 
 interface UniversalTagPickerProps {
   contentId: string;
@@ -40,15 +59,50 @@ interface UniversalTagPickerProps {
   onChange?: () => void;
 }
 
-const tagTypeConfig: Record<TagType, { icon: any; label: string; color: string }> = {
-  theme: { icon: Tag, label: "Themes", color: "bg-emerald-500/10 text-emerald-700 border-emerald-200" },
-  location: { icon: MapPin, label: "Locations", color: "bg-orange-500/10 text-orange-700 border-orange-200" },
-  person: { icon: Users, label: "People", color: "bg-blue-500/10 text-blue-700 border-blue-200" },
-  event: { icon: Calendar, label: "Events", color: "bg-purple-500/10 text-purple-700 border-purple-200" },
-  museum: { icon: Building, label: "Museums", color: "bg-rose-500/10 text-rose-700 border-rose-200" },
-  route: { icon: Map, label: "Routes", color: "bg-cyan-500/10 text-cyan-700 border-cyan-200" },
-  testimony: { icon: Users, label: "Testimonies", color: "bg-amber-500/10 text-amber-700 border-amber-200" },
-  documentary: { icon: Users, label: "Documentaries", color: "bg-indigo-500/10 text-indigo-700 border-indigo-200" },
+const tagTypeConfig: Record<
+  TagType,
+  { icon: any; label: string; color: string }
+> = {
+  theme: {
+    icon: Tag,
+    label: "Themes",
+    color: "bg-emerald-500/10 text-emerald-700 border-emerald-200",
+  },
+  location: {
+    icon: MapPin,
+    label: "Locations",
+    color: "bg-orange-500/10 text-orange-700 border-orange-200",
+  },
+  person: {
+    icon: Users,
+    label: "People",
+    color: "bg-blue-500/10 text-blue-700 border-blue-200",
+  },
+  event: {
+    icon: Calendar,
+    label: "Events",
+    color: "bg-purple-500/10 text-purple-700 border-purple-200",
+  },
+  museum: {
+    icon: Building,
+    label: "Museums",
+    color: "bg-rose-500/10 text-rose-700 border-rose-200",
+  },
+  route: {
+    icon: Map,
+    label: "Routes",
+    color: "bg-cyan-500/10 text-cyan-700 border-cyan-200",
+  },
+  testimony: {
+    icon: Users,
+    label: "Testimonies",
+    color: "bg-amber-500/10 text-amber-700 border-amber-200",
+  },
+  documentary: {
+    icon: Users,
+    label: "Documentaries",
+    color: "bg-indigo-500/10 text-indigo-700 border-indigo-200",
+  },
 };
 
 export function UniversalTagPicker({
@@ -58,7 +112,10 @@ export function UniversalTagPicker({
   onChange,
 }: UniversalTagPickerProps) {
   const cms = useContentCMS();
-  const { data: contentTags = [], isLoading: tagsLoading } = cms.useContentTags(contentId, contentType);
+  const { data: contentTags = [], isLoading: tagsLoading } = cms.useContentTags(
+    contentId,
+    contentType,
+  );
   const { data: themes = [] } = cms.useThemes();
   const { data: locations = [] } = cms.useLocations();
   const { data: people = [] } = cms.usePeople();
@@ -67,33 +124,45 @@ export function UniversalTagPicker({
   const { data: documentaries = [] } = useDocumentaries();
 
   const [openPicker, setOpenPicker] = useState<TagType | null>(null);
-  const [createDialogType, setCreateDialogType] = useState<TagType | null>(null);
+  const [createDialogType, setCreateDialogType] = useState<TagType | null>(
+    null,
+  );
   const [newItemName, setNewItemName] = useState("");
   const [newItemDescription, setNewItemDescription] = useState("");
 
   const getTagsForType = (type: TagType) => {
     switch (type) {
       case "theme":
-        return themes.map(t => ({ id: t.id, name: t.name, type: "theme" }));
+        return themes.map((t) => ({ id: t.id, name: t.name, type: "theme" }));
       case "location":
-        return locations.map(l => ({ id: l.id, name: l.name, type: "location" }));
+        return locations.map((l) => ({
+          id: l.id,
+          name: l.name,
+          type: "location",
+        }));
       case "person":
-        return people.map(p => ({ id: p.id, name: p.name, type: "person" }));
+        return people.map((p) => ({ id: p.id, name: p.name, type: "person" }));
       case "event":
-        return events.map(e => ({ id: e.id, name: e.name, type: "event" }));
+        return events.map((e) => ({ id: e.id, name: e.name, type: "event" }));
       case "testimony":
-        return testimonies.map(t => ({ id: t.id, name: t.person_name, type: "testimony" }));
+        return testimonies.map((t) => ({
+          id: t.id,
+          name: t.person_name,
+          type: "testimony",
+        }));
       case "documentary":
-        return documentaries.map(d => ({ id: d.id, name: d.title, type: "documentary" }));
+        return documentaries.map((d) => ({
+          id: d.id,
+          name: d.title,
+          type: "documentary",
+        }));
       default:
         return [];
     }
   };
 
   const getSelectedTagIds = (type: TagType) => {
-    return contentTags
-      .filter(t => t.tag_type === type)
-      .map(t => t.tag_id);
+    return contentTags.filter((t) => t.tag_type === type).map((t) => t.tag_id);
   };
 
   const handleAddTag = async (tagType: TagType, tagId: string) => {
@@ -107,7 +176,7 @@ export function UniversalTagPicker({
   };
 
   const handleRemoveTag = async (tagId: string) => {
-    const tag = contentTags.find(t => t.tag_id === tagId);
+    const tag = contentTags.find((t) => t.tag_id === tagId);
     if (tag) {
       await cms.removeContentTag.mutateAsync({
         id: tag.id,
@@ -175,7 +244,7 @@ export function UniversalTagPicker({
 
   const getTagName = (tagType: string, tagId: string) => {
     const tags = getTagsForType(tagType as TagType);
-    return tags.find(t => t.id === tagId)?.name || "Unknown";
+    return tags.find((t) => t.id === tagId)?.name || "Unknown";
   };
 
   if (tagsLoading) {
@@ -185,7 +254,7 @@ export function UniversalTagPicker({
   return (
     <div className="space-y-4">
       <Label className="text-sm font-medium">Tags & Relationships</Label>
-      
+
       {/* Tag Type Pickers */}
       <div className="flex flex-wrap gap-2">
         {allowedTagTypes.map((type) => {
@@ -195,9 +264,9 @@ export function UniversalTagPicker({
           const selectedIds = getSelectedTagIds(type);
 
           return (
-            <Popover 
-              key={type} 
-              open={openPicker === type} 
+            <Popover
+              key={type}
+              open={openPicker === type}
               onOpenChange={(open) => setOpenPicker(open ? type : null)}
             >
               <PopoverTrigger asChild>
@@ -212,11 +281,17 @@ export function UniversalTagPicker({
               </PopoverTrigger>
               <PopoverContent className="w-64 p-0" align="start">
                 <Command>
-                  <CommandInput placeholder={`Search ${config.label.toLowerCase()}...`} />
+                  <CommandInput
+                    placeholder={`Search ${config.label.toLowerCase()}...`}
+                  />
                   <CommandList>
                     <CommandEmpty>
-                      <p className="text-sm text-muted-foreground p-2">No {config.label.toLowerCase()} found.</p>
-                      {["theme", "location", "person", "event"].includes(type) && (
+                      <p className="text-sm text-muted-foreground p-2">
+                        No {config.label.toLowerCase()} found.
+                      </p>
+                      {["theme", "location", "person", "event"].includes(
+                        type,
+                      ) && (
                         <Button
                           variant="ghost"
                           size="sm"
@@ -249,7 +324,7 @@ export function UniversalTagPicker({
                             <Check
                               className={cn(
                                 "mr-2 h-4 w-4",
-                                isSelected ? "opacity-100" : "opacity-0"
+                                isSelected ? "opacity-100" : "opacity-0",
                               )}
                             />
                             {tag.name}
@@ -257,19 +332,20 @@ export function UniversalTagPicker({
                         );
                       })}
                     </CommandGroup>
-                    {["theme", "location", "person", "event"].includes(type) && availableTags.length > 0 && (
-                      <CommandGroup>
-                        <CommandItem
-                          onSelect={() => {
-                            setOpenPicker(null);
-                            setCreateDialogType(type);
-                          }}
-                        >
-                          <Plus className="mr-2 h-4 w-4" />
-                          Create new {type}
-                        </CommandItem>
-                      </CommandGroup>
-                    )}
+                    {["theme", "location", "person", "event"].includes(type) &&
+                      availableTags.length > 0 && (
+                        <CommandGroup>
+                          <CommandItem
+                            onSelect={() => {
+                              setOpenPicker(null);
+                              setCreateDialogType(type);
+                            }}
+                          >
+                            <Plus className="mr-2 h-4 w-4" />
+                            Create new {type}
+                          </CommandItem>
+                        </CommandGroup>
+                      )}
                   </CommandList>
                 </Command>
               </PopoverContent>
@@ -307,12 +383,16 @@ export function UniversalTagPicker({
       )}
 
       {/* Create New Dialog */}
-      <Dialog open={!!createDialogType} onOpenChange={(open) => !open && setCreateDialogType(null)}>
+      <Dialog
+        open={!!createDialogType}
+        onOpenChange={(open) => !open && setCreateDialogType(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Create New {createDialogType}</DialogTitle>
             <DialogDescription>
-              Add a new {createDialogType} to the system and tag this content with it.
+              Add a new {createDialogType} to the system and tag this content
+              with it.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">

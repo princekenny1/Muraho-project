@@ -43,14 +43,19 @@ const documentaryTypes = [
   { value: "memorial", label: "Memorial" },
 ];
 
-export function DocumentaryEditor({ documentaryId, onClose }: DocumentaryEditorProps) {
+export function DocumentaryEditor({
+  documentaryId,
+  onClose,
+}: DocumentaryEditorProps) {
   const { toast } = useToast();
   const { data: documentaries = [] } = useDocumentaries();
   const { createDocumentary, updateDocumentary } = useDocumentaryAdmin();
   const cms = useContentCMS();
-  
+
   const isEditing = !!documentaryId;
-  const existingDocumentary = documentaries?.find((d) => d.id === documentaryId);
+  const existingDocumentary = documentaries?.find(
+    (d) => d.id === documentaryId,
+  );
   const { data: clips = [] } = cms.useDocumentaryClips(documentaryId || "");
 
   const [localClips, setLocalClips] = useState<Partial<DocumentaryClip>[]>([]);
@@ -120,7 +125,10 @@ export function DocumentaryEditor({ documentaryId, onClose }: DocumentaryEditorP
     ]);
   };
 
-  const handleUpdateClip = (index: number, updates: Partial<DocumentaryClip>) => {
+  const handleUpdateClip = (
+    index: number,
+    updates: Partial<DocumentaryClip>,
+  ) => {
     const newClips = [...localClips];
     newClips[index] = { ...newClips[index], ...updates };
     setLocalClips(newClips);
@@ -171,7 +179,9 @@ export function DocumentaryEditor({ documentaryId, onClose }: DocumentaryEditorP
 
       toast({
         title: "Documentary saved",
-        description: publish ? "The documentary is now published." : "Draft saved successfully.",
+        description: publish
+          ? "The documentary is now published."
+          : "Draft saved successfully.",
       });
 
       onClose();
@@ -198,7 +208,11 @@ export function DocumentaryEditor({ documentaryId, onClose }: DocumentaryEditorP
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => handleSave(false)} disabled={isSaving}>
+          <Button
+            variant="outline"
+            onClick={() => handleSave(false)}
+            disabled={isSaving}
+          >
             <Save className="h-4 w-4 mr-2" />
             Save Draft
           </Button>
@@ -237,7 +251,10 @@ export function DocumentaryEditor({ documentaryId, onClose }: DocumentaryEditorP
             <div className="grid gap-4 md:grid-cols-3">
               <div className="space-y-2">
                 <Label>Director</Label>
-                <Input {...form.register("director")} placeholder="Director name" />
+                <Input
+                  {...form.register("director")}
+                  placeholder="Director name"
+                />
               </div>
               <div className="space-y-2">
                 <Label>Year *</Label>
@@ -297,14 +314,18 @@ export function DocumentaryEditor({ documentaryId, onClose }: DocumentaryEditorP
               <div className="flex items-center gap-2">
                 <Switch
                   checked={form.watch("is_featured")}
-                  onCheckedChange={(checked) => form.setValue("is_featured", checked)}
+                  onCheckedChange={(checked) =>
+                    form.setValue("is_featured", checked)
+                  }
                 />
                 <Label>Featured</Label>
               </div>
               <div className="flex items-center gap-2">
                 <Switch
                   checked={form.watch("is_new")}
-                  onCheckedChange={(checked) => form.setValue("is_new", checked)}
+                  onCheckedChange={(checked) =>
+                    form.setValue("is_new", checked)
+                  }
                 />
                 <Label>New Release</Label>
               </div>
@@ -328,16 +349,23 @@ export function DocumentaryEditor({ documentaryId, onClose }: DocumentaryEditorP
             {localClips.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <p>No clips added yet.</p>
-                <p className="text-sm">Add trailers, key clips, or behind-the-scenes content.</p>
+                <p className="text-sm">
+                  Add trailers, key clips, or behind-the-scenes content.
+                </p>
               </div>
             ) : (
               <div className="space-y-4">
                 {localClips.map((clip, index) => (
-                  <div key={clip.id || index} className="border rounded-lg p-4 space-y-3">
+                  <div
+                    key={clip.id || index}
+                    className="border rounded-lg p-4 space-y-3"
+                  >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <GripVertical className="h-4 w-4 text-muted-foreground" />
-                        <Badge variant={clip.is_trailer ? "default" : "secondary"}>
+                        <Badge
+                          variant={clip.is_trailer ? "default" : "secondary"}
+                        >
                           {clip.is_trailer ? "Trailer" : `Clip ${index + 1}`}
                         </Badge>
                       </div>
@@ -356,7 +384,9 @@ export function DocumentaryEditor({ documentaryId, onClose }: DocumentaryEditorP
                         <Label>Title</Label>
                         <Input
                           value={clip.title || ""}
-                          onChange={(e) => handleUpdateClip(index, { title: e.target.value })}
+                          onChange={(e) =>
+                            handleUpdateClip(index, { title: e.target.value })
+                          }
                           placeholder="Clip title"
                         />
                       </div>
@@ -377,7 +407,9 @@ export function DocumentaryEditor({ documentaryId, onClose }: DocumentaryEditorP
                       <Label>Video</Label>
                       <MediaUpload
                         value={clip.video_url}
-                        onChange={(url) => handleUpdateClip(index, { video_url: url || "" })}
+                        onChange={(url) =>
+                          handleUpdateClip(index, { video_url: url || "" })
+                        }
                         mediaType="video"
                         folder="documentaries"
                       />
@@ -387,7 +419,11 @@ export function DocumentaryEditor({ documentaryId, onClose }: DocumentaryEditorP
                       <Label>Description</Label>
                       <Textarea
                         value={clip.description || ""}
-                        onChange={(e) => handleUpdateClip(index, { description: e.target.value })}
+                        onChange={(e) =>
+                          handleUpdateClip(index, {
+                            description: e.target.value,
+                          })
+                        }
                         placeholder="Brief description"
                         rows={2}
                       />
