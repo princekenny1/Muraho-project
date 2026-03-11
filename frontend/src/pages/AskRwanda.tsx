@@ -2,7 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import { ArrowLeft, Send, Sparkles, ExternalLink, ChevronRight, Loader2 } from "lucide-react";
 import { SourceChips } from "@/components/media/SourceChips";
 import { cn } from "@/lib/utils";
+<<<<<<< HEAD
 import kctPost from "@/assets/KCT-Post.jpg";
+=======
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 interface AskRwandaProps {
   onBack: () => void;
@@ -32,7 +35,11 @@ const mockResponses: Record<string, Omit<Message, "id" | "type">> = {
       { id: "aegis", label: "Aegis Trust", url: "https://aegistrust.org", type: "institution" },
     ],
     relatedStories: [
+<<<<<<< HEAD
       { id: "story-1", title: "Kigali Genocide Memorial", imageUrl: kctPost },
+=======
+      { id: "story-1", title: "Kigali Genocide Memorial", imageUrl: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=200&q=80" },
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     ],
   },
   default: {

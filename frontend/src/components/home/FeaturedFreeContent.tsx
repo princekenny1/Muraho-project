@@ -8,9 +8,12 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { Gift, Sparkles, ChevronRight, Play, Clock, Heart } from "lucide-react";
+<<<<<<< HEAD
 import coverImg from "@/assets/cover.jpg";
 import kctPost from "@/assets/KCT-Post.jpg";
 import kctPrecolonial from "@/assets/KCT-precolonial.jpg";
+=======
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 interface FreeStory {
   id: string;
@@ -27,7 +30,11 @@ const freeStories: FreeStory[] = [
     id: "kigali-overview",
     title: "Welcome to Kigali",
     subtitle: "An introduction to Rwanda's vibrant capital",
+<<<<<<< HEAD
     imageUrl: coverImg,
+=======
+    imageUrl: "https://images.unsplash.com/photo-1612690669207-fed642192c40?w=600&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     duration: "5 min",
     type: "open-access",
   },
@@ -35,7 +42,11 @@ const freeStories: FreeStory[] = [
     id: "memorial-intro",
     title: "Understanding Remembrance",
     subtitle: "Why memorials matter in Rwanda's journey",
+<<<<<<< HEAD
     imageUrl: kctPost,
+=======
+    imageUrl: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=600&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     duration: "8 min",
     type: "sponsored",
     sponsorName: "Rwanda Development Board",
@@ -44,7 +55,11 @@ const freeStories: FreeStory[] = [
     id: "nature-preview",
     title: "Land of a Thousand Hills",
     subtitle: "Preview: Rwanda's stunning landscapes",
+<<<<<<< HEAD
     imageUrl: kctPrecolonial,
+=======
+    imageUrl: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     duration: "3 min",
     type: "preview",
   },

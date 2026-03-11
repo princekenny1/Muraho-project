@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
+<<<<<<< HEAD
 import kigaliHero from "@/assets/cover.jpg";
+=======
+import kigaliHero from "@/assets/kigali-hero.jpg";
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 export function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);

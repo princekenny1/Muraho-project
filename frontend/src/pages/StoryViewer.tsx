@@ -19,9 +19,12 @@ import { cn } from "@/lib/utils";
 import { useTimeOfDay } from "@/components/ambient/TimeOfDayMode";
 import { getStoryContentForPath, getPathDuration } from "@/lib/storyContent";
 import { useProgressTracking } from "@/hooks/useProgressTracking";
+<<<<<<< HEAD
 import coverImg from "@/assets/cover.jpg";
 import kctPost from "@/assets/KCT-Post.jpg";
 import kctPrecolonial from "@/assets/KCT-precolonial.jpg";
+=======
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 interface StoryViewerProps {
   storyId?: string;
@@ -35,10 +38,20 @@ const mockStory = {
   category: "Remembrance",
   duration: "15 min",
   hasSensitiveContent: true,
+<<<<<<< HEAD
   coverImage: coverImg,
   videoUrl: "https://example.com/video.mp4",
   thenImage: kctPost,
   nowImage: kctPrecolonial,
+=======
+  coverImage:
+    "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=800&q=80",
+  videoUrl: "https://example.com/video.mp4",
+  thenImage:
+    "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800&q=80",
+  nowImage:
+    "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=800&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
   tags: ["Memorial", "History", "1994"],
   description: `The Kigali Genocide Memorial is the final resting place for more than 250,000 victims of the 1994 Genocide against the Tutsi. It serves as a place of remembrance, learning, and a tribute to the strength of survivors.
 
@@ -88,7 +101,11 @@ The memorial was opened in 2004, on the tenth anniversary of the Rwandan genocid
     },
     {
       type: "image",
+<<<<<<< HEAD
       src: kctPost,
+=======
+      src: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
       caption: "The memorial gardens at sunrise",
     },
     {

@@ -13,8 +13,11 @@ const sources = [
   { id: "unesco", label: "UNESCO", url: "https://unesco.org" },
 ];
 
+<<<<<<< HEAD
 import coverImg from "@/assets/cover.jpg";
 
+=======
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 export function StoryDetail({ onBack }: StoryDetailProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showTranscript, setShowTranscript] = useState(false);
@@ -54,7 +57,11 @@ export function StoryDetail({ onBack }: StoryDetailProps) {
         {/* Hero Image - No Then & Now for story pages */}
         <div className="relative h-64 sm:h-72">
           <img
+<<<<<<< HEAD
             src={coverImg}
+=======
+            src="https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=800&q=80"
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
             alt="Kigali Genocide Memorial"
             className="w-full h-full object-cover"
           />

@@ -1,12 +1,15 @@
 import { cn } from "@/lib/utils";
 import { Mic, ChevronRight } from "lucide-react";
 import { useFeaturedTestimonies } from "@/hooks/useTestimonies";
+<<<<<<< HEAD
 import coverImg from "@/assets/cover.jpg";
 import kctPost from "@/assets/KCT-Post.jpg";
 import kctPrecolonial from "@/assets/KCT-precolonial.jpg";
 import kwaRubangura from "@/assets/kwa_rubangura.jpg";
 import preColonial from "@/assets/pre-colonial.jpg";
 import testimoniesImg from "@/assets/testimonies.jfif";
+=======
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 interface ThemeTile {
   id: string;
@@ -22,7 +25,12 @@ const themes: ThemeTile[] = [
     id: "reconciliation",
     title: "Reconciliation",
     subtitle: "Healing journeys",
+<<<<<<< HEAD
     imageUrl: coverImg,
+=======
+    imageUrl:
+      "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=400&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     accentColor: "#C7C9DD",
     gradient:
       "linear-gradient(135deg, rgba(199, 201, 221, 0.4) 0%, rgba(75, 85, 115, 0.6) 100%)",
@@ -31,7 +39,12 @@ const themes: ThemeTile[] = [
     id: "survival",
     title: "Survival",
     subtitle: "Stories of resilience",
+<<<<<<< HEAD
     imageUrl: testimoniesImg,
+=======
+    imageUrl:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     accentColor: "#4B5573",
     gradient:
       "linear-gradient(135deg, rgba(75, 85, 115, 0.5) 0%, rgba(44, 62, 80, 0.7) 100%)",
@@ -40,7 +53,12 @@ const themes: ThemeTile[] = [
     id: "rebuilding",
     title: "Rebuilding",
     subtitle: "A nation renewed",
+<<<<<<< HEAD
     imageUrl: kctPost,
+=======
+    imageUrl:
+      "https://images.unsplash.com/photo-1590080876351-cc4e6ad0f9bd?w=400&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     accentColor: "#E5A73A",
     gradient:
       "linear-gradient(135deg, rgba(229, 167, 58, 0.4) 0%, rgba(196, 106, 74, 0.6) 100%)",
@@ -49,7 +67,12 @@ const themes: ThemeTile[] = [
     id: "road-stories",
     title: "Road Stories",
     subtitle: "Tales from the journey",
+<<<<<<< HEAD
     imageUrl: kctPrecolonial,
+=======
+    imageUrl:
+      "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     accentColor: "#70C1A5",
     gradient:
       "linear-gradient(135deg, rgba(112, 193, 165, 0.4) 0%, rgba(44, 110, 111, 0.6) 100%)",
@@ -58,7 +81,12 @@ const themes: ThemeTile[] = [
     id: "culture",
     title: "Culture",
     subtitle: "Living traditions",
+<<<<<<< HEAD
     imageUrl: kwaRubangura,
+=======
+    imageUrl:
+      "https://images.unsplash.com/photo-1504198453319-5ce911bafcde?w=400&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     accentColor: "#C46A4A",
     gradient:
       "linear-gradient(135deg, rgba(196, 106, 74, 0.4) 0%, rgba(139, 69, 42, 0.6) 100%)",
@@ -67,7 +95,12 @@ const themes: ThemeTile[] = [
     id: "nature",
     title: "Nature",
     subtitle: "Land of wonder",
+<<<<<<< HEAD
     imageUrl: preColonial,
+=======
+    imageUrl:
+      "https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?w=400&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     accentColor: "#2C6E6F",
     gradient:
       "linear-gradient(135deg, rgba(44, 110, 111, 0.4) 0%, rgba(28, 70, 72, 0.6) 100%)",

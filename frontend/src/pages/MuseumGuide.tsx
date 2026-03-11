@@ -5,9 +5,12 @@ import { Button } from "@/components/ui/button";
 import { AudioPlayer } from "@/components/media/AudioPlayer";
 import { PanoramaViewer } from "@/components/vr/PanoramaViewer";
 import { cn } from "@/lib/utils";
+<<<<<<< HEAD
 import coverImg from "@/assets/cover.jpg";
 import kctPost from "@/assets/KCT-Post.jpg";
 import kctPrecolonial from "@/assets/KCT-precolonial.jpg";
+=======
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 interface MuseumGuideProps {
   museumId: string;
@@ -19,7 +22,11 @@ const mockMuseum = {
   name: "Kigali Genocide Memorial",
   hours: "8:00 AM - 5:00 PM",
   location: "KG 14 Ave, Gisozi, Kigali",
+<<<<<<< HEAD
   coverImage: coverImg,
+=======
+  coverImage: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
   overview: "The Kigali Genocide Memorial is the final resting place for more than 250,000 victims of the 1994 Genocide against the Tutsi.",
   etiquette: [
     "Photography is permitted in the gardens only",
@@ -35,7 +42,11 @@ const mockMuseum = {
       panelCount: 12,
       duration: "45 min",
       hasSensitiveContent: true,
+<<<<<<< HEAD
       imageUrl: kctPost,
+=======
+      imageUrl: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=400&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     },
     {
       id: "ex-2",
@@ -44,7 +55,11 @@ const mockMuseum = {
       panelCount: 8,
       duration: "20 min",
       hasSensitiveContent: true,
+<<<<<<< HEAD
       imageUrl: kctPrecolonial,
+=======
+      imageUrl: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=400&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     },
     {
       id: "ex-3",
@@ -53,7 +68,11 @@ const mockMuseum = {
       panelCount: 6,
       duration: "15 min",
       hasSensitiveContent: false,
+<<<<<<< HEAD
       imageUrl: coverImg,
+=======
+      imageUrl: "https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=400&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     },
   ],
 };

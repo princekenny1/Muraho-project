@@ -3,9 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Clock, MapPin, Info, Play, ChevronRight, Star, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+<<<<<<< HEAD
 import kigaliMemorial from "@/assets/Kigali-Genocide-Memorial.jpg";
 import murambiMemorial from "@/assets/Murambi-Genocide-Memorial.jpg";
 import nyanzaMemorial from "@/assets/Nyanza-of-Butare-Genocide-memorial-.jpg";
+=======
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 interface MemorialsHubProps {
   onBack: () => void;
@@ -21,7 +24,11 @@ const museums = [
     location: "Gisozi, Kigali",
     rating: 4.9,
     reviewCount: 2340,
+<<<<<<< HEAD
     imageUrl: kigaliMemorial,
+=======
+    imageUrl: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     category: "remembrance",
     featured: true,
   },
@@ -33,7 +40,11 @@ const museums = [
     location: "Kimihurura, Kigali",
     rating: 4.7,
     reviewCount: 890,
+<<<<<<< HEAD
     imageUrl: murambiMemorial,
+=======
+    imageUrl: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=400&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     category: "remembrance",
     featured: false,
   },
@@ -45,7 +56,11 @@ const museums = [
     location: "Huye (Butare)",
     rating: 4.6,
     reviewCount: 567,
+<<<<<<< HEAD
     imageUrl: nyanzaMemorial,
+=======
+    imageUrl: "https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=400&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     category: "culture",
     featured: false,
   },
@@ -57,7 +72,11 @@ const museums = [
     location: "Nyarugenge, Kigali",
     rating: 4.5,
     reviewCount: 423,
+<<<<<<< HEAD
     imageUrl: nyanzaMemorial,
+=======
+    imageUrl: "https://images.unsplash.com/photo-1504567961542-e24d9439a724?w=400&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     category: "history",
     featured: false,
   },

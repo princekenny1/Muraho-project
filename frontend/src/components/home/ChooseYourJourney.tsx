@@ -7,7 +7,10 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+<<<<<<< HEAD
 import coverImg from "@/assets/cover.jpg";
+=======
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 interface JourneyCardProps {
   icon: React.ReactNode;
@@ -190,7 +193,12 @@ export function ChooseYourJourney({
   const defaultFeatured = {
     title: "The Thousand Hills: Rwanda's Living Landscape",
     subtitle: "A journey through the valleys and peaks that shaped a nation",
+<<<<<<< HEAD
     imageUrl: coverImg,
+=======
+    imageUrl:
+      "https://images.unsplash.com/photo-1612690669207-fed642192c40?w=800&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
   };
 
   const story = featuredStory || defaultFeatured;

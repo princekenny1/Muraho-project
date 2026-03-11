@@ -5,8 +5,11 @@ import { VRHotspotPin, HotspotType } from "./VRHotspotPin";
 import { VRHotspotSheet, HotspotContent } from "./VRHotspotSheet";
 import { VRControls } from "./VRControls";
 import { useVRScenes, useVRHotspots, VRScene, VRHotspot } from "@/hooks/useVRScenes";
+<<<<<<< HEAD
 import kctPost from "@/assets/KCT-Post.jpg";
 import kwaRubangura from "@/assets/kwa_rubangura.jpg";
+=======
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 interface Hotspot {
   id: string;
@@ -43,7 +46,11 @@ const fallbackScenes: Scene[] = [
   {
     id: "entrance",
     title: "Memorial Entrance",
+<<<<<<< HEAD
     imageUrl: kctPost,
+=======
+    imageUrl: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=1920",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     narrationText: "Welcome to the Kigali Genocide Memorial. This sacred space serves as the final resting place for more than 250,000 victims.",
     hotspots: [
       { id: "1", x: 30, y: 50, title: "Main Gate", description: "The entrance to the memorial grounds.", type: "info" },
@@ -54,7 +61,11 @@ const fallbackScenes: Scene[] = [
   {
     id: "gardens",
     title: "Memorial Gardens",
+<<<<<<< HEAD
     imageUrl: kwaRubangura,
+=======
+    imageUrl: "https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=1920",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     narrationText: "The Memorial Gardens offer a peaceful space for reflection and remembrance.",
     hotspots: [
       { id: "4", x: 25, y: 60, title: "Rose Garden", description: "Each rose represents a life lost.", type: "landmark" },

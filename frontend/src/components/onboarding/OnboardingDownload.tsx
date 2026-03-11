@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Download, MapPin, Clock, Wifi } from "lucide-react";
+<<<<<<< HEAD
 import kigaliHero from "@/assets/cover.jpg";
+=======
+import kigaliHero from "@/assets/kigali-hero.jpg";
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 import { AppIcon } from "@/components/brand";
 
 interface OnboardingDownloadProps {

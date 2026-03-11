@@ -12,19 +12,29 @@ import {
   type ExperienceMode,
 } from "@/components/location";
 import { WeatherProvider } from "@/components/ambient/WeatherTriggeredStories";
+<<<<<<< HEAD
 import coverImg from "@/assets/cover.jpg";
 import kctPost from "@/assets/KCT-Post.jpg";
 import kctPrecolonial from "@/assets/KCT-precolonial.jpg";
+=======
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 // Mock data - would come from database
 const mockLocationData = {
   id: "kigali-genocide-memorial",
   title: "Kigali Genocide Memorial",
   subtitle: "A Place of Remembrance",
+<<<<<<< HEAD
   coverImage: coverImg,
   hasThenAndNow: true,
   thenImage: kctPost,
   nowImage: kctPrecolonial,
+=======
+  coverImage: "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=800&q=80",
+  hasThenAndNow: true,
+  thenImage: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800&q=80",
+  nowImage: "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=800&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
   thenLabel: "1994",
   nowLabel: "2024",
   summary:

@@ -20,9 +20,12 @@ import { useContentAccess } from "@/hooks/useContentAccess";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, MapPin, Building2 } from "lucide-react";
+<<<<<<< HEAD
 import coverImg from "@/assets/cover.jpg";
 import kctPost from "@/assets/KCT-Post.jpg";
 import kctPrecolonial from "@/assets/KCT-precolonial.jpg";
+=======
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 interface HomeProps {
   onStoryClick?: (storyId: string) => void;
@@ -53,7 +56,12 @@ const featuredStory = {
   subtitle: "A journey through the valleys and peaks that shaped a nation",
   duration: "18 min",
   mode: "travel" as const,
+<<<<<<< HEAD
   imageUrl: coverImg,
+=======
+  imageUrl:
+    "https://images.unsplash.com/photo-1612690669207-fed642192c40?w=800&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
   hasSensitiveContent: false,
 };
 
@@ -66,7 +74,12 @@ const nearbyStories = [
     duration: "15 min",
     distance: "1.2 km",
     mode: "remembrance" as const,
+<<<<<<< HEAD
     imageUrl: kctPost,
+=======
+    imageUrl:
+      "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=600&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     hasSensitiveContent: true,
   },
   {
@@ -77,7 +90,12 @@ const nearbyStories = [
     duration: "25 min",
     distance: "0.8 km",
     mode: "culture" as const,
+<<<<<<< HEAD
     imageUrl: kctPrecolonial,
+=======
+    imageUrl:
+      "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&q=80",
+>>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     hasSensitiveContent: false,
   },
 ];
