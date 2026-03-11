@@ -8,12 +8,9 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { Gift, Sparkles, ChevronRight, Play, Clock, Heart } from "lucide-react";
-<<<<<<< HEAD
 import coverImg from "@/assets/cover.jpg";
 import kctPost from "@/assets/KCT-Post.jpg";
 import kctPrecolonial from "@/assets/KCT-precolonial.jpg";
-=======
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 interface FreeStory {
   id: string;
@@ -30,11 +27,7 @@ const freeStories: FreeStory[] = [
     id: "kigali-overview",
     title: "Welcome to Kigali",
     subtitle: "An introduction to Rwanda's vibrant capital",
-<<<<<<< HEAD
     imageUrl: coverImg,
-=======
-    imageUrl: "https://images.unsplash.com/photo-1612690669207-fed642192c40?w=600&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     duration: "5 min",
     type: "open-access",
   },
@@ -42,11 +35,7 @@ const freeStories: FreeStory[] = [
     id: "memorial-intro",
     title: "Understanding Remembrance",
     subtitle: "Why memorials matter in Rwanda's journey",
-<<<<<<< HEAD
     imageUrl: kctPost,
-=======
-    imageUrl: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=600&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     duration: "8 min",
     type: "sponsored",
     sponsorName: "Rwanda Development Board",
@@ -55,11 +44,7 @@ const freeStories: FreeStory[] = [
     id: "nature-preview",
     title: "Land of a Thousand Hills",
     subtitle: "Preview: Rwanda's stunning landscapes",
-<<<<<<< HEAD
     imageUrl: kctPrecolonial,
-=======
-    imageUrl: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     duration: "3 min",
     type: "preview",
   },
@@ -70,26 +55,38 @@ interface FeaturedFreeContentProps {
   onViewAll?: () => void;
 }
 
-export function FeaturedFreeContent({ onStoryClick, onViewAll }: FeaturedFreeContentProps) {
+export function FeaturedFreeContent({
+  onStoryClick,
+  onViewAll,
+}: FeaturedFreeContentProps) {
   const getTypeBadge = (type: FreeStory["type"], sponsorName?: string) => {
     switch (type) {
       case "sponsored":
         return (
-          <Badge variant="outline" className="bg-adventure-green/20 text-adventure-green border-adventure-green/50 text-[10px]">
+          <Badge
+            variant="outline"
+            className="bg-adventure-green/20 text-adventure-green border-adventure-green/50 text-[10px]"
+          >
             <Heart className="w-3 h-3 mr-1" />
             {sponsorName || "Sponsored"}
           </Badge>
         );
       case "open-access":
         return (
-          <Badge variant="outline" className="bg-muted-indigo/20 text-muted-indigo border-muted-indigo/50 text-[10px]">
+          <Badge
+            variant="outline"
+            className="bg-muted-indigo/20 text-muted-indigo border-muted-indigo/50 text-[10px]"
+          >
             <Gift className="w-3 h-3 mr-1" />
             Free
           </Badge>
         );
       case "preview":
         return (
-          <Badge variant="outline" className="bg-amber/20 text-amber border-amber/50 text-[10px]">
+          <Badge
+            variant="outline"
+            className="bg-amber/20 text-amber border-amber/50 text-[10px]"
+          >
             <Sparkles className="w-3 h-3 mr-1" />
             Preview
           </Badge>
@@ -125,7 +122,7 @@ export function FeaturedFreeContent({ onStoryClick, onViewAll }: FeaturedFreeCon
         <CarouselContent className="-ml-3">
           {freeStories.map((story) => (
             <CarouselItem key={story.id} className="pl-3 basis-[80%]">
-              <Card 
+              <Card
                 className="overflow-hidden cursor-pointer group"
                 onClick={() => onStoryClick?.(story.id)}
               >
@@ -136,7 +133,7 @@ export function FeaturedFreeContent({ onStoryClick, onViewAll }: FeaturedFreeCon
                     className="w-full h-full object-cover transition-transform group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                  
+
                   {/* Type Badge */}
                   <div className="absolute top-2 left-2">
                     {getTypeBadge(story.type, story.sponsorName)}
@@ -173,7 +170,9 @@ export function FeaturedFreeContent({ onStoryClick, onViewAll }: FeaturedFreeCon
       <Card className="mt-4 bg-gradient-to-r from-muted-indigo/10 to-forest-teal/10 border-muted-indigo/30">
         <CardContent className="p-4 flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-foreground">Want more stories?</p>
+            <p className="text-sm font-medium text-foreground">
+              Want more stories?
+            </p>
             <p className="text-xs text-muted-foreground">
               Unlock full access or enter your tour code
             </p>

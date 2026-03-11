@@ -1,7 +1,16 @@
 import { useState } from "react";
-import { ArrowLeft, Play, Pause, Heart, Share2, BookOpen, ExternalLink } from "lucide-react";
+import {
+  ArrowLeft,
+  Play,
+  Pause,
+  Heart,
+  Share2,
+  BookOpen,
+  ExternalLink,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import coverImg from "@/assets/cover.jpg";
 
 interface StoryDetailProps {
   onBack: () => void;
@@ -12,12 +21,6 @@ const sources = [
   { id: "aegis", label: "Aegis Trust", url: "https://aegistrust.org" },
   { id: "unesco", label: "UNESCO", url: "https://unesco.org" },
 ];
-
-<<<<<<< HEAD
-import coverImg from "@/assets/cover.jpg";
-
-=======
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 export function StoryDetail({ onBack }: StoryDetailProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showTranscript, setShowTranscript] = useState(false);
@@ -28,22 +31,22 @@ export function StoryDetail({ onBack }: StoryDetailProps) {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-40 safe-area-pt">
         <div className="flex items-center justify-between h-14 px-4 page-content-narrow">
-          <button 
+          <button
             onClick={onBack}
             className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm"
           >
             <ArrowLeft className="w-5 h-5 text-midnight" />
           </button>
           <div className="flex gap-2">
-            <button 
+            <button
               onClick={() => setIsSaved(!isSaved)}
               className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm"
             >
-              <Heart 
+              <Heart
                 className={cn(
                   "w-5 h-5",
-                  isSaved ? "fill-terracotta text-terracotta" : "text-midnight"
-                )} 
+                  isSaved ? "fill-terracotta text-terracotta" : "text-midnight",
+                )}
               />
             </button>
             <button className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm">
@@ -57,11 +60,7 @@ export function StoryDetail({ onBack }: StoryDetailProps) {
         {/* Hero Image - No Then & Now for story pages */}
         <div className="relative h-64 sm:h-72">
           <img
-<<<<<<< HEAD
             src={coverImg}
-=======
-            src="https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=800&q=80"
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
             alt="Kigali Genocide Memorial"
             className="w-full h-full object-cover"
           />
@@ -78,11 +77,12 @@ export function StoryDetail({ onBack }: StoryDetailProps) {
           <h1 className="font-serif text-2xl font-semibold text-foreground">
             Kigali Genocide Memorial
           </h1>
-          
+
           <p className="text-muted-foreground mt-2 leading-relaxed">
-            The Kigali Genocide Memorial is the final resting place for more than 250,000 
-            victims of the 1994 Genocide against the Tutsi. It serves as a place of remembrance, 
-            learning, and a tribute to the strength of survivors.
+            The Kigali Genocide Memorial is the final resting place for more
+            than 250,000 victims of the 1994 Genocide against the Tutsi. It
+            serves as a place of remembrance, learning, and a tribute to the
+            strength of survivors.
           </p>
 
           {/* Audio Player */}
@@ -98,7 +98,7 @@ export function StoryDetail({ onBack }: StoryDetailProps) {
                   <Play className="w-6 h-6 text-midnight fill-midnight ml-1" />
                 )}
               </button>
-              
+
               <div className="flex-1">
                 <div className="flex justify-between text-xs text-white/60 mb-1">
                   <span>4:32</span>
@@ -122,9 +122,10 @@ export function StoryDetail({ onBack }: StoryDetailProps) {
             {showTranscript && (
               <div className="mt-4 p-4 bg-white/10 rounded-lg text-white/90 text-sm leading-relaxed animate-fade-up">
                 <p>
-                  "The memorial gardens serve as a space for quiet reflection. 
-                  As you walk through, you'll see the Wall of Names, inscribed with 
-                  the names of victims whose identities have been recovered..."
+                  "The memorial gardens serve as a space for quiet reflection.
+                  As you walk through, you'll see the Wall of Names, inscribed
+                  with the names of victims whose identities have been
+                  recovered..."
                 </p>
               </div>
             )}

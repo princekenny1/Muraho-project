@@ -1,14 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Clock, MapPin, Info, Play, ChevronRight, Star, BookOpen } from "lucide-react";
+import {
+  ArrowLeft,
+  Clock,
+  MapPin,
+  Info,
+  Play,
+  ChevronRight,
+  Star,
+  BookOpen,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-<<<<<<< HEAD
 import kigaliMemorial from "@/assets/Kigali-Genocide-Memorial.jpg";
 import murambiMemorial from "@/assets/Murambi-Genocide-Memorial.jpg";
 import nyanzaMemorial from "@/assets/Nyanza-of-Butare-Genocide-memorial-.jpg";
-=======
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 interface MemorialsHubProps {
   onBack: () => void;
@@ -24,11 +30,7 @@ const museums = [
     location: "Gisozi, Kigali",
     rating: 4.9,
     reviewCount: 2340,
-<<<<<<< HEAD
     imageUrl: kigaliMemorial,
-=======
-    imageUrl: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     category: "remembrance",
     featured: true,
   },
@@ -40,11 +42,7 @@ const museums = [
     location: "Kimihurura, Kigali",
     rating: 4.7,
     reviewCount: 890,
-<<<<<<< HEAD
     imageUrl: murambiMemorial,
-=======
-    imageUrl: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=400&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     category: "remembrance",
     featured: false,
   },
@@ -56,11 +54,7 @@ const museums = [
     location: "Huye (Butare)",
     rating: 4.6,
     reviewCount: 567,
-<<<<<<< HEAD
     imageUrl: nyanzaMemorial,
-=======
-    imageUrl: "https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=400&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     category: "culture",
     featured: false,
   },
@@ -72,11 +66,7 @@ const museums = [
     location: "Nyarugenge, Kigali",
     rating: 4.5,
     reviewCount: 423,
-<<<<<<< HEAD
     imageUrl: nyanzaMemorial,
-=======
-    imageUrl: "https://images.unsplash.com/photo-1504567961542-e24d9439a724?w=400&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     category: "history",
     featured: false,
   },
@@ -90,8 +80,8 @@ const categoryColors = {
 
 export function MemorialsHub({ onBack, onMuseumClick }: MemorialsHubProps) {
   const navigate = useNavigate();
-  const featuredMuseum = museums.find(m => m.featured);
-  const otherMuseums = museums.filter(m => !m.featured);
+  const featuredMuseum = museums.find((m) => m.featured);
+  const otherMuseums = museums.filter((m) => !m.featured);
 
   return (
     <div className="min-h-screen bg-background">
@@ -115,13 +105,14 @@ export function MemorialsHub({ onBack, onMuseumClick }: MemorialsHubProps) {
         {/* Intro */}
         <div className="mb-6">
           <p className="text-muted-foreground">
-            Explore Rwanda's memorials and museums with audio guides, exhibition maps, and on-site navigation
+            Explore Rwanda's memorials and museums with audio guides, exhibition
+            maps, and on-site navigation
           </p>
         </div>
 
         {/* Exhibition Quick Access Card */}
         <button
-          onClick={() => navigate('/exhibition')}
+          onClick={() => navigate("/exhibition")}
           className="w-full p-4 bg-gradient-to-r from-muted-indigo/10 to-forest-teal/10 rounded-xl border border-muted-indigo/20 mb-6 text-left hover:border-muted-indigo/40 transition-colors"
         >
           <div className="flex items-center gap-3">
@@ -129,8 +120,12 @@ export function MemorialsHub({ onBack, onMuseumClick }: MemorialsHubProps) {
               <BookOpen className="w-6 h-6 text-muted-indigo" />
             </div>
             <div className="flex-1">
-              <h3 className="font-medium text-foreground">Explore Exhibitions</h3>
-              <p className="text-sm text-muted-foreground">Interactive panels with audio guides</p>
+              <h3 className="font-medium text-foreground">
+                Explore Exhibitions
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Interactive panels with audio guides
+              </p>
             </div>
             <ChevronRight className="w-5 h-5 text-muted-foreground" />
           </div>
@@ -149,7 +144,7 @@ export function MemorialsHub({ onBack, onMuseumClick }: MemorialsHubProps) {
               className="w-full h-56 object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-midnight via-midnight/60 to-transparent" />
-            
+
             {/* Featured badge */}
             <div className="absolute top-4 left-4">
               <span className="px-3 py-1 bg-amber text-midnight text-xs font-semibold rounded-full">
@@ -161,8 +156,10 @@ export function MemorialsHub({ onBack, onMuseumClick }: MemorialsHubProps) {
               <h2 className="font-serif text-xl font-semibold text-white">
                 {featuredMuseum.name}
               </h2>
-              <p className="text-white/70 text-sm mt-1">{featuredMuseum.subtitle}</p>
-              
+              <p className="text-white/70 text-sm mt-1">
+                {featuredMuseum.subtitle}
+              </p>
+
               <div className="flex items-center gap-4 mt-3 text-white/60 text-xs">
                 <div className="flex items-center gap-1">
                   <Clock className="w-3.5 h-3.5" />
@@ -180,7 +177,7 @@ export function MemorialsHub({ onBack, onMuseumClick }: MemorialsHubProps) {
         {/* Other Museums */}
         <div className="space-y-3">
           <h3 className="font-semibold text-foreground">All Museums</h3>
-          
+
           {otherMuseums.map((museum) => (
             <button
               key={museum.id}
@@ -196,11 +193,13 @@ export function MemorialsHub({ onBack, onMuseumClick }: MemorialsHubProps) {
                 <div
                   className={cn(
                     "absolute bottom-1 left-1 w-2 h-2 rounded-full",
-                    categoryColors[museum.category as keyof typeof categoryColors]
+                    categoryColors[
+                      museum.category as keyof typeof categoryColors
+                    ],
                   )}
                 />
               </div>
-              
+
               <div className="flex-1 min-w-0">
                 <h4 className="font-medium text-foreground text-sm line-clamp-1">
                   {museum.name}
@@ -219,7 +218,7 @@ export function MemorialsHub({ onBack, onMuseumClick }: MemorialsHubProps) {
                   </span>
                 </div>
               </div>
-              
+
               <ChevronRight className="w-5 h-5 text-muted-foreground flex-shrink-0" />
             </button>
           ))}

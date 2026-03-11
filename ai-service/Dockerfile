@@ -2,6 +2,8 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+ENV PIP_REQUIRE_HASHES=0
+
 # System deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl build-essential && \

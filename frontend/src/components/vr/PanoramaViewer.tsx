@@ -1,15 +1,25 @@
 import { useState, useRef, useEffect, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Compass, Play, Pause, Volume2, Loader2 } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Compass,
+  Play,
+  Pause,
+  Volume2,
+  Loader2,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { VRHotspotPin, HotspotType } from "./VRHotspotPin";
 import { VRHotspotSheet, HotspotContent } from "./VRHotspotSheet";
 import { VRControls } from "./VRControls";
-import { useVRScenes, useVRHotspots, VRScene, VRHotspot } from "@/hooks/useVRScenes";
-<<<<<<< HEAD
+import {
+  useVRScenes,
+  useVRHotspots,
+  VRScene,
+  VRHotspot,
+} from "@/hooks/useVRScenes";
 import kctPost from "@/assets/KCT-Post.jpg";
 import kwaRubangura from "@/assets/kwa_rubangura.jpg";
-=======
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 interface Hotspot {
   id: string;
@@ -46,29 +56,45 @@ const fallbackScenes: Scene[] = [
   {
     id: "entrance",
     title: "Memorial Entrance",
-<<<<<<< HEAD
     imageUrl: kctPost,
-=======
-    imageUrl: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=1920",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
-    narrationText: "Welcome to the Kigali Genocide Memorial. This sacred space serves as the final resting place for more than 250,000 victims.",
+    narrationText:
+      "Welcome to the Kigali Genocide Memorial. This sacred space serves as the final resting place for more than 250,000 victims.",
     hotspots: [
-      { id: "1", x: 30, y: 50, title: "Main Gate", description: "The entrance to the memorial grounds.", type: "info" },
-      { id: "2", x: 60, y: 45, title: "Audio Guide", description: "Begin your audio-guided journey.", duration: 180, type: "audio" },
+      {
+        id: "1",
+        x: 30,
+        y: 50,
+        title: "Main Gate",
+        description: "The entrance to the memorial grounds.",
+        type: "info",
+      },
+      {
+        id: "2",
+        x: 60,
+        y: 45,
+        title: "Audio Guide",
+        description: "Begin your audio-guided journey.",
+        duration: 180,
+        type: "audio",
+      },
       { id: "3", x: 85, y: 55, title: "Memorial Gardens", type: "next-scene" },
     ],
   },
   {
     id: "gardens",
     title: "Memorial Gardens",
-<<<<<<< HEAD
     imageUrl: kwaRubangura,
-=======
-    imageUrl: "https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=1920",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
-    narrationText: "The Memorial Gardens offer a peaceful space for reflection and remembrance.",
+    narrationText:
+      "The Memorial Gardens offer a peaceful space for reflection and remembrance.",
     hotspots: [
-      { id: "4", x: 25, y: 60, title: "Rose Garden", description: "Each rose represents a life lost.", type: "landmark" },
+      {
+        id: "4",
+        x: 25,
+        y: 60,
+        title: "Rose Garden",
+        description: "Each rose represents a life lost.",
+        type: "landmark",
+      },
       { id: "5", x: 15, y: 50, title: "Memorial Entrance", type: "next-scene" },
     ],
   },
@@ -99,18 +125,20 @@ export function PanoramaViewer({
 }: PanoramaViewerProps) {
   // Fetch scenes from database
   const { data: dbScenes, isLoading: scenesLoading } = useVRScenes(museumId);
-  
+
   // Track which scene we need hotspots for
   const [currentSceneIndex, setCurrentSceneIndex] = useState(0);
-  const [loadedHotspots, setLoadedHotspots] = useState<Record<string, Hotspot[]>>({});
-  
+  const [loadedHotspots, setLoadedHotspots] = useState<
+    Record<string, Hotspot[]>
+  >({});
+
   // Determine which scenes to use (database or props or fallback)
   const baseScenes: Scene[] = useMemo(() => {
     if (propScenes && propScenes.length > 0) {
       return propScenes;
     }
     if (dbScenes && dbScenes.length > 0) {
-      return dbScenes.map(dbScene => ({
+      return dbScenes.map((dbScene) => ({
         id: dbScene.id,
         title: dbScene.title,
         imageUrl: dbScene.panorama_url,
@@ -123,15 +151,15 @@ export function PanoramaViewer({
 
   // Current scene ID for hotspot fetching
   const currentSceneId = baseScenes[currentSceneIndex]?.id;
-  
+
   // Fetch hotspots for current scene
   const { data: dbHotspots } = useVRHotspots(
-    propScenes ? undefined : currentSceneId // Only fetch if using database scenes
+    propScenes ? undefined : currentSceneId, // Only fetch if using database scenes
   );
 
   // Merge hotspots into scenes
   const scenes: Scene[] = useMemo(() => {
-    return baseScenes.map(scene => {
+    return baseScenes.map((scene) => {
       // If we have database hotspots for this scene
       if (dbHotspots && scene.id === currentSceneId && !propScenes) {
         return {
@@ -153,7 +181,7 @@ export function PanoramaViewer({
   // Cache hotspots when loaded
   useEffect(() => {
     if (dbHotspots && currentSceneId && !propScenes) {
-      setLoadedHotspots(prev => ({
+      setLoadedHotspots((prev) => ({
         ...prev,
         [currentSceneId]: dbHotspots.map(mapDatabaseHotspot),
       }));
@@ -163,7 +191,7 @@ export function PanoramaViewer({
   // Set initial scene index when scenes load
   useEffect(() => {
     if (initialSceneId && scenes.length > 0) {
-      const idx = scenes.findIndex(s => s.id === initialSceneId);
+      const idx = scenes.findIndex((s) => s.id === initialSceneId);
       if (idx >= 0) setCurrentSceneIndex(idx);
     }
   }, [initialSceneId, scenes.length]);
@@ -179,7 +207,7 @@ export function PanoramaViewer({
   const [narrationProgress, setNarrationProgress] = useState(0);
   const [showNarrationText, setShowNarrationText] = useState(true);
   const [showHotspotSheet, setShowHotspotSheet] = useState(false);
-  
+
   const containerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const lastX = useRef(0);
@@ -193,7 +221,7 @@ export function PanoramaViewer({
     if (guidedMode && isPlaying && !isQuietMode && currentScene) {
       startNarration();
     }
-    
+
     return () => {
       if (narrationTimerRef.current) {
         clearInterval(narrationTimerRef.current);
@@ -204,10 +232,10 @@ export function PanoramaViewer({
   // Auto-advance in guided mode (every 8 seconds after narration)
   useEffect(() => {
     if (!guidedMode || !isPlaying || !currentScene) return;
-    
+
     const timer = setTimeout(() => {
       if (currentSceneIndex < scenes.length - 1) {
-        setCurrentSceneIndex(prev => prev + 1);
+        setCurrentSceneIndex((prev) => prev + 1);
         setRotation(0);
       } else {
         setIsPlaying(false);
@@ -221,23 +249,23 @@ export function PanoramaViewer({
   // Narration simulation helpers
   const startNarration = () => {
     if (isMuted || isQuietMode) return;
-    
+
     setIsNarrating(true);
     setNarrationProgress(0);
     setShowNarrationText(true);
-    
+
     const duration = 6000;
     const interval = 100;
     let elapsed = 0;
-    
+
     if (narrationTimerRef.current) {
       clearInterval(narrationTimerRef.current);
     }
-    
+
     narrationTimerRef.current = setInterval(() => {
       elapsed += interval;
       setNarrationProgress((elapsed / duration) * 100);
-      
+
       if (elapsed >= duration) {
         if (narrationTimerRef.current) {
           clearInterval(narrationTimerRef.current);
@@ -272,7 +300,10 @@ export function PanoramaViewer({
       <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
         <div className="text-center">
           <p className="text-white/70">No scenes available</p>
-          <button onClick={onClose} className="mt-4 px-4 py-2 bg-amber text-midnight rounded-lg">
+          <button
+            onClick={onClose}
+            className="mt-4 px-4 py-2 bg-amber text-midnight rounded-lg"
+          >
             Close
           </button>
         </div>
@@ -294,7 +325,7 @@ export function PanoramaViewer({
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging.current) return;
     const deltaX = e.clientX - lastX.current;
-    setRotation(prev => prev + deltaX * 0.3);
+    setRotation((prev) => prev + deltaX * 0.3);
     lastX.current = e.clientX;
   };
 
@@ -310,12 +341,12 @@ export function PanoramaViewer({
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging.current) return;
     const deltaX = e.touches[0].clientX - lastX.current;
-    setRotation(prev => prev + deltaX * 0.3);
+    setRotation((prev) => prev + deltaX * 0.3);
     lastX.current = e.touches[0].clientX;
   };
 
   const goToScene = (sceneId: string) => {
-    const index = scenes.findIndex(s => s.id === sceneId);
+    const index = scenes.findIndex((s) => s.id === sceneId);
     if (index >= 0) {
       setCurrentSceneIndex(index);
       setActiveHotspot(null);
@@ -327,8 +358,18 @@ export function PanoramaViewer({
   const handleHotspotClick = (hotspot: Hotspot) => {
     if (hotspot.type === "next-scene") {
       // Use target scene ID from database or fallback to title matching
-      const targetId = hotspot.targetSceneId || 
-        scenes.find(s => s.title.toLowerCase().includes(hotspot.title.toLowerCase().replace("continue to ", "").replace("go to ", "")))?.id ||
+      const targetId =
+        hotspot.targetSceneId ||
+        scenes.find((s) =>
+          s.title
+            .toLowerCase()
+            .includes(
+              hotspot.title
+                .toLowerCase()
+                .replace("continue to ", "")
+                .replace("go to ", ""),
+            ),
+        )?.id ||
         scenes[0]?.id;
       if (targetId) goToScene(targetId);
     } else if (!guidedMode) {
@@ -351,10 +392,13 @@ export function PanoramaViewer({
   const handleNavigateFromSheet = (hotspotId: string) => {
     if (activeHotspot?.type === "next-scene") {
       // Use target scene ID from database or fallback to title matching
-      const targetId = activeHotspot.targetSceneId || 
-        (activeHotspot.title.includes("Entrance") ? scenes.find(s => s.title.includes("Entrance"))?.id :
-         activeHotspot.title.includes("Gardens") ? scenes.find(s => s.title.includes("Gardens"))?.id :
-         scenes[0]?.id);
+      const targetId =
+        activeHotspot.targetSceneId ||
+        (activeHotspot.title.includes("Entrance")
+          ? scenes.find((s) => s.title.includes("Entrance"))?.id
+          : activeHotspot.title.includes("Gardens")
+            ? scenes.find((s) => s.title.includes("Gardens"))?.id
+            : scenes[0]?.id);
       if (targetId) goToScene(targetId);
     }
   };
@@ -364,7 +408,7 @@ export function PanoramaViewer({
     setGuidedMode(!guidedMode);
     setShowHotspotSheet(false);
     setActiveHotspot(null);
-    
+
     if (!guidedMode) {
       setIsPlaying(true);
       startNarration();
@@ -375,7 +419,9 @@ export function PanoramaViewer({
   };
 
   // Convert hotspot to sheet content format
-  const getHotspotContent = (hotspot: Hotspot | null): HotspotContent | null => {
+  const getHotspotContent = (
+    hotspot: Hotspot | null,
+  ): HotspotContent | null => {
     if (!hotspot) return null;
     return {
       id: hotspot.id,
@@ -389,12 +435,9 @@ export function PanoramaViewer({
   };
 
   return (
-    <div 
+    <div
       ref={containerRef}
-      className={cn(
-        "fixed inset-0 z-50 bg-black",
-        isFullscreen && "absolute"
-      )}
+      className={cn("fixed inset-0 z-50 bg-black", isFullscreen && "absolute")}
     >
       {/* Panorama container */}
       <div
@@ -408,23 +451,23 @@ export function PanoramaViewer({
         onTouchEnd={handleMouseUp}
       >
         {/* Simulated 360 view with transform */}
-        <div 
+        <div
           className="absolute inset-0 transition-transform duration-100"
-          style={{ 
+          style={{
             backgroundImage: `url(${currentScene.imageUrl})`,
-            backgroundSize: 'cover',
+            backgroundSize: "cover",
             backgroundPosition: `${50 + rotation * 0.1}% center`,
             transform: `scale(1.2)`,
           }}
         />
 
         {/* Vignette overlay - reduced in quiet mode */}
-        <div 
+        <div
           className={cn(
             "absolute inset-0 transition-opacity duration-500",
-            isQuietMode 
+            isQuietMode
               ? "bg-gradient-to-t from-black/30 via-transparent to-black/20"
-              : "bg-gradient-to-t from-black/60 via-transparent to-black/40"
+              : "bg-gradient-to-t from-black/60 via-transparent to-black/40",
           )}
         />
 
@@ -438,76 +481,84 @@ export function PanoramaViewer({
             isActive={activeHotspot?.id === hotspot.id}
             isQuietMode={isQuietMode}
             onClick={() => handleHotspotClick(hotspot)}
-            style={{ 
-              left: `${hotspot.x}%`, 
+            style={{
+              left: `${hotspot.x}%`,
               top: `${hotspot.y}%`,
             }}
           />
         ))}
 
         {/* Narration overlay - guided mode only, hidden in quiet mode */}
-        {guidedMode && showNarrationText && currentScene.narrationText && !isQuietMode && (
-          <div className="absolute top-20 left-4 right-4 z-20">
-            <div className="bg-black/70 backdrop-blur-sm rounded-2xl p-4 animate-fade-in">
-              <div className="flex items-center gap-2 mb-2">
-                <div className={cn(
-                  "w-8 h-8 rounded-full bg-amber flex items-center justify-center",
-                  isNarrating && "animate-pulse"
-                )}>
-                  <Volume2 className="w-4 h-4 text-midnight" />
-                </div>
-                <span className="text-white/70 text-xs font-medium uppercase tracking-wider">
-                  {isNarrating ? "Narrating..." : "Narration Complete"}
-                </span>
-                {!isMuted && isNarrating && (
-                  <div className="flex gap-0.5 ml-auto">
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="w-1 bg-amber rounded-full animate-pulse"
-                        style={{
-                          height: `${8 + i * 4}px`,
-                          animationDelay: `${i * 0.15}s`,
-                        }}
-                      />
-                    ))}
+        {guidedMode &&
+          showNarrationText &&
+          currentScene.narrationText &&
+          !isQuietMode && (
+            <div className="absolute top-20 left-4 right-4 z-20">
+              <div className="bg-black/70 backdrop-blur-sm rounded-2xl p-4 animate-fade-in">
+                <div className="flex items-center gap-2 mb-2">
+                  <div
+                    className={cn(
+                      "w-8 h-8 rounded-full bg-amber flex items-center justify-center",
+                      isNarrating && "animate-pulse",
+                    )}
+                  >
+                    <Volume2 className="w-4 h-4 text-midnight" />
                   </div>
-                )}
+                  <span className="text-white/70 text-xs font-medium uppercase tracking-wider">
+                    {isNarrating ? "Narrating..." : "Narration Complete"}
+                  </span>
+                  {!isMuted && isNarrating && (
+                    <div className="flex gap-0.5 ml-auto">
+                      {[1, 2, 3].map((i) => (
+                        <div
+                          key={i}
+                          className="w-1 bg-amber rounded-full animate-pulse"
+                          style={{
+                            height: `${8 + i * 4}px`,
+                            animationDelay: `${i * 0.15}s`,
+                          }}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Narration progress bar */}
+                <div className="h-1 bg-white/20 rounded-full mb-3 overflow-hidden">
+                  <div
+                    className="h-full bg-amber transition-all duration-100 rounded-full"
+                    style={{ width: `${narrationProgress}%` }}
+                  />
+                </div>
+
+                {/* Narration text / captions */}
+                <p className="text-white text-sm leading-relaxed">
+                  {currentScene.narrationText}
+                </p>
+
+                <button
+                  onClick={() => setShowNarrationText(false)}
+                  className="mt-3 text-white/50 text-xs hover:text-white/80 transition-colors"
+                >
+                  Hide captions
+                </button>
               </div>
-
-              {/* Narration progress bar */}
-              <div className="h-1 bg-white/20 rounded-full mb-3 overflow-hidden">
-                <div
-                  className="h-full bg-amber transition-all duration-100 rounded-full"
-                  style={{ width: `${narrationProgress}%` }}
-                />
-              </div>
-
-              {/* Narration text / captions */}
-              <p className="text-white text-sm leading-relaxed">
-                {currentScene.narrationText}
-              </p>
-
-              <button
-                onClick={() => setShowNarrationText(false)}
-                className="mt-3 text-white/50 text-xs hover:text-white/80 transition-colors"
-              >
-                Hide captions
-              </button>
             </div>
-          </div>
-        )}
+          )}
 
         {/* Show captions button when hidden */}
-        {guidedMode && !showNarrationText && currentScene.narrationText && !isQuietMode && (
-          <button
-            onClick={() => setShowNarrationText(true)}
-            className="absolute top-20 left-4 z-20 px-3 py-2 bg-black/50 backdrop-blur-sm rounded-lg text-white/70 text-xs hover:text-white transition-colors flex items-center gap-2"
-          >
-            <Volume2 className="w-3 h-3" />
-            Show captions
-          </button>
-        )}
+        {guidedMode &&
+          !showNarrationText &&
+          currentScene.narrationText &&
+          !isQuietMode && (
+            <button
+              onClick={() => setShowNarrationText(true)}
+              className="absolute top-20 left-4 z-20 px-3 py-2 bg-black/50 backdrop-blur-sm rounded-lg text-white/70 text-xs hover:text-white transition-colors flex items-center gap-2"
+            >
+              <Volume2 className="w-3 h-3" />
+              Show captions
+            </button>
+          )}
       </div>
 
       {/* Header controls with reset view and quiet mode */}
@@ -543,9 +594,9 @@ export function PanoramaViewer({
                   onClick={() => !guidedMode && handleModeToggle()}
                   className={cn(
                     "px-4 py-2 rounded-full text-sm font-medium transition-all",
-                    guidedMode 
-                      ? "bg-amber text-midnight" 
-                      : "text-white/70 hover:text-white"
+                    guidedMode
+                      ? "bg-amber text-midnight"
+                      : "text-white/70 hover:text-white",
                   )}
                 >
                   <span className="flex items-center gap-2">
@@ -557,9 +608,9 @@ export function PanoramaViewer({
                   onClick={() => guidedMode && handleModeToggle()}
                   className={cn(
                     "px-4 py-2 rounded-full text-sm font-medium transition-all",
-                    !guidedMode 
-                      ? "bg-white text-midnight" 
-                      : "text-white/70 hover:text-white"
+                    !guidedMode
+                      ? "bg-white text-midnight"
+                      : "text-white/70 hover:text-white",
                   )}
                 >
                   <span className="flex items-center gap-2">
@@ -571,17 +622,19 @@ export function PanoramaViewer({
             </div>
 
             {/* Scene title - minimal in quiet mode */}
-            <div className={cn(
-              "text-center mb-4 transition-opacity",
-              isQuietMode && "opacity-60"
-            )}>
+            <div
+              className={cn(
+                "text-center mb-4 transition-opacity",
+                isQuietMode && "opacity-60",
+              )}
+            >
               <h2 className="font-serif text-xl font-semibold text-white">
                 {currentScene.title}
               </h2>
               {!isQuietMode && (
                 <p className="text-sm text-white/70 mt-1">
-                  {guidedMode 
-                    ? "Sit back and enjoy the narrated tour" 
+                  {guidedMode
+                    ? "Sit back and enjoy the narrated tour"
                     : "Drag to look around • Tap hotspots to explore"}
                 </p>
               )}
@@ -595,9 +648,9 @@ export function PanoramaViewer({
                   onClick={() => goToScene(scene.id)}
                   className={cn(
                     "w-2 h-2 rounded-full transition-all",
-                    index === currentSceneIndex 
-                      ? "bg-amber w-6" 
-                      : "bg-white/40 hover:bg-white/60"
+                    index === currentSceneIndex
+                      ? "bg-amber w-6"
+                      : "bg-white/40 hover:bg-white/60",
                   )}
                   aria-label={`Go to ${scene.title}`}
                 />
@@ -618,7 +671,7 @@ export function PanoramaViewer({
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                
+
                 <button
                   onClick={() => setIsPlaying(!isPlaying)}
                   className="w-14 h-14 bg-amber rounded-full flex items-center justify-center text-midnight shadow-lg hover:scale-105 transition-transform"
@@ -634,7 +687,9 @@ export function PanoramaViewer({
 
                 <button
                   onClick={() => {
-                    setCurrentSceneIndex(Math.min(scenes.length - 1, currentSceneIndex + 1));
+                    setCurrentSceneIndex(
+                      Math.min(scenes.length - 1, currentSceneIndex + 1),
+                    );
                     setRotation(0);
                   }}
                   disabled={currentSceneIndex === scenes.length - 1}
@@ -660,10 +715,12 @@ export function PanoramaViewer({
                   <ChevronLeft className="w-4 h-4" />
                   Previous
                 </button>
-                
+
                 <button
                   onClick={() => {
-                    setCurrentSceneIndex(Math.min(scenes.length - 1, currentSceneIndex + 1));
+                    setCurrentSceneIndex(
+                      Math.min(scenes.length - 1, currentSceneIndex + 1),
+                    );
                     setRotation(0);
                   }}
                   disabled={currentSceneIndex === scenes.length - 1}

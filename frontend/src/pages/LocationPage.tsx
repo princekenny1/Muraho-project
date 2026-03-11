@@ -12,29 +12,19 @@ import {
   type ExperienceMode,
 } from "@/components/location";
 import { WeatherProvider } from "@/components/ambient/WeatherTriggeredStories";
-<<<<<<< HEAD
 import coverImg from "@/assets/cover.jpg";
 import kctPost from "@/assets/KCT-Post.jpg";
 import kctPrecolonial from "@/assets/KCT-precolonial.jpg";
-=======
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 // Mock data - would come from database
 const mockLocationData = {
   id: "kigali-genocide-memorial",
   title: "Kigali Genocide Memorial",
   subtitle: "A Place of Remembrance",
-<<<<<<< HEAD
   coverImage: coverImg,
   hasThenAndNow: true,
   thenImage: kctPost,
   nowImage: kctPrecolonial,
-=======
-  coverImage: "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=800&q=80",
-  hasThenAndNow: true,
-  thenImage: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800&q=80",
-  nowImage: "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=800&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
   thenLabel: "1994",
   nowLabel: "2024",
   summary:
@@ -48,8 +38,10 @@ export default function LocationPage() {
   const { slug } = useParams();
 
   const [journeyMood, setJourneyMood] = useState<JourneyMood>("curious");
-  const [explorationStyle, setExplorationStyle] = useState<ExplorationStyle>("basic");
-  const [experienceMode, setExperienceMode] = useState<ExperienceMode>("standard");
+  const [explorationStyle, setExplorationStyle] =
+    useState<ExplorationStyle>("basic");
+  const [experienceMode, setExperienceMode] =
+    useState<ExperienceMode>("standard");
   const [isSaved, setIsSaved] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -59,7 +51,7 @@ export default function LocationPage() {
       setExplorationStyle(style);
       setExperienceMode(mode);
     },
-    []
+    [],
   );
 
   const handleViewWeatherStories = () => {
@@ -156,15 +148,17 @@ export default function LocationPage() {
 
           {/* Ask Rwanda Contextual Button */}
           <Button
-            onClick={() => navigate('/ask-rwanda', {
-              state: {
-                context: {
-                  type: 'museum',
-                  id: location.id,
-                  title: location.title,
-                }
-              }
-            })}
+            onClick={() =>
+              navigate("/ask-rwanda", {
+                state: {
+                  context: {
+                    type: "museum",
+                    id: location.id,
+                    title: location.title,
+                  },
+                },
+              })
+            }
             className="w-full bg-amber hover:bg-sunset-gold text-midnight gap-2"
           >
             <Sparkles className="w-4 h-4" />

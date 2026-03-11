@@ -8,14 +8,10 @@ import {
   BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-<<<<<<< HEAD
 import coverImg from "@/assets/cover.jpg";
 import kctPost from "@/assets/KCT-Post.jpg";
 import kctPrecolonial from "@/assets/KCT-precolonial.jpg";
 import kwaRubangura from "@/assets/kwa_rubangura.jpg";
-import preColonial from "@/assets/pre-colonial.jpg";
-=======
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 interface ThemeDetailProps {
   themeId: string;
@@ -85,12 +81,7 @@ const mockStories = [
     subtitle: "One woman's journey from grief to reconciliation",
     duration: "12 min",
     type: "audio",
-<<<<<<< HEAD
     imageUrl: coverImg,
-=======
-    imageUrl:
-      "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=400&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     isEditorsPick: true,
   },
   {
@@ -99,12 +90,7 @@ const mockStories = [
     subtitle: "Community justice and healing",
     duration: "18 min",
     type: "video",
-<<<<<<< HEAD
     imageUrl: kctPost,
-=======
-    imageUrl:
-      "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=400&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     isEditorsPick: false,
   },
   {
@@ -113,12 +99,7 @@ const mockStories = [
     subtitle: "How Rwanda marks its annual day of unity",
     duration: "8 min",
     type: "read",
-<<<<<<< HEAD
     imageUrl: kctPrecolonial,
-=======
-    imageUrl:
-      "https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=400&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     isEditorsPick: false,
   },
   {
@@ -127,12 +108,7 @@ const mockStories = [
     subtitle: "The transformation of a former participant",
     duration: "15 min",
     type: "audio",
-<<<<<<< HEAD
     imageUrl: kwaRubangura,
-=======
-    imageUrl:
-      "https://images.unsplash.com/photo-1504567961542-e24d9439a724?w=400&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     isEditorsPick: false,
   },
 ];

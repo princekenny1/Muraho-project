@@ -1,16 +1,26 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Clock, MapPin, Info, Play, Pause, ChevronRight, ChevronLeft, AlertTriangle, Map, Headphones, View } from "lucide-react";
+import {
+  ArrowLeft,
+  Clock,
+  MapPin,
+  Info,
+  Play,
+  Pause,
+  ChevronRight,
+  ChevronLeft,
+  AlertTriangle,
+  Map,
+  Headphones,
+  View,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AudioPlayer } from "@/components/media/AudioPlayer";
 import { PanoramaViewer } from "@/components/vr/PanoramaViewer";
 import { cn } from "@/lib/utils";
-<<<<<<< HEAD
 import coverImg from "@/assets/cover.jpg";
 import kctPost from "@/assets/KCT-Post.jpg";
 import kctPrecolonial from "@/assets/KCT-precolonial.jpg";
-=======
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 interface MuseumGuideProps {
   museumId: string;
@@ -22,12 +32,9 @@ const mockMuseum = {
   name: "Kigali Genocide Memorial",
   hours: "8:00 AM - 5:00 PM",
   location: "KG 14 Ave, Gisozi, Kigali",
-<<<<<<< HEAD
   coverImage: coverImg,
-=======
-  coverImage: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
-  overview: "The Kigali Genocide Memorial is the final resting place for more than 250,000 victims of the 1994 Genocide against the Tutsi.",
+  overview:
+    "The Kigali Genocide Memorial is the final resting place for more than 250,000 victims of the 1994 Genocide against the Tutsi.",
   etiquette: [
     "Photography is permitted in the gardens only",
     "Please maintain a respectful silence inside",
@@ -42,11 +49,7 @@ const mockMuseum = {
       panelCount: 12,
       duration: "45 min",
       hasSensitiveContent: true,
-<<<<<<< HEAD
       imageUrl: kctPost,
-=======
-      imageUrl: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=400&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     },
     {
       id: "ex-2",
@@ -55,11 +58,7 @@ const mockMuseum = {
       panelCount: 8,
       duration: "20 min",
       hasSensitiveContent: true,
-<<<<<<< HEAD
       imageUrl: kctPrecolonial,
-=======
-      imageUrl: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=400&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     },
     {
       id: "ex-3",
@@ -68,11 +67,7 @@ const mockMuseum = {
       panelCount: 6,
       duration: "15 min",
       hasSensitiveContent: false,
-<<<<<<< HEAD
       imageUrl: coverImg,
-=======
-      imageUrl: "https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=400&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     },
   ],
 };
@@ -88,11 +83,11 @@ export function MuseumGuide({ museumId, onBack }: MuseumGuideProps) {
   const [showVirtualTour, setShowVirtualTour] = useState(false);
 
   const museum = mockMuseum;
-  const activeEx = museum.exhibitions.find(e => e.id === activeExhibition);
+  const activeEx = museum.exhibitions.find((e) => e.id === activeExhibition);
 
   const handleExhibitionClick = (exhibitionId: string) => {
     // Navigate to the new exhibition panel page
-    navigate('/exhibition');
+    navigate("/exhibition");
   };
 
   const handleStartGuide = () => {
@@ -102,13 +97,13 @@ export function MuseumGuide({ museumId, onBack }: MuseumGuideProps) {
 
   const handleNextPanel = () => {
     if (activeEx && currentPanel < activeEx.panelCount) {
-      setCurrentPanel(prev => prev + 1);
+      setCurrentPanel((prev) => prev + 1);
     }
   };
 
   const handlePrevPanel = () => {
     if (currentPanel > 1) {
-      setCurrentPanel(prev => prev - 1);
+      setCurrentPanel((prev) => prev - 1);
     }
   };
 
@@ -147,7 +142,7 @@ export function MuseumGuide({ museumId, onBack }: MuseumGuideProps) {
                   key={idx}
                   className={cn(
                     "w-2 h-2 rounded-full transition-colors",
-                    idx + 1 === currentPanel ? "bg-amber" : "bg-white/20"
+                    idx + 1 === currentPanel ? "bg-amber" : "bg-white/20",
                   )}
                 />
               ))}
@@ -160,8 +155,9 @@ export function MuseumGuide({ museumId, onBack }: MuseumGuideProps) {
               Panel {currentPanel}: The Beginning
             </h2>
             <p className="text-white/70 leading-relaxed">
-              This panel describes the historical context leading up to the events of 1994, 
-              including the colonial legacy and growing tensions...
+              This panel describes the historical context leading up to the
+              events of 1994, including the colonial legacy and growing
+              tensions...
             </p>
           </div>
 
@@ -198,7 +194,9 @@ export function MuseumGuide({ museumId, onBack }: MuseumGuideProps) {
 
           {/* Exhibition selector */}
           <div className="mt-8">
-            <h3 className="text-sm font-medium text-white/60 mb-3">Switch Exhibition</h3>
+            <h3 className="text-sm font-medium text-white/60 mb-3">
+              Switch Exhibition
+            </h3>
             <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
               {museum.exhibitions.map((ex) => (
                 <button
@@ -211,7 +209,7 @@ export function MuseumGuide({ museumId, onBack }: MuseumGuideProps) {
                     "px-4 py-2 rounded-full text-sm whitespace-nowrap transition-colors",
                     activeExhibition === ex.id
                       ? "bg-amber text-midnight"
-                      : "bg-white/10 text-white/70 hover:bg-white/20"
+                      : "bg-white/10 text-white/70 hover:bg-white/20",
                   )}
                 >
                   {ex.title}
@@ -267,9 +265,9 @@ export function MuseumGuide({ museumId, onBack }: MuseumGuideProps) {
             <Headphones className="w-5 h-5 mr-2" />
             On-Site Guide
           </Button>
-          <Button 
-            size="lg" 
-            variant="outline" 
+          <Button
+            size="lg"
+            variant="outline"
             className="flex-1"
             onClick={() => setShowVirtualTour(true)}
           >
@@ -279,11 +277,11 @@ export function MuseumGuide({ museumId, onBack }: MuseumGuideProps) {
         </div>
 
         {/* Exhibition Quick Access */}
-        <Button 
-          size="lg" 
+        <Button
+          size="lg"
           variant="secondary"
           className="w-full mb-6"
-          onClick={() => navigate('/exhibition')}
+          onClick={() => navigate("/exhibition")}
         >
           <Play className="w-5 h-5 mr-2" />
           Explore Exhibition Panels
@@ -293,18 +291,25 @@ export function MuseumGuide({ museumId, onBack }: MuseumGuideProps) {
         {/* Overview */}
         <div className="mb-6">
           <h2 className="font-semibold text-foreground mb-2">Overview</h2>
-          <p className="text-muted-foreground leading-relaxed">{museum.overview}</p>
+          <p className="text-muted-foreground leading-relaxed">
+            {museum.overview}
+          </p>
         </div>
 
         {/* Etiquette */}
         <div className="mb-6 p-4 bg-muted-indigo/5 rounded-xl border-l-4 border-muted-indigo">
           <div className="flex items-center gap-2 mb-2">
             <Info className="w-4 h-4 text-muted-indigo" />
-            <h3 className="font-medium text-foreground text-sm">Visitor Etiquette</h3>
+            <h3 className="font-medium text-foreground text-sm">
+              Visitor Etiquette
+            </h3>
           </div>
           <ul className="space-y-1.5">
             {museum.etiquette.map((item, idx) => (
-              <li key={idx} className="text-muted-foreground text-sm flex items-start gap-2">
+              <li
+                key={idx}
+                className="text-muted-foreground text-sm flex items-start gap-2"
+              >
                 <span className="text-muted-indigo">•</span>
                 {item}
               </li>

@@ -13,14 +13,11 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-<<<<<<< HEAD
 import coverImg from "@/assets/cover.jpg";
 import kctPost from "@/assets/KCT-Post.jpg";
 import kctPrecolonial from "@/assets/KCT-precolonial.jpg";
 import kwaRubangura from "@/assets/kwa_rubangura.jpg";
 import preColonial from "@/assets/pre-colonial.jpg";
-=======
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 interface RoutePageProps {
   routeId?: string;
@@ -35,12 +32,7 @@ const mockRoute = {
   duration: "4.5 hours",
   distance: "116 km",
   stopsCount: 8,
-<<<<<<< HEAD
   coverImage: coverImg,
-=======
-  coverImage:
-    "https://images.unsplash.com/photo-1612690669207-fed642192c40?w=800&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
   isDownloaded: false,
   segments: [
     {
@@ -51,12 +43,7 @@ const mockRoute = {
       distance: "0 km",
       theme: "travel",
       hasSensitiveContent: false,
-<<<<<<< HEAD
       imageUrl: kctPost,
-=======
-      imageUrl:
-        "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=400&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     },
     {
       id: "seg-2",
@@ -66,12 +53,7 @@ const mockRoute = {
       distance: "4.2 km",
       theme: "remembrance",
       hasSensitiveContent: true,
-<<<<<<< HEAD
       imageUrl: kctPrecolonial,
-=======
-      imageUrl:
-        "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=400&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     },
     {
       id: "seg-3",
@@ -81,12 +63,7 @@ const mockRoute = {
       distance: "32 km",
       theme: "culture",
       hasSensitiveContent: false,
-<<<<<<< HEAD
       imageUrl: kwaRubangura,
-=======
-      imageUrl:
-        "https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=400&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     },
     {
       id: "seg-4",
@@ -96,12 +73,7 @@ const mockRoute = {
       distance: "95 km",
       theme: "travel",
       hasSensitiveContent: false,
-<<<<<<< HEAD
       imageUrl: preColonial,
-=======
-      imageUrl:
-        "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=400&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     },
     {
       id: "seg-5",
@@ -111,12 +83,7 @@ const mockRoute = {
       distance: "116 km",
       theme: "travel",
       hasSensitiveContent: false,
-<<<<<<< HEAD
       imageUrl: coverImg,
-=======
-      imageUrl:
-        "https://images.unsplash.com/photo-1504567961542-e24d9439a724?w=400&q=80",
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     },
   ],
 };

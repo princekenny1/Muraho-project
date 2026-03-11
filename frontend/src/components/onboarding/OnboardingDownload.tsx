@@ -1,11 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Download, MapPin, Clock, Wifi } from "lucide-react";
-<<<<<<< HEAD
 import kigaliHero from "@/assets/cover.jpg";
-=======
-import kigaliHero from "@/assets/kigali-hero.jpg";
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 import { AppIcon } from "@/components/brand";
 
 interface OnboardingDownloadProps {
@@ -14,7 +10,11 @@ interface OnboardingDownloadProps {
   onBack: () => void;
 }
 
-export function OnboardingDownload({ onComplete, onSkip, onBack }: OnboardingDownloadProps) {
+export function OnboardingDownload({
+  onComplete,
+  onSkip,
+  onBack,
+}: OnboardingDownloadProps) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -22,7 +22,7 @@ export function OnboardingDownload({ onComplete, onSkip, onBack }: OnboardingDow
     setIsDownloading(true);
     // Simulate download
     const interval = setInterval(() => {
-      setProgress(prev => {
+      setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           setTimeout(onComplete, 500);
@@ -40,7 +40,7 @@ export function OnboardingDownload({ onComplete, onSkip, onBack }: OnboardingDow
         <div className="flex justify-center mb-6">
           <AppIcon size="sm" className="opacity-60" />
         </div>
-        
+
         <div className="mb-8">
           <span className="text-amber text-sm font-medium">Step 3 of 3</span>
           <h1 className="font-serif text-2xl font-semibold text-midnight mt-2">
@@ -53,7 +53,7 @@ export function OnboardingDownload({ onComplete, onSkip, onBack }: OnboardingDow
 
         {/* Route Card */}
         <div className="bg-white rounded-xl overflow-hidden shadow-card">
-        <div className="relative aspect-[2/1]">
+          <div className="relative aspect-[2/1]">
             <img
               src={kigaliHero}
               alt="Kigali to Musanze route"
@@ -89,7 +89,7 @@ export function OnboardingDownload({ onComplete, onSkip, onBack }: OnboardingDow
             {isDownloading ? (
               <div className="space-y-2">
                 <div className="h-2 bg-cloud-mist rounded-full overflow-hidden">
-                  <div 
+                  <div
                     className="h-full bg-amber transition-all duration-300 rounded-full"
                     style={{ width: `${progress}%` }}
                   />
@@ -113,19 +113,11 @@ export function OnboardingDownload({ onComplete, onSkip, onBack }: OnboardingDow
       <div className="flex flex-col gap-3 mt-6">
         {!isDownloading && (
           <>
-            <Button 
-              className="w-full" 
-              size="lg"
-              onClick={handleDownload}
-            >
+            <Button className="w-full" size="lg" onClick={handleDownload}>
               <Download className="w-4 h-4 mr-2" />
               Download Route Pack
             </Button>
-            <Button 
-              variant="ghost"
-              className="w-full" 
-              onClick={onSkip}
-            >
+            <Button variant="ghost" className="w-full" onClick={onSkip}>
               Skip for now
             </Button>
           </>

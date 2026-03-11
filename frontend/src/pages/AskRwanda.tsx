@@ -1,11 +1,15 @@
 import { useState, useRef, useEffect } from "react";
-import { ArrowLeft, Send, Sparkles, ExternalLink, ChevronRight, Loader2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Send,
+  Sparkles,
+  ExternalLink,
+  ChevronRight,
+  Loader2,
+} from "lucide-react";
 import { SourceChips } from "@/components/media/SourceChips";
 import { cn } from "@/lib/utils";
-<<<<<<< HEAD
 import kctPost from "@/assets/KCT-Post.jpg";
-=======
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
 
 interface AskRwandaProps {
   onBack: () => void;
@@ -16,7 +20,12 @@ interface Message {
   id: string;
   type: "user" | "assistant";
   content: string;
-  sources?: Array<{ id: string; label: string; url?: string; type?: "museum" | "institution" | "archive" }>;
+  sources?: Array<{
+    id: string;
+    label: string;
+    url?: string;
+    type?: "museum" | "institution" | "archive";
+  }>;
   relatedStories?: Array<{ id: string; title: string; imageUrl: string }>;
 }
 
@@ -29,21 +38,29 @@ const suggestions = [
 
 const mockResponses: Record<string, Omit<Message, "id" | "type">> = {
   "What happened in 1994?": {
-    content: "In April 1994, Rwanda experienced a genocide against the Tutsi that lasted approximately 100 days. During this period, an estimated 800,000 to 1 million people were killed. The genocide was carried out by extremist Hutu militias and civilians against Tutsi and moderate Hutu populations.\n\nToday, Rwanda has made remarkable strides in reconciliation and development. The country has established memorials and education programs to ensure this history is never forgotten.",
+    content:
+      "In April 1994, Rwanda experienced a genocide against the Tutsi that lasted approximately 100 days. During this period, an estimated 800,000 to 1 million people were killed. The genocide was carried out by extremist Hutu militias and civilians against Tutsi and moderate Hutu populations.\n\nToday, Rwanda has made remarkable strides in reconciliation and development. The country has established memorials and education programs to ensure this history is never forgotten.",
     sources: [
-      { id: "kgm", label: "Kigali Genocide Memorial", url: "https://kgm.rw", type: "museum" },
-      { id: "aegis", label: "Aegis Trust", url: "https://aegistrust.org", type: "institution" },
+      {
+        id: "kgm",
+        label: "Kigali Genocide Memorial",
+        url: "https://kgm.rw",
+        type: "museum",
+      },
+      {
+        id: "aegis",
+        label: "Aegis Trust",
+        url: "https://aegistrust.org",
+        type: "institution",
+      },
     ],
     relatedStories: [
-<<<<<<< HEAD
       { id: "story-1", title: "Kigali Genocide Memorial", imageUrl: kctPost },
-=======
-      { id: "story-1", title: "Kigali Genocide Memorial", imageUrl: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=200&q=80" },
->>>>>>> 60346d0ed6d5964851272f16016d9f71536da636
     ],
   },
   default: {
-    content: "I'm here to help you learn about Rwanda's history, culture, and places to visit. I draw from trusted sources including the Kigali Genocide Memorial, Aegis Trust, UNESCO, and official tourism resources.\n\nFeel free to ask me about memorials, cultural experiences, or travel recommendations.",
+    content:
+      "I'm here to help you learn about Rwanda's history, culture, and places to visit. I draw from trusted sources including the Kigali Genocide Memorial, Aegis Trust, UNESCO, and official tourism resources.\n\nFeel free to ask me about memorials, cultural experiences, or travel recommendations.",
     sources: [
       { id: "kgm", label: "Kigali Genocide Memorial", type: "museum" },
       { id: "rdb", label: "Visit Rwanda", type: "institution" },
@@ -75,12 +92,12 @@ export function AskRwanda({ onBack, onStoryClick }: AskRwandaProps) {
       content: text.trim(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
 
     // Simulate AI response
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     const response = mockResponses[text.trim()] || mockResponses.default;
     const assistantMessage: Message = {
@@ -89,7 +106,7 @@ export function AskRwanda({ onBack, onStoryClick }: AskRwandaProps) {
       ...response,
     };
 
-    setMessages(prev => [...prev, assistantMessage]);
+    setMessages((prev) => [...prev, assistantMessage]);
     setIsLoading(false);
   };
 
@@ -129,8 +146,8 @@ export function AskRwanda({ onBack, onStoryClick }: AskRwandaProps) {
               Ask me anything about Rwanda
             </h2>
             <p className="text-muted-foreground text-sm mb-8">
-              I can help with history, memorials, culture, and travel tips. 
-              All answers are sourced from trusted institutions.
+              I can help with history, memorials, culture, and travel tips. All
+              answers are sourced from trusted institutions.
             </p>
 
             {/* Suggestions */}
@@ -154,7 +171,7 @@ export function AskRwanda({ onBack, onStoryClick }: AskRwandaProps) {
                 key={message.id}
                 className={cn(
                   "animate-fade-up",
-                  message.type === "user" && "flex justify-end"
+                  message.type === "user" && "flex justify-end",
                 )}
               >
                 <div
@@ -162,48 +179,57 @@ export function AskRwanda({ onBack, onStoryClick }: AskRwandaProps) {
                     "max-w-[85%] rounded-2xl px-4 py-3",
                     message.type === "user"
                       ? "bg-amber text-midnight rounded-br-sm"
-                      : "bg-card border border-border/50 rounded-bl-sm"
+                      : "bg-card border border-border/50 rounded-bl-sm",
                   )}
                 >
-                  <p className={cn(
-                    "text-sm leading-relaxed whitespace-pre-line",
-                    message.type === "user" ? "text-midnight" : "text-foreground"
-                  )}>
+                  <p
+                    className={cn(
+                      "text-sm leading-relaxed whitespace-pre-line",
+                      message.type === "user"
+                        ? "text-midnight"
+                        : "text-foreground",
+                    )}
+                  >
                     {message.content}
                   </p>
 
                   {/* Sources */}
                   {message.sources && message.sources.length > 0 && (
                     <div className="mt-3 pt-3 border-t border-border/30">
-                      <p className="text-xs text-muted-foreground mb-2">Sources</p>
+                      <p className="text-xs text-muted-foreground mb-2">
+                        Sources
+                      </p>
                       <SourceChips sources={message.sources} />
                     </div>
                   )}
 
                   {/* Related stories */}
-                  {message.relatedStories && message.relatedStories.length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-border/30">
-                      <p className="text-xs text-muted-foreground mb-2">Related Stories</p>
-                      <div className="flex gap-2 overflow-x-auto">
-                        {message.relatedStories.map((story) => (
-                          <button
-                            key={story.id}
-                            onClick={() => onStoryClick?.(story.id)}
-                            className="flex items-center gap-2 px-3 py-2 bg-midnight/5 rounded-lg hover:bg-midnight/10 transition-colors"
-                          >
-                            <img
-                              src={story.imageUrl}
-                              alt={story.title}
-                              className="w-8 h-8 rounded object-cover"
-                            />
-                            <span className="text-xs font-medium text-foreground whitespace-nowrap">
-                              {story.title}
-                            </span>
-                          </button>
-                        ))}
+                  {message.relatedStories &&
+                    message.relatedStories.length > 0 && (
+                      <div className="mt-3 pt-3 border-t border-border/30">
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Related Stories
+                        </p>
+                        <div className="flex gap-2 overflow-x-auto">
+                          {message.relatedStories.map((story) => (
+                            <button
+                              key={story.id}
+                              onClick={() => onStoryClick?.(story.id)}
+                              className="flex items-center gap-2 px-3 py-2 bg-midnight/5 rounded-lg hover:bg-midnight/10 transition-colors"
+                            >
+                              <img
+                                src={story.imageUrl}
+                                alt={story.title}
+                                className="w-8 h-8 rounded object-cover"
+                              />
+                              <span className="text-xs font-medium text-foreground whitespace-nowrap">
+                                {story.title}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                 </div>
               </div>
             ))}
@@ -246,7 +272,7 @@ export function AskRwanda({ onBack, onStoryClick }: AskRwandaProps) {
                 "w-12 h-12 rounded-xl flex items-center justify-center transition-colors",
                 input.trim()
                   ? "bg-amber text-midnight hover:bg-sunset-gold"
-                  : "bg-muted text-muted-foreground"
+                  : "bg-muted text-muted-foreground",
               )}
             >
               <Send className="w-5 h-5" />
