@@ -10,6 +10,18 @@ From `infra/docker`:
 docker compose up -d --build postgres redis minio minio-init payload payload-seed
 ```
 
+For production without AI services (recommended for low-resource servers):
+
+```bash
+docker compose --profile production up -d
+```
+
+AI services are opt-in and only start if you add the `ai` profile:
+
+```bash
+docker compose --profile production --profile ai up -d
+```
+
 What this now does automatically:
 
 - starts PostgreSQL, Redis, MinIO
@@ -60,3 +72,23 @@ npm run seed
 - To change seed credentials, set:
   - `SEED_ADMIN_EMAIL`
   - `SEED_ADMIN_PASSWORD`
+
+## Production TLS bootstrap (first deployment)
+
+When certificates do not exist yet, `nginx` in production mode will fail if it loads `infra/nginx/production.conf` directly.
+
+From `infra/docker` run:
+
+```bash
+# 1) Start HTTP-only nginx + certbot volumes
+docker compose --profile production -f docker-compose.yml -f docker-compose.certbot-init.yml up -d nginx
+
+# 2) Request initial certificates
+docker compose --profile production run --rm certbot certonly --webroot -w /var/www/certbot \
+  -d muraho.rw -d www.muraho.rw --email admin@muraho.rw --agree-tos --no-eff-email
+
+# 3) Start normal production stack with HTTPS config
+docker compose --profile production up -d nginx certbot
+```
+
+Renewal container (`certbot`) runs continuously in production profile and renews every 12h check interval.
