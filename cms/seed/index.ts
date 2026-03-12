@@ -40,7 +40,7 @@ async function ensureAdminUser() {
     body: JSON.stringify({
       email: ADMIN_EMAIL,
       password: ADMIN_PASSWORD,
-      name: "Admin",
+      fullName: "Admin",
       role: "admin",
     }),
   });
@@ -56,6 +56,21 @@ async function ensureAdminUser() {
     register.response.status === 409
   ) {
     console.log(`ℹ️ Admin already exists: ${ADMIN_EMAIL}`);
+    return;
+  }
+
+  const existingLogin = await jsonRequest("/api/users/login", {
+    method: "POST",
+    body: JSON.stringify({
+      email: ADMIN_EMAIL,
+      password: ADMIN_PASSWORD,
+    }),
+  });
+
+  if (existingLogin.response.ok && existingLogin.body?.token) {
+    console.log(
+      `ℹ️ first-register returned ${register.response.status}, but admin login succeeded; continuing`,
+    );
     return;
   }
 
