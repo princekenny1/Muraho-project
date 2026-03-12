@@ -210,7 +210,3 @@ volumes:
   redisdata:
   miniodata:
   payload_uploads:
-  ollama_models:
-  hf_cache:
-  certbot_webroot:
-  certbot_certs:
