@@ -35,15 +35,25 @@ async function jsonRequest(path: string, init: RequestInit = {}) {
 }
 
 async function ensureAdminUser() {
-  const register = await jsonRequest("/api/users/first-register", {
+  const minimalRegister = await jsonRequest("/api/users/first-register", {
     method: "POST",
     body: JSON.stringify({
       email: ADMIN_EMAIL,
       password: ADMIN_PASSWORD,
-      fullName: "Admin",
-      role: "admin",
     }),
   });
+
+  const register = minimalRegister.response.ok
+    ? minimalRegister
+    : await jsonRequest("/api/users/first-register", {
+        method: "POST",
+        body: JSON.stringify({
+          email: ADMIN_EMAIL,
+          password: ADMIN_PASSWORD,
+          fullName: "Admin",
+          role: "admin",
+        }),
+      });
 
   if (register.response.ok) {
     console.log(`✅ Admin created: ${ADMIN_EMAIL}`);
