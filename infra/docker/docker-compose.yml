@@ -187,7 +187,7 @@ services:
       - production
 
   # ── Certbot (auto SSL renewal) ──────────────────────────
-    # ...existing code...
+  # ...existing code...
 
 networks:
   muraho:
