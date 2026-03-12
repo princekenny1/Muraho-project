@@ -87,23 +87,28 @@ BEGIN RETURN QUERY
     AND (point_types IS NULL OR sp.point_type = ANY(point_types));
 END; $$ LANGUAGE plpgsql;
 
--- RAG semantic search
-DO $$ BEGIN
+DO $$
+BEGIN
   IF EXISTS (SELECT 1 FROM pg_extension WHERE extname='vector') THEN
-    EXECUTE $fn$
-      CREATE OR REPLACE FUNCTION search_embeddings(
-        query_embedding vector(1024), match_count INT DEFAULT 5, similarity_threshold FLOAT DEFAULT 0.3, filter_type TEXT DEFAULT NULL
-      ) RETURNS TABLE (id BIGINT, content_id TEXT, content_type TEXT, text_content TEXT, metadata JSONB, similarity FLOAT) AS $$
-      BEGIN RETURN QUERY
-        SELECT ce.id, ce.content_id, ce.content_type, ce.text_content, ce.metadata,
-               1 - (ce.embedding <=> query_embedding) AS similarity
-        FROM content_embeddings ce
-        WHERE ce.embedding IS NOT NULL AND ce.embedding_status = 'completed'
-          AND (filter_type IS NULL OR ce.content_type = filter_type)
-          AND 1 - (ce.embedding <=> query_embedding) > similarity_threshold
-        ORDER BY ce.embedding <=> query_embedding LIMIT match_count;
-      END; $$ LANGUAGE plpgsql;
-    $fn$;
+    BEGIN
+      EXECUTE '
+        CREATE OR REPLACE FUNCTION search_embeddings(
+          query_embedding vector(1024), match_count INT DEFAULT 5, similarity_threshold FLOAT DEFAULT 0.3, filter_type TEXT DEFAULT NULL
+        ) RETURNS TABLE (id BIGINT, content_id TEXT, content_type TEXT, text_content TEXT, metadata JSONB, similarity FLOAT) AS $$
+        BEGIN
+          RETURN QUERY
+            SELECT ce.id, ce.content_id, ce.content_type, ce.text_content, ce.metadata,
+                   1 - (ce.embedding <=> query_embedding) AS similarity
+            FROM content_embeddings ce
+            WHERE ce.embedding IS NOT NULL AND ce.embedding_status = ''completed''
+              AND (filter_type IS NULL OR ce.content_type = filter_type)
+              AND 1 - (ce.embedding <=> query_embedding) > similarity_threshold
+            ORDER BY ce.embedding <=> query_embedding LIMIT match_count;
+        END;
+        $$ LANGUAGE plpgsql;';
+    EXCEPTION WHEN OTHERS THEN
+      RAISE NOTICE 'Could not create search_embeddings function: %', SQLERRM;
+    END;
   ELSE
     RAISE NOTICE 'Skipping search_embeddings(): pgvector extension is unavailable';
   END IF;
