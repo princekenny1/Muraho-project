@@ -149,53 +149,8 @@ services:
     restart: "no"
 
   # ── FastAPI AI Service ──────────────────────────────────
-  ai-service:
-    build:
-      context: ../../ai-service
-      dockerfile: Dockerfile
-    <<: *common
-    ports:
-      - "${AI_PORT:-8000}:8000"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      ollama:
-        condition: service_started
-    environment:
-      DATABASE_URL: postgres://${POSTGRES_USER:-muraho}:${POSTGRES_PASSWORD:-muraho_secret}@postgres:5432/muraho_rwanda
-      LLM_BASE_URL: http://ollama:11434/v1
-      OLLAMA_BASE_URL: http://ollama:11434
-      VLLM_BASE_URL: http://vllm:8080
-      REDIS_URL: redis://redis:6379
-      EMBEDDING_MODEL: intfloat/multilingual-e5-large
-      LLM_MODEL: mistral-nemo
-      LOG_LEVEL: info
-    volumes:
-      - hf_cache:/root/.cache/huggingface
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      start_period: 90s
-      timeout: 5s
-      interval: 10s
-      retries: 5
 
   # ── Ollama (LLM model server — CPU/GPU) ─────────────────
-  ollama:
-    image: ollama/ollama:latest
-    <<: *common
-    ports:
-      - "${OLLAMA_PORT:-11434}:11434"
-    volumes:
-      - ollama_models:/root/.ollama
-    # Pull models on first run
-    entrypoint: >
-      /bin/sh -c "
-      /bin/ollama serve &
-      sleep 5;
-      ollama pull mistral-nemo;
-      ollama pull nomic-embed-text;
-      wait;
-      "
 
   # ── Frontend (Vite dev or Nginx prod) ───────────────────
   frontend:
